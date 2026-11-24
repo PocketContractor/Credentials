@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,9 +18,29 @@
       --muted: #9fb0d9;
       --accent: #38bdf8;
       --accent-2: #22c55e;
-      --warn: #f59e0b;
       --danger: #ef4444;
       --radius: 12px;
+      --card-pad: 14px;
+      --grid-gap: 12px;
+      --focus-outline: 2px solid var(--accent);
+    }
+    html[data-theme="light"] {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-2: #e2e8f0;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #0284c7;
+      --accent-2: #16a34a;
+      --danger: #dc2626;
+    }
+    html.text-scale-sm { font-size: 14.5px; }
+    html.text-scale-md { font-size: 16px; }
+    html.text-scale-lg { font-size: 18px; }
+    html.high-contrast { --border: #38bdf8; --focus-outline: 3px solid #facc15; }
+    html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after {
+      transition: none !important; animation: none !important; scroll-behavior: auto !important;
     }
     * { box-sizing: border-box; }
     body {
@@ -30,581 +50,891 @@
       color: var(--text);
       line-height: 1.45;
     }
-    button, input, select, textarea {
-      font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+    button, input, select { font-family: inherit; }
+    :focus-visible { outline: var(--focus-outline); outline-offset: 2px; }
     header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(11, 16, 32, 0.92);
+      position: sticky; top: 0; z-index: 20;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
       padding: 12px 16px;
     }
-    .header-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+    .header-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .header-top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo { width: 3.4rem; height: 3.4rem; color: var(--accent); display: inline-flex; align-items: center; justify-content: center; }
+    .brand h1 { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+    .brand .subtitle { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+    .lang-switch { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px; }
+    .lang-btn { border: 0; background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
+    .lang-btn.active { background: var(--accent); color: #061224; }
+    .auth-bar { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.82rem; }
+    .auth-border-column { display: flex; flex-direction: column; min-width: 140px; max-width: 210px; }
+    .auth-signed-out-panel { display: flex; flex-direction: column; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+    .auth-signed-in-panel { display: none; flex-direction: column; gap: 8px; }
+    .auth-welcome-box { background: var(--surface-2); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 10px; padding: 7px 11px; }
+    .auth-status-text { font-size: 0.78rem; font-weight: 700; color: var(--muted); word-break: break-word; }
+    .auth-welcome-box .auth-status-text { color: var(--text); }
+
+    /* Hollow unselected, solid selected */
+    .header-icon-btn {
+      position: relative; width: 64px; height: 64px; border-radius: 50%;
+      border: 2px solid var(--border); background: transparent; color: var(--muted);
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: 0.15s ease; padding: 0; flex: 0 0 auto;
     }
-    .brand {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+    .header-icon-btn .icon-solid { display: none; }
+    .header-icon-btn .icon-hollow { display: block; }
+    .header-icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-icon-btn.active {
+      background: var(--accent); border-color: var(--accent); color: #061224;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
     }
-    .brand h1 {
-      margin: 0;
-      font-family: 'Comfortaa', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: #ffffff;
+    .header-icon-btn.active .icon-hollow { display: none; }
+    .header-icon-btn.active .icon-solid { display: block; }
+    @media (max-width: 480px) { .header-icon-btn { width: 56px; height: 56px; } }
+    .icon-badge-count {
+      position: absolute; top: -4px; right: -4px; background: var(--accent-2); color: #04130a;
+      font-size: 0.64rem; font-weight: 700; line-height: 1; padding: 2px 5px;
+      border-radius: 999px; border: 2px solid var(--bg);
     }
-    .brand .subtitle {
-      font-family: 'Comfortaa', sans-serif;
-      font-size: 0.8rem;
-      color: var(--accent);
-      font-weight: 600;
+    .google-signin-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+      background: #ffffff; color: #1f2937; border: 1px solid #cbd5e1; border-radius: 8px;
+      padding: 7px 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
     }
-    .auth-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: 0.85rem;
-    }
-    .btn {
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text);
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.15s ease;
-    }
+    .btn { border: 1px solid var(--border); background: var(--surface-2); color: var(--text); padding: 7px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
     .btn:hover { border-color: var(--accent); }
-    .btn-primary {
-      background: var(--accent);
-      color: #061224;
-      border-color: var(--accent);
+    .btn-primary { background: var(--accent); color: #061224; border-color: var(--accent); }
+    .btn-small { padding: 6px 10px; font-size: 0.78rem; }
+    main { max-width: 1280px; margin: 0 auto; padding: 16px; }
+    .home-search-wrap { display: flex; align-items: stretch; gap: 8px; margin-bottom: 14px; }
+    .icon-action-btn {
+      flex: 0 0 auto; width: 44px; height: 42px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+      display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .btn-small {
-      padding: 5px 9px;
-      font-size: 0.78rem;
+    .icon-action-btn.primary-icon { background: var(--accent); border-color: var(--accent); color: #061224; }
+    .home-search-input { flex: 1; min-width: 0; height: 42px; padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; }
+    .cat-matrix-wrap { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+    .cat-group-row { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .cat-group-icon { flex: 0 0 40px; width: 40px; height: 40px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+    .cat-group-row.active .cat-group-icon { color: var(--accent); }
+    .cat-solid-icon { width: 28px; height: 28px; display: block; }
+    .cat-label-box {
+      flex: 1; min-width: 0; border: 1px solid var(--border); background: var(--surface);
+      border-radius: 10px; padding: 10px 14px; display: flex; flex-direction: column; gap: 4px;
     }
-    main {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-    .tabs-wrap {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 14px;
-      scrollbar-width: thin;
-    }
-    .tab-btn {
-      flex: 0 0 auto;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--muted);
-      padding: 9px 14px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .tab-btn.active {
-      background: var(--surface-2);
-      color: #ffffff;
-      border-color: var(--accent);
-      box-shadow: inset 0 -2px 0 var(--accent);
-    }
-    .tab-count {
-      background: rgba(56, 189, 248, 0.16);
-      color: var(--accent);
-      padding: 1px 7px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-    }
-    .controls-row {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    @media (max-width: 720px) {
-      .controls-row { grid-template-columns: 1fr; }
-    }
-    input, select {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 11px;
-      font-size: 0.88rem;
-    }
-    .calc-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-      margin-bottom: 16px;
-      display: none;
-    }
-    .calc-panel.visible { display: block; }
-    .calc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
-    }
-    .stat-box {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-    }
+    .cat-group-row.active .cat-label-box { border-color: var(--accent); background: var(--surface-2); box-shadow: inset 3px 0 0 var(--accent); }
+    .cat-row-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .cat-row-title { font-size: 0.84rem; font-weight: 700; letter-spacing: 0.03em; }
+    .cat-group-row.active .cat-row-title { color: var(--accent); }
+    .cat-row-count { font-size: 0.78rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+    .cat-row-desc { font-size: 0.74rem; color: var(--muted); }
+    .listing-tools { display: none; margin-bottom: 16px; }
+    .listing-tools.visible { display: block; }
+    .controls-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 720px) { .controls-row { grid-template-columns: 1fr; } }
+    input, select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.88rem; }
+    .calc-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); margin-bottom: 16px; }
+    .calc-grid-two { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: var(--grid-gap); margin-top: 10px; }
+    @media (max-width: 520px) { .calc-grid-two { grid-template-columns: 1fr; } }
+    .stat-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
     .stat-label { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; }
-    .stat-val { font-size: 1.15rem; font-weight: 700; margin-top: 2px; color: var(--accent); }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 12px;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-    }
+    .stat-val { font-size: 1.3rem; font-weight: 700; margin-top: 4px; color: var(--accent); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: var(--grid-gap); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .uid { font-size: 0.74rem; color: var(--muted); font-family: monospace; }
-    .badge {
-      font-size: 0.72rem;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-weight: 700;
-      background: var(--surface-2);
-      color: var(--accent);
-      border: 1px solid var(--border);
-      white-space: nowrap;
-    }
+    .badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); }
     .card-title { margin: 4px 0 0; font-size: 0.98rem; font-weight: 700; }
     .card-meta { font-size: 0.8rem; color: var(--muted); }
-    .card-notes { font-size: 0.82rem; color: #cbd5e1; margin: 0; }
-    .card-inputs {
-      display: grid;
-      grid-template-columns: 1.3fr 0.85fr 0.85fr;
-      gap: 6px;
-    }
-    .card-inputs label {
-      display: flex;
-      flex-direction: column;
-      font-size: 0.7rem;
-      color: var(--muted);
-      gap: 3px;
-    }
-    .card-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
+    .card-notes { font-size: 0.82rem; color: var(--muted); margin: 0; }
+    .req-list { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .req-header { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+    .req-item { display: flex; align-items: flex-start; gap: 7px; font-size: 0.79rem; cursor: pointer; }
+    .req-item input[type="checkbox"] { margin-top: 2px; accent-color: var(--accent-2); cursor: pointer; }
+    .req-item.checked span { text-decoration: line-through; color: var(--muted); }
+    .card-inputs { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .card-inputs label { display: flex; flex-direction: column; font-size: 0.7rem; color: var(--muted); gap: 3px; }
+    .card-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .save-msg { font-size: 0.76rem; color: var(--accent-2); min-height: 1em; }
-    .status-banner {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
+    .status-banner { font-size: 0.78rem; color: var(--muted); margin-bottom: 12px; }
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+    .library-section { display: none; margin-top: 8px; }
+    .library-section.visible { display: block; }
+    .library-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+    .library-header h2 { margin: 0; font-size: 1.02rem; }
+    .lib-pill { font-size: 0.7rem; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); display: inline-block; margin-top: 6px; }
+    .empty-profile { background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 24px 16px; text-align: center; color: var(--muted); font-size: 0.88rem; }
+    .coach-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); margin-bottom: 14px; }
+    .coach-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 10px 0 14px; }
+    .coach-prompt-box { width: 100%; min-height: 150px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.82rem; line-height: 1.5; resize: vertical; }
+    .coach-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .coach-link-btn { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+    .coach-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .coach-chip { font-size: 0.72rem; padding: 3px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
+    .settings-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .settings-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .settings-row-info { flex: 1 1 240px; }
+    .settings-row-title { font-size: 0.86rem; font-weight: 700; }
+    .settings-row-desc { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+    .seg-group { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 2px; gap: 2px; }
+    .seg-btn { border: 0; background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
+    .seg-btn.active { background: var(--accent); color: #061224; }
+    .toggle-chk { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
   </style>
 </head>
 <body>
   <header>
     <div class="header-inner">
-      <div class="brand">
-        <h1>Pocket Credit</h1>
-        <span class="subtitle">Manage Credentials Online</span>
+      <div class="header-top-row">
+        <div class="brand">
+          <span class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 2.5L21.9 8.1L28.6 7.4L27.9 14.1L33.5 18L27.9 21.9L28.6 28.6L21.9 27.9L18 33.5L14.1 27.9L7.4 28.6L8.1 21.9L2.5 18L8.1 14.1L7.4 7.4L14.1 8.1L18 2.5Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M12.5 18.4L16.1 22L23.8 14.2" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <h1 id="brandTitle">POCKET CREDIT</h1>
+            <span id="brandSubtitle" class="subtitle">Manage Credentials Online</span>
+          </div>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button id="langEnBtn" class="lang-btn active" type="button" data-lang="en">EN</button>
+          <button id="langFrBtn" class="lang-btn" type="button" data-lang="fr">FR</button>
+        </div>
       </div>
+
       <div class="auth-bar">
-        <span id="authStatus">Signed out (local preview)</span>
-        <button id="googleLoginBtn" class="btn btn-primary btn-small" type="button">Continue with Google</button>
-        <button id="signOutBtn" class="btn btn-small" type="button" style="display:none;">Sign Out</button>
+        <div class="auth-border-column">
+          <div id="signedOutPanel" class="auth-signed-out-panel">
+            <span id="signedOutLabel" class="auth-status-text">Signed Out</span>
+            <button id="googleLoginBtn" class="google-signin-btn" type="button">
+              <span id="signInBtnText">Sign in</span>
+            </button>
+          </div>
+          <div id="signedInPanel" class="auth-signed-in-panel">
+            <div class="auth-welcome-box">
+              <span id="authStatus" class="auth-status-text">Welcome</span>
+            </div>
+            <button id="signOutBtn" class="btn btn-small" type="button">Sign Out</button>
+          </div>
+        </div>
+
+        <button id="profileIconBtn" class="header-icon-btn" type="button" title="Profile" aria-label="Open Profile">
+          <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4.2" />
+            <path d="M4 20c0-3.7 3.6-6.2 8-6.2s8 2.5 8 6.2" />
+          </svg>
+          <svg class="icon-solid" width="31" height="31" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="8" r="4.5" />
+            <path d="M4 20c0-3.8 3.6-6.5 8-6.5s8 2.7 8 6.5" />
+          </svg>
+          <span id="profileNavCount" class="icon-badge-count">0</span>
+        </button>
+
+        <button id="settingsIconBtn" class="header-icon-btn" type="button" title="Settings" aria-label="Open Settings">
+          <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          <svg class="icon-solid" width="31" height="31" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 15.6 12 3.6 3.6 0 0 1 12 15.6z"/>
+          </svg>
+        </button>
+
+        <button id="processorIconBtn" class="header-icon-btn" type="button" title="Free AI Career Coach" aria-label="Free AI Career Coach">
+          <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="6" y="6" width="12" height="12" rx="2" />
+            <rect x="9.5" y="9.5" width="5" height="5" />
+            <line x1="9" y1="2" x2="9" y2="6" />
+            <line x1="15" y1="2" x2="15" y2="6" />
+            <line x1="9" y1="18" x2="9" y2="22" />
+            <line x1="15" y1="18" x2="15" y2="22" />
+            <line x1="2" y1="9" x2="6" y2="9" />
+            <line x1="2" y1="15" x2="6" y2="15" />
+            <line x1="18" y1="9" x2="22" y2="9" />
+            <line x1="18" y1="15" x2="22" y2="15" />
+          </svg>
+          <svg class="icon-solid" width="31" height="31" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 2h2v2h2V2h2v2h1a2 2 0 0 1 2 2v1h2v2h-2v2h2v2h-2v1a2 2 0 0 1-2 2h-1v2h-2v-2h-2v2H9v-2H8a2 2 0 0 1-2-2v-1H4v-2h2v-2H4V9h2V7a2 2 0 0 1 2-2h1V2zm1 8v4h4v-4h-4z"/>
+          </svg>
+        </button>
       </div>
     </div>
   </header>
 
   <main>
-    <div id="sectorTabs" class="tabs-wrap" role="tablist" aria-label="Credential Sectors"></div>
-
-    <div class="controls-row">
-      <input id="searchInput" type="search" placeholder="Search by code, credential name, authority, or notes..." />
-      <select id="categoryFilter" aria-label="Filter by category">
-        <option value="ALL">All Sub-Categories</option>
-      </select>
-      <select id="statusFilter" aria-label="Filter by status">
-        <option value="ALL">All Statuses</option>
-        <option value="Not Started">Not Started</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Completed">Completed</option>
-        <option value="Renewal Due">Renewal Due</option>
-      </select>
+    <div id="globalSearchBar" class="home-search-wrap">
+      <button id="clearSearchBtn" class="icon-action-btn" type="button" title="Home" aria-label="Home">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3L2 11h3v9h6v-6h2v6h6v-9h3L12 3z"/></svg>
+      </button>
+      <input id="searchInput" class="home-search-input" type="search" placeholder="Search library entries, codes, providers..." />
+      <button id="searchSubmitBtn" class="icon-action-btn primary-icon" type="button" title="Search" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.32l5.39 5.39 1.42-1.42-5.39-5.39A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
+      </button>
     </div>
 
-    <div id="tradeCalculator" class="calc-panel">
-      <strong>Apprenticeship Hours &amp; Blocks Calculator (TRADE)</strong>
-      <div class="calc-grid">
-        <div class="stat-box">
-          <div class="stat-label">Target Trade OTJ Hours</div>
-          <input id="calcTargetHours" type="number" value="8000" min="0" step="100" style="width:100%;margin-top:4px;" />
+    <section id="homeView" class="view-section active">
+
+      <div id="typeTabs" class="cat-matrix-wrap" role="tablist" aria-label="Library Categories"></div>
+
+      <div id="listingTools" class="listing-tools">
+        <div class="controls-row">
+          <select id="categoryFilter" aria-label="Filter by topic"><option value="ALL">All Topics</option></select>
+          <button id="backToLandingBtn" class="btn btn-small" type="button">Back to Categories</button>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Logged OTJ Hours (Filtered)</div>
-          <div id="calcLoggedHours" class="stat-val">0</div>
+        <div id="dataSourceBanner" class="status-banner"></div>
+      </div>
+
+      <div id="librarySection" class="library-section">
+        <div class="library-header">
+          <h2 id="libraryTitle">Library</h2>
+          <span id="librarySubtitle" style="font-size:0.75rem;color:var(--muted);">Reference library</span>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Remaining OTJ Hours</div>
-          <div id="calcRemainingHours" class="stat-val">8000</div>
+        <div id="libraryGrid" class="grid"></div>
+      </div>
+    </section>
+
+    <!-- PROFILE VIEW: ONLY Completed and Saved -->
+    <section id="coachView" class="view-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+        <h2 id="coachHeading" style="margin:0;font-size:1.08rem;">Free AI Career Coach</h2>
+        <button id="backFromCoachBtn" class="btn btn-small" type="button">Back to Home</button>
+      </div>
+      <div class="coach-panel">
+        <strong id="coachSummaryTitle">Profile &amp; Credentials Context</strong>
+        <p id="coachSummaryDesc" style="font-size:0.82rem;color:var(--muted);margin:6px 0 0;">Uses your current profile state, completed credentials, and saved entries to generate a tailored career coaching prompt and launch free AI tools.</p>
+        <div class="coach-meta-grid">
+          <div class="stat-box">
+            <div id="coachLblProfile" class="stat-label">Profile</div>
+            <div id="coachProfileVal" style="font-size:0.95rem;font-weight:700;margin-top:4px;color:var(--accent);">Signed Out</div>
+          </div>
+          <div class="stat-box">
+            <div id="coachLblCreds" class="stat-label">Tracked Credentials</div>
+            <div id="coachCredsVal" style="font-size:0.95rem;font-weight:700;margin-top:4px;color:var(--accent-2);">0 Completed · 0 Saved</div>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Blocks Completed</div>
-          <div id="calcBlocksDone" class="stat-val">0</div>
+        <div id="coachCredChips" class="coach-chips"></div>
+      </div>
+      <div class="coach-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
+          <strong id="coachPromptLabel">Career Coach Prompt (From Your Profile &amp; Credentials)</strong>
+          <button id="copyCoachPromptBtn" class="btn btn-small" type="button">Copy Prompt</button>
+        </div>
+        <textarea id="coachPromptText" class="coach-prompt-box" readonly></textarea>
+        <span id="coachCopyMsg" class="save-msg" style="display:block;margin-top:6px;"></span>
+        <div class="coach-links">
+          <a id="openGeminiCoachLink" class="btn btn-small btn-primary coach-link-btn" href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Open Gemini (Free)</a>
+          <a id="openChatGptCoachLink" class="btn btn-small coach-link-btn" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT (Free)</a>
+          <a id="openCopilotCoachLink" class="btn btn-small coach-link-btn" href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer">Open Copilot (Free)</a>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div id="dataSourceBanner" class="status-banner">Loading catalog...</div>
-    <div id="catalogGrid" class="grid"></div>
+    <section id="profileView" class="view-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+        <h2 id="profileHeading" style="margin:0;font-size:1.08rem;">My Profile &amp; Library</h2>
+        <button id="backFromProfileBtn" class="btn btn-small" type="button">Back to Home</button>
+      </div>
+      <div class="calc-panel">
+        <div class="calc-grid-two" style="margin-top:0;">
+          <div class="stat-box">
+            <div id="lblCompletedCreds" class="stat-label">Completed</div>
+            <div id="profCompletedCount" class="stat-val" style="color:var(--accent-2);">0</div>
+          </div>
+          <div class="stat-box">
+            <div id="lblSavedCreds" class="stat-label">Saved</div>
+            <div id="profSavedCount" class="stat-val">0</div>
+          </div>
+        </div>
+      </div>
+      <h3 id="savedCredsHeading" style="margin:0 0 12px;font-size:1rem;">Saved Entries</h3>
+      <div id="profileGrid" class="grid"></div>
+    </section>
+
+    <section id="settingsView" class="view-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+        <h2 id="settingsHeading" style="margin:0;font-size:1.08rem;">Account &amp; App Settings</h2>
+        <button id="backFromSettingsBtn" class="btn btn-small" type="button">Back to Home</button>
+      </div>
+      <div class="calc-panel">
+        <strong id="appearanceSectionTitle">Appearance &amp; Accessibility</strong>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div id="lblTheme" class="settings-row-title">Theme</div>
+            <div id="descTheme" class="settings-row-desc">Switch between dark, light, or system color mode.</div>
+          </div>
+          <div class="seg-group">
+            <button class="seg-btn active" type="button" data-theme-opt="dark" id="themeDarkBtn">Dark</button>
+            <button class="seg-btn" type="button" data-theme-opt="light" id="themeLightBtn">Light</button>
+            <button class="seg-btn" type="button" data-theme-opt="system" id="themeSystemBtn">System</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div id="lblTextSize" class="settings-row-title">Text Size</div>
+            <div id="descTextSize" class="settings-row-desc">Adjust base text scale.</div>
+          </div>
+          <div class="seg-group">
+            <button class="seg-btn" type="button" data-scale-opt="sm" id="scaleSmBtn">S</button>
+            <button class="seg-btn active" type="button" data-scale-opt="md" id="scaleMdBtn">M</button>
+            <button class="seg-btn" type="button" data-scale-opt="lg" id="scaleLgBtn">L</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div id="lblReduceMotion" class="settings-row-title">Reduce Motion</div>
+            <div id="descReduceMotion" class="settings-row-desc">Minimize animations and transitions.</div>
+          </div>
+          <input id="reduceMotionChk" class="toggle-chk" type="checkbox" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div id="lblHighContrast" class="settings-row-title">High-Contrast Focus</div>
+            <div id="descHighContrast" class="settings-row-desc">Strengthen borders and focus outlines.</div>
+          </div>
+          <input id="highContrastChk" class="toggle-chk" type="checkbox" />
+        </div>
+      </div>
+      <div class="calc-panel">
+        <strong id="accountSectionTitle">Account Status</strong>
+        <p id="settingsAccountInfo" style="font-size:0.84rem;color:var(--muted);margin:8px 0 0;">Signed out.</p>
+      </div>
+      <div class="calc-panel">
+        <strong id="localDataSectionTitle">Local Data</strong>
+        <p id="localDataDesc" style="font-size:0.84rem;color:var(--muted);margin:8px 0 12px;">Clear saved progress stored in this browser.</p>
+        <button id="clearLocalProgressBtn" class="btn btn-small" type="button" style="border-color:var(--danger);color:#fca5a5;">Clear Local Progress</button>
+        <span id="settingsMsg" class="save-msg" style="margin-left:10px;"></span>
+      </div>
+    </section>
   </main>
 
   <script>
     const SUPABASE_URL = 'https://ntyrejoqfwgyxrojglom.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_uCgDNlN3CQsNVJ9WDFbucQ_kCH1dMmZ';
     const SITE_URL = 'https://pocketcredit.online';
+    const sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    const sbClient = window.supabase
-      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
+    const TYPE_LIBRARIES = {"RED_SEAL": [{"title": "Red Seal Trades \u2014 Official Standards & Exam Guides", "provider": "Red Seal Program / Skilled Trades Ontario", "tag": "Standard", "summary": "National occupational standards, trade school blocks, and Certificate of Qualification pathways.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-TRD-001", "code": "309A", "title": "309A \u2014 Construction and Maintenance Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Red Seal trade with trade school blocks and on-the-job apprenticeship requirements.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-002", "code": "433A", "title": "433A \u2014 Millwright (Industrial Mechanic)", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Industrial maintenance and machinery installation trade.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-003", "code": "442A", "title": "442A \u2014 Industrial Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Plant electrical systems, controls, and automation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-004", "code": "306A", "title": "306A \u2014 Plumber", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Water distribution, drainage, venting, and fixture installation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-005", "code": "313A", "title": "313A \u2014 Refrigeration and Air Conditioning Systems Mechanic", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "HVAC-R systems, heat pumps, and commercial refrigeration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-006", "code": "403A", "title": "403A \u2014 General Carpenter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Framing, structural carpentry, finishing, and formwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-007", "code": "456A", "title": "456A \u2014 Sheet Metal Worker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Architectural and industrial sheet metal fabrication and ductwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-008", "code": "421A", "title": "421A \u2014 Steamfitter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "High/low pressure piping, process steam, and hydronics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-009", "code": "310T", "title": "310T \u2014 Automotive Service Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Light-duty automotive diagnostics, powertrain, and chassis systems.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-010", "code": "310S", "title": "310S \u2014 Truck and Coach Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Heavy commercial vehicles, air brakes, and diesel diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-011", "code": "429A", "title": "429A \u2014 Welder", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural and pressure welding across SMAW, GMAW, GTAW, and FCAW.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-017", "code": "G.3", "title": "G.3 \u2014 Gas Technician 3", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Entry fuel technician certification for natural gas and propane appliances.", "requirements": [{"id": "THEORY", "label": "TSSA G.3 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.3 Practical Assessment"}]}, {"uid": "CRED-TRD-018", "code": "G.2", "title": "G.2 \u2014 Gas Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, service, and maintenance up to 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G3", "label": "Prerequisite: Active Gas Technician 3 (G.3)"}, {"id": "THEORY", "label": "TSSA G.2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.2 Practical Assessment"}]}, {"uid": "CRED-TRD-019", "code": "G.1", "title": "G.1 \u2014 Gas Technician 1", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "High-capacity commercial/industrial fuel systems over 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G2", "label": "Prerequisite: Active Gas Technician 2 (G.2)"}, {"id": "THEORY", "label": "TSSA G.1 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.1 Practical Assessment"}]}, {"uid": "CRED-TRD-012", "code": "415A", "title": "415A \u2014 Heavy Duty Equipment Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Off-road heavy machinery, hydraulics, powertrains, and undercarriage diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-013", "code": "434A", "title": "434A \u2014 Tool and Die Maker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Precision tooling, CNC machining, dies, jigs, and fixture manufacturing.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-014", "code": "339A", "title": "339A \u2014 Hoisting Engineer \u2014 Mobile Crane Operator 1", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Mobile crane rigging, load charts, lift planning, and heavy hoisting operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-015", "code": "426A", "title": "426A \u2014 Brick and Stone Mason", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural masonry, stone veneer, refractory brick, and restoration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-016", "code": "307A", "title": "307A \u2014 Arborist", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Tree care, rigging, aerial lift safety, pruning, and urban forestry operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-020", "code": "OBT-2", "title": "OBT-2 \u2014 Oil Burner Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, servicing, and combustion testing of fuel-oil heating equipment.", "requirements": [{"id": "THEORY", "label": "TSSA OBT-2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA OBT-2 Practical Assessment"}]}, {"uid": "CRED-TRD-021", "code": "CWB-W47.1", "title": "CWB-W47.1 \u2014 Structural Steel Welding Qualification (FCAW / SMAW)", "provider": "Canadian Welding Bureau (CWB)", "category": "Welding Qualifications", "tag": "Welding Qualifications", "summary": "All-position structural steel welding qualification under CSA W47.1 standards.", "requirements": [{"id": "1G-2G", "label": "Flat & Horizontal Position Plates"}, {"id": "3G-4G", "label": "Vertical & Overhead Position Plates"}]}, {"uid": "CRED-TRD-022", "code": "433A-MRO", "title": "433A-MRO \u2014 Industrial Hydraulics, Pneumatics & Rigging Endorsement", "provider": "Skilled Trades / Industry Standards", "category": "Industrial Maintenance", "tag": "Industrial Maintenance", "summary": "Fluid power schematics, proportional valves, laser shaft alignment, and heavy rigging.", "requirements": [{"id": "HYD-PNEU", "label": "Fluid Power Troubleshooting Assessment"}, {"id": "RIG-ALIGN", "label": "Precision Alignment & Rigging Sign-Off"}]}], "FORCES": [{"title": "CAF Qualification & Trade Equivalency Guide", "provider": "Canadian Armed Forces / DND", "tag": "Military Pathway", "summary": "Mapping BMQ, SQ, DP1/QL3, DP2/QL5, and MOSID training toward civilian credentials.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-FRC-001", "code": "BMQ", "title": "BMQ \u2014 Basic Military Qualification (BMQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Foundational CAF recruit training, drill, weapons safety, and field skills.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ"}]}, {"uid": "CRED-FRC-002", "code": "BMQ-L / SQ", "title": "BMQ-L / SQ \u2014 Basic Military Qualification \u2014 Land / Soldier Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Army field craft, navigation, and tactical soldier fundamentals.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ-L / SQ"}]}, {"uid": "CRED-FRC-003", "code": "DP1 / QL3", "title": "DP1 / QL3 \u2014 Development Period 1 (DP1 / QL3) Trade Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Initial occupation/trade training for NCM or Officer MOSID.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP1 / QL3"}]}, {"uid": "CRED-FRC-004", "code": "DP2 / QL5", "title": "DP2 / QL5 \u2014 Development Period 2 (DP2 / QL5) Journeyman Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Advanced trade qualification and operational proficiency.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP2 / QL5"}]}, {"uid": "CRED-FRC-005", "code": "MOSID-TEA", "title": "MOSID-TEA \u2014 MOSID to Civilian Trade Equivalency Assessment (TEA)", "provider": "DND / Provincial Apprenticeship Boards", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Mapping military trade training toward Red Seal / C of Q.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOSID-TEA"}]}, {"uid": "CRED-FRC-006", "code": "BMOQ", "title": "BMOQ \u2014 Basic Military Officer Qualification (BMOQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Officer Leadership", "tag": "Officer Leadership", "summary": "Foundational officer leadership, mission command, ethics, and field operations.", "requirements": [{"id": "MOD-1", "label": "BMOQ Module 1 (Common Core)"}, {"id": "MOD-2", "label": "BMOQ Module 2 (Field Leadership)"}]}, {"uid": "CRED-FRC-007", "code": "PLQ", "title": "PLQ \u2014 Primary Leadership Qualification (PLQ)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Small-team command, instructional technique, and section-level leadership.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete PLQ"}]}, {"uid": "CRED-FRC-008", "code": "ILP", "title": "ILP \u2014 Intermediate Leadership Program (ILP)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Platoon/troop warrant officer leadership, administration, and operational planning.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete ILP"}]}, {"uid": "CRED-FRC-009", "code": "CAF-DND-404", "title": "CAF-DND-404 \u2014 DND 404 Military Driver Permit & Air Brake Endorsement", "provider": "Canadian Armed Forces (CAF)", "category": "Logistics & Transport", "tag": "Logistics & Transport", "summary": "Military vehicle qualification transferable toward provincial commercial licence classes.", "requirements": [{"id": "DDC", "label": "Defensive Driving Course"}, {"id": "ROAD", "label": "DND 404 Road & Air Brake Test"}]}, {"uid": "CRED-FRC-010", "code": "CAF-PLAR", "title": "CAF-PLAR \u2014 MPRR Service Record & Post-Secondary PLAR Portfolio", "provider": "Canadian Armed Forces / Ontario Colleges", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Translating Member's Personnel Record Resume (MPRR) into civilian college credits and Red Seal hours.", "requirements": [{"id": "MPRR", "label": "Verified MPRR & Course Training Plan (CTP) Package"}, {"id": "ASSESS", "label": "Provincial Regulator / College PLAR Review"}]}, {"uid": "CRED-FRC-011", "code": "TCCC-CAF", "title": "TCCC-CAF \u2014 Tactical Combat Casualty Care (TCCC)", "provider": "Canadian Forces Health Services", "category": "Field Medical", "tag": "Field Medical", "summary": "Trauma hemorrhage control, airway management, and casualty evacuation under austere conditions.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete TCCC Practical & Written Assessment"}]}], "ACADEMIC": [{"title": "Ontario Colleges & Open University Pathways", "provider": "Ontario Colleges / MIT OCW", "tag": "Academic", "summary": "Diplomas, certificates, and open coursework tracks across engineering, computing, and sciences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-ACD-001", "code": "OC-TECH-MECH", "title": "OC-TECH-MECH \u2014 Mechanical Engineering Technician \u2014 Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma aligned with C.Tech. pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-MECH"}]}, {"uid": "CRED-ACD-003", "code": "OC-TECH-ELEC", "title": "OC-TECH-ELEC \u2014 Electrical Engineering Technician \u2014 Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year electrical technician diploma aligned with C.Tech.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-ELEC"}]}, {"uid": "CRED-ACD-017", "code": "MIT-6.0001", "title": "MIT-6.0001 \u2014 Introduction to Computer Science and Programming in Python", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Computational thinking and Python programming coursework.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-6.0001"}]}, {"uid": "CRED-ACD-027", "code": "HU-CS50", "title": "HU-CS50 \u2014 CS50's Introduction to Computer Science", "provider": "Harvard University", "category": "Open Courses", "tag": "Open Courses", "summary": "C, Python, SQL, algorithms, data structures, and web basics.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete HU-CS50"}]}, {"uid": "CRED-ACD-002", "code": "OC-TECH-CIV", "title": "OC-TECH-CIV \u2014 Civil Engineering Technician \u2014 Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma covering surveying, CAD, materials testing, and municipal infrastructure.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CIV"}]}, {"uid": "CRED-ACD-004", "code": "OC-TECH-CHEM", "title": "OC-TECH-CHEM \u2014 Chemical Engineering Technology \u2014 Advanced Diploma", "provider": "Ontario Colleges / OACETT", "category": "Advanced Diplomas", "tag": "Advanced Diplomas", "summary": "3-year advanced diploma aligned with Certified Engineering Technologist (C.E.T.) pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CHEM"}]}, {"uid": "CRED-ACD-005", "code": "OACETT-CET", "title": "OACETT-CET \u2014 Certified Engineering Technologist (C.E.T.) Designation", "provider": "OACETT Ontario", "category": "Professional Designations", "tag": "Professional Designations", "summary": "Ontario engineering technology certification requiring academic credentials, PPE exam, and experience.", "requirements": [{"id": "PPE", "label": "OACETT Professional Practice Exam (PPE)"}, {"id": "EXP", "label": "2 Years Verified Engineering Technology Experience"}]}, {"uid": "CRED-ACD-006", "code": "OC-ACCT-DIP", "title": "OC-ACCT-DIP \u2014 Business \u2014 Accounting Ontario College Diploma", "provider": "Ontario Colleges", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "Financial accounting, managerial cost accounting, taxation, payroll, and ERP reporting.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Business \u2014 Accounting Diploma"}]}, {"uid": "CRED-ACD-018", "code": "MIT-18.01", "title": "MIT-18.01 \u2014 Single Variable Calculus", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Differentiation, integration, series, and engineering math foundations.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-18.01"}]}, {"uid": "CRED-ACD-028", "code": "OSSD-PLAR", "title": "OSSD-PLAR \u2014 Ontario Secondary School Diploma \u2014 Mature Student PLAR", "provider": "Ontario District School Boards", "category": "Secondary & Bridging", "tag": "Secondary & Bridging", "summary": "Prior Learning Assessment and Recognition credits toward OSSD completion for adult learners.", "requirements": [{"id": "ASSESS", "label": "Mature Student PLAR Assessment & Senior Credits"}]}], "PROFESSIONAL": [{"title": "IT, Cloud, Operations & Licensing Guides", "provider": "CompTIA / PMI / Transport Canada", "tag": "Professional", "summary": "Certification roadmaps, project leadership credentials, and commercial operating licences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-IND-001", "code": "A+", "title": "A+ \u2014 A+ Certificate", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Hardware, networking, operating systems, mobile, and troubleshooting.", "requirements": [{"id": "220-1201", "label": "Core 1 Exam (220-1201)"}, {"id": "220-1202", "label": "Core 2 Exam (220-1202)"}]}, {"uid": "CRED-IND-002", "code": "NET+", "title": "NET+ \u2014 Network+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Network architecture, routing/switching, wireless, and diagnostics.", "requirements": [{"id": "EXAM-N10", "label": "CompTIA Network+ Exam"}]}, {"uid": "CRED-IND-003", "code": "SEC+", "title": "SEC+ \u2014 Security+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Threats, vulnerabilities, IAM, cryptography, and security operations.", "requirements": [{"id": "EXAM-SY0", "label": "CompTIA Security+ Exam"}]}, {"uid": "CRED-IND-014", "code": "PMP", "title": "PMP \u2014 Project Management Professional (PMP)", "provider": "PMI", "category": "Operations", "tag": "Operations", "summary": "People, process, and business environment leadership across methodologies.", "requirements": [{"id": "EDU-35H", "label": "35 Hours Project Management Education"}, {"id": "PMP-EXAM", "label": "PMI PMP Certification Exam"}]}, {"uid": "CRED-IND-004", "code": "AWS-SAA", "title": "AWS-SAA \u2014 AWS Certified Solutions Architect \u2014 Associate", "provider": "Amazon Web Services (AWS)", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Designing resilient, secure, high-performing, and cost-optimized cloud architectures.", "requirements": [{"id": "EXAM-SAA", "label": "AWS SAA-C03 Certification Exam"}]}, {"uid": "CRED-IND-005", "code": "AZ-104", "title": "AZ-104 \u2014 Microsoft Certified: Azure Administrator Associate", "provider": "Microsoft", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Managing Azure identities, governance, storage, compute, and virtual networks.", "requirements": [{"id": "EXAM-AZ104", "label": "Microsoft Exam AZ-104"}]}, {"uid": "CRED-IND-006", "code": "CCNA", "title": "CCNA \u2014 Cisco Certified Network Associate (200-301)", "provider": "Cisco", "category": "Information Technology", "tag": "Information Technology", "summary": "Network fundamentals, IP connectivity, IP services, security, and automation.", "requirements": [{"id": "EXAM-200-301", "label": "Cisco CCNA 200-301 Exam"}]}, {"uid": "CRED-IND-015", "code": "ON-AZ", "title": "ON-AZ \u2014 Ontario Class AZ Commercial Tractor-Trailer Licence", "provider": "Ministry of Transportation Ontario (MTO)", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "Mandatory Entry-Level Training (MELT), Class A road test, and Z air brake endorsement.", "requirements": [{"id": "MELT", "label": "MTO Approved MELT Training"}, {"id": "Z-ENDORSE", "label": "Air Brake (Z) Endorsement"}, {"id": "ROAD-A", "label": "Class A Commercial Road Test"}]}, {"uid": "CRED-IND-016", "code": "TC-RPAS-ADV", "title": "TC-RPAS-ADV \u2014 Transport Canada Drone Pilot Certificate \u2014 Advanced Operations", "provider": "Transport Canada", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "RPAS operations in controlled airspace and near bystanders with flight review.", "requirements": [{"id": "EXAM-ADV", "label": "Transport Canada Small Advanced Online Exam"}, {"id": "FLIGHT-REV", "label": "In-Person RPAS Flight Review"}]}, {"uid": "CRED-IND-017", "code": "CCA-GSC", "title": "CCA-GSC \u2014 Gold Seal Certified (GSC) \u2014 Construction Project Management", "provider": "Canadian Construction Association (CCA)", "category": "Construction Management", "tag": "Construction Management", "summary": "National certification for construction estimators, project managers, and superintendents.", "requirements": [{"id": "CREDITS", "label": "100 Gold Seal Training & Experience Credits"}, {"id": "EXAM-GSC", "label": "CCA Gold Seal National Exam"}]}], "LITERACY": [{"title": "Safety, Financial & Applied Literacy Guides", "provider": "MLITSD / FCAC / OALCF", "tag": "Literacy", "summary": "Workplace safety compliance, budgeting and credit basics, digital fluency, and trades math.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-PUB-001", "code": "MOL-4S", "title": "MOL-4S \u2014 Worker Health and Safety Awareness (4-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "OHSA mandatory baseline awareness for workers.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-4S"}]}, {"uid": "CRED-PUB-003", "code": "WHMIS-2015", "title": "WHMIS-2015 \u2014 WHMIS (GHS) Hazardous Materials Training", "provider": "Health Canada / MLITSD", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Labels, SDS, hazard classes, and safe handling of hazardous products.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete WHMIS-2015"}]}, {"uid": "CRED-PUB-004", "code": "WAH", "title": "WAH \u2014 Working at Heights (CPO Approved)", "provider": "MLITSD / CPO", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Fall protection equipment, anchor points, and rescue planning.", "requirements": [{"id": "MOD-1", "label": "Module 1: Working at Heights Basic Theory"}, {"id": "MOD-2", "label": "Module 2: Practical Equipment and Rescue"}]}, {"uid": "CRED-LIT-001", "code": "OHSA-R", "title": "OHSA-R \u2014 Ontario Workplace Rights & Hazard Literacy", "provider": "MLITSD Ontario", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Reading hazard notices, refusal rights, reporting procedures, and safety signage.", "requirements": [{"id": "RIGHTS", "label": "Three Basic Rights (Know, Participate, Refuse)"}, {"id": "REPORT", "label": "Hazard & Incident Reporting Literacy"}]}, {"uid": "CRED-LIT-002", "code": "FIN-LIT-101", "title": "FIN-LIT-101 \u2014 Personal Budgeting, Credit & Tax Fundamentals", "provider": "Financial Consumer Agency of Canada", "category": "Financial & Credit Literacy", "tag": "Financial & Credit Literacy", "summary": "Cash flow planning, credit scores, interest/debt literacy, and filing basics.", "requirements": [{"id": "BUDGET", "label": "Monthly Cash Flow & Emergency Reserve"}, {"id": "CREDIT", "label": "Credit Reports, Utilization & Borrowing Costs"}]}, {"uid": "CRED-PUB-002", "code": "MOL-SUP", "title": "MOL-SUP \u2014 Supervisor Health and Safety Awareness (5-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Mandatory OHSA duties and hazard-control responsibilities for workplace supervisors.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-SUP"}]}, {"uid": "CRED-PUB-005", "code": "JHSC-P1", "title": "JHSC-P1 \u2014 Joint Health and Safety Committee Certification \u2014 Part 1", "provider": "MLITSD / CPO Approved Providers", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Core occupational health and safety law, hazard recognition, and workplace inspections.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete JHSC Part 1"}]}, {"uid": "CRED-PUB-006", "code": "SFA-CPR-C", "title": "SFA-CPR-C \u2014 Standard First Aid & CPR/AED Level C (WSIB Approved)", "provider": "Canadian Red Cross / St. John Ambulance", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Two-day WSIB-recognized workplace emergency first aid, CPR, and AED response.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Standard First Aid & CPR-C"}]}, {"uid": "CRED-PUB-007", "code": "IHSA-TRAF", "title": "IHSA-TRAF \u2014 Traffic Control Person & OTM Book 7 Temporary Conditions", "provider": "IHSA / Ontario Traffic Council", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Work-zone flagging, temporary traffic control layouts, and roadside safety standards.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Traffic Control & OTM Book 7 Assessment"}]}, {"uid": "CRED-LIT-003", "code": "DIG-LIT-101", "title": "DIG-LIT-101 \u2014 Digital Fluency, Privacy & Scam Defense", "provider": "MediaSmarts / Digital Standards", "category": "Digital & Data Literacy", "tag": "Digital & Data Literacy", "summary": "Multi-factor authentication, phishing awareness, cloud file hygiene, and source verification.", "requirements": [{"id": "AUTH-SEC", "label": "Password Manager & Multi-Factor Authentication"}, {"id": "VERIFY", "label": "Source Verification & Phishing Recognition"}]}, {"uid": "CRED-LIT-004", "code": "NUM-TRD-101", "title": "NUM-TRD-101 \u2014 Applied Trades Numeracy, Fractions & Blueprint Reading", "provider": "Skilled Trades / OALCF Alignment", "category": "Trades Math & Blueprint Literacy", "tag": "Trades Math & Blueprint Literacy", "summary": "Metric/imperial conversions, ratios, tolerances, and reading technical drawings.", "requirements": [{"id": "CONV", "label": "Fractions, Decimals & Unit Conversions"}, {"id": "DWG", "label": "Reading Plans, Scales & Bill of Materials"}]}]};
 
-    const EMBEDDED_CATALOG = [{"uid": "CRED-TRD-001", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "309A", "name": "Construction and Maintenance Electrician", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 9000, "blocks": 3, "status": "Not Started", "notes": "Red Seal trade with in-school trade blocks and 9,000 OTJ hours."}, {"uid": "CRED-TRD-002", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "433A", "name": "Millwright (Industrial Mechanic)", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 8000, "blocks": 3, "status": "Not Started", "notes": "Industrial maintenance and machinery installation trade."}, {"uid": "CRED-TRD-003", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "442A", "name": "Industrial Electrician", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 8000, "blocks": 3, "status": "Not Started", "notes": "Plant electrical systems, controls, and automation."}, {"uid": "CRED-TRD-004", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "306A", "name": "Plumber", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 9000, "blocks": 3, "status": "Not Started", "notes": "Water distribution, drainage, venting, and fixture installation."}, {"uid": "CRED-TRD-005", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "313A", "name": "Refrigeration and Air Conditioning Systems Mechanic", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 9000, "blocks": 3, "status": "Not Started", "notes": "HVAC-R systems, heat pumps, and commercial refrigeration."}, {"uid": "CRED-TRD-006", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "403A", "name": "General Carpenter", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 7200, "blocks": 3, "status": "Not Started", "notes": "Framing, structural carpentry, finishing, and formwork."}, {"uid": "CRED-TRD-007", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "456A", "name": "Sheet Metal Worker", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 7200, "blocks": 3, "status": "Not Started", "notes": "Architectural and industrial sheet metal fabrication and ductwork."}, {"uid": "CRED-TRD-008", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "421A", "name": "Steamfitter", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 9000, "blocks": 3, "status": "Not Started", "notes": "High/low pressure piping, process steam, and hydronics."}, {"uid": "CRED-TRD-009", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "310T", "name": "Automotive Service Technician", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 7200, "blocks": 3, "status": "Not Started", "notes": "Light-duty automotive diagnostics, powertrain, and chassis systems."}, {"uid": "CRED-TRD-010", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "310S", "name": "Truck and Coach Technician", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 8000, "blocks": 3, "status": "Not Started", "notes": "Heavy commercial vehicles, air brakes, and diesel diagnostics."}, {"uid": "CRED-TRD-011", "sector": "TRADE", "category": "Compulsory Red Seal", "code": "429A", "name": "Welder", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 6000, "blocks": 3, "status": "Not Started", "notes": "Structural and pressure welding across SMAW, GMAW, GTAW, and FCAW."}, {"uid": "CRED-TRD-012", "sector": "TRADE", "category": "Voluntary / Non-Red Seal", "code": "400A", "name": "Brick and Stone Mason", "authority": "Skilled Trades Ontario", "otj_hours": 7200, "blocks": 3, "status": "Not Started", "notes": "Masonry units, stone setting, and structural blockwork."}, {"uid": "CRED-TRD-013", "sector": "TRADE", "category": "Voluntary / Non-Red Seal", "code": "427A", "name": "Powerline Technician", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 8000, "blocks": 4, "status": "Not Started", "notes": "High-voltage transmission and distribution line work."}, {"uid": "CRED-TRD-014", "sector": "TRADE", "category": "Voluntary / Non-Red Seal", "code": "630A", "name": "Heavy Duty Equipment Technician", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 8000, "blocks": 3, "status": "Not Started", "notes": "Earthmoving, mining, and construction heavy equipment service."}, {"uid": "CRED-TRD-015", "sector": "TRADE", "category": "Voluntary / Non-Red Seal", "code": "408A", "name": "Construction Boilermaker", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 7200, "blocks": 3, "status": "Not Started", "notes": "Boilers, pressure vessels, and heavy plate fabrication."}, {"uid": "CRED-TRD-016", "sector": "TRADE", "category": "Voluntary / Non-Red Seal", "code": "415A", "name": "Ironworker \u2014 Structural and Ornamental", "authority": "Skilled Trades Ontario / Red Seal", "otj_hours": 6000, "blocks": 3, "status": "Not Started", "notes": "Structural steel erection, rigging, and architectural metal."}, {"uid": "CRED-TRD-017", "sector": "TRADE", "category": "TSSA Fuels", "code": "G.3", "name": "Gas Technician 3", "authority": "TSSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Entry fuel technician certification for natural gas and propane appliances."}, {"uid": "CRED-TRD-018", "sector": "TRADE", "category": "TSSA Fuels", "code": "G.2", "name": "Gas Technician 2", "authority": "TSSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Installation, service, and maintenance up to 400,000 BTU/hr."}, {"uid": "CRED-TRD-019", "sector": "TRADE", "category": "TSSA Fuels", "code": "G.1", "name": "Gas Technician 1", "authority": "TSSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "High-capacity commercial/industrial fuel systems over 400,000 BTU/hr."}, {"uid": "CRED-TRD-020", "sector": "TRADE", "category": "TSSA Fuels", "code": "OBT", "name": "Oil Burner Technician (OBT-1 / OBT-2 / OBT-3)", "authority": "TSSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Fuel oil heating equipment installation and servicing."}, {"uid": "CRED-TRD-021", "sector": "TRADE", "category": "CWB Welding", "code": "W47.1", "name": "CWB Fusion Welding of Steel \u2014 All Positions", "authority": "CWB Group", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "CSA W47.1 qualification across flat, horizontal, vertical, and overhead."}, {"uid": "CRED-TRD-022", "sector": "TRADE", "category": "CWB Welding", "code": "W47.2", "name": "CWB Fusion Welding of Aluminum", "authority": "CWB Group", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Aluminum structural welding qualification under CSA W47.2."}, {"uid": "CRED-TRD-023", "sector": "TRADE", "category": "CWB Welding", "code": "W186", "name": "CWB Welding of Reinforcing Bars (Rebar)", "authority": "CWB Group", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Concrete reinforcement welding qualification."}, {"uid": "CRED-TRD-024", "sector": "TRADE", "category": "Apprenticeship Hours & Blocks", "code": "BLK-1-2", "name": "Apprenticeship Block 1 & Block 2 Trade School Completion", "authority": "Skilled Trades Ontario", "otj_hours": 4000, "blocks": 2, "status": "Not Started", "notes": "Foundational trade school blocks and early workplace hours."}, {"uid": "CRED-TRD-025", "sector": "TRADE", "category": "Apprenticeship Hours & Blocks", "code": "BLK-3-C", "name": "Final Block & Certificate of Qualification (C of Q)", "authority": "Skilled Trades Ontario", "otj_hours": 8000, "blocks": 3, "status": "Not Started", "notes": "Completion of required hours and provincial/Red Seal exam."}, {"uid": "CRED-IND-001", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "A+", "name": "CompTIA A+ Core 1 & Core 2", "authority": "CompTIA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Hardware, networking, operating systems, mobile, and troubleshooting."}, {"uid": "CRED-IND-002", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "NET+", "name": "CompTIA Network+", "authority": "CompTIA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Network architecture, routing/switching, wireless, and diagnostics."}, {"uid": "CRED-IND-003", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "SEC+", "name": "CompTIA Security+", "authority": "CompTIA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Threats, vulnerabilities, IAM, cryptography, and security operations."}, {"uid": "CRED-IND-004", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "LINUX+", "name": "CompTIA Linux+", "authority": "CompTIA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Linux administration, shell scripting, containers, and system security."}, {"uid": "CRED-IND-005", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "CLOUD+", "name": "CompTIA Cloud+", "authority": "CompTIA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Cloud infrastructure deployment, security, operations, and migration."}, {"uid": "CRED-IND-006", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "CCNA", "name": "Cisco Certified Network Associate (CCNA)", "authority": "Cisco", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "IP connectivity, IP services, network access, security fundamentals, and automation."}, {"uid": "CRED-IND-007", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "MOS", "name": "Microsoft Office Specialist (MOS)", "authority": "Microsoft / Certiport", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Excel, Word, PowerPoint, and Outlook productivity certification."}, {"uid": "CRED-IND-008", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "AZ-900", "name": "Microsoft Azure Fundamentals (AZ-900)", "authority": "Microsoft", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Cloud concepts, Azure core services, governance, and pricing."}, {"uid": "CRED-IND-009", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "AZ-104", "name": "Microsoft Azure Administrator (AZ-104)", "authority": "Microsoft", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Azure identities, storage, compute, virtual networks, and monitoring."}, {"uid": "CRED-IND-010", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "GCP-ACE", "name": "Google Cloud Associate Cloud Engineer", "authority": "Google Cloud", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Deploying, monitoring, and maintaining projects on Google Cloud."}, {"uid": "CRED-IND-011", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "G-IT", "name": "Google IT Support Professional Certificate", "authority": "Google / Coursera", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Foundational IT support, networking, OS, and system administration."}, {"uid": "CRED-IND-012", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "META-FE", "name": "Meta Front-End Developer Certificate", "authority": "Meta", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "HTML, CSS, JavaScript, React, and responsive UI development."}, {"uid": "CRED-IND-013", "sector": "INDUSTRY", "category": "Project Management", "code": "CAPM", "name": "Certified Associate in Project Management (CAPM)", "authority": "PMI", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Predictive, agile, and business analysis project fundamentals."}, {"uid": "CRED-IND-014", "sector": "INDUSTRY", "category": "Project Management", "code": "PMP", "name": "Project Management Professional (PMP)", "authority": "PMI", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "People, process, and business environment leadership across methodologies."}, {"uid": "CRED-IND-015", "sector": "INDUSTRY", "category": "Project Management", "code": "GSC", "name": "Gold Seal Certificate (GSC)", "authority": "Canadian Construction Association", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Construction management credential for superintendents, estimators, and PMs."}, {"uid": "CRED-IND-016", "sector": "INDUSTRY", "category": "Project Management", "code": "LSS-GB", "name": "Lean Six Sigma Green Belt", "authority": "ASQ / IASSC", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "DMAIC process improvement, waste reduction, and statistical analysis."}, {"uid": "CRED-IND-017", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "AZ", "name": "Ontario Class AZ Commercial Driver Licence", "authority": "MTO Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Tractor-trailer combinations over 11,000 kg with air brakes."}, {"uid": "CRED-IND-018", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "DZ", "name": "Ontario Class DZ Commercial Driver Licence", "authority": "MTO Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Straight trucks or buses over 11,000 kg with air brake endorsement."}, {"uid": "CRED-IND-019", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "Z-END", "name": "Air Brake (Z) Endorsement", "authority": "MTO Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Air brake system operation and pre-trip inspection endorsement."}, {"uid": "CRED-IND-020", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "CRN-M", "name": "Mobile Crane Operator (0\u20139 Tonnes / Boom Truck)", "authority": "Skilled Trades Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Mobile crane and boom truck rigging, load charts, and hoisting."}, {"uid": "CRED-IND-021", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "CRN-T", "name": "Tower Crane Operator", "authority": "Skilled Trades Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Tower crane signaling, wind limits, and high-rise lift operations."}, {"uid": "CRED-IND-022", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "EXC-HOE", "name": "Excavator & Backhoe Loader Operator", "authority": "Site / Employer Qualification", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Trenching, grading, lifting, and utility clearance operations."}, {"uid": "CRED-IND-023", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "DOZ-LDR", "name": "Bulldozer & Wheel Loader Operator", "authority": "Site / Employer Qualification", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Bulk earthmoving, stockpiling, and site grading."}, {"uid": "CRED-IND-024", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "FLT-MEWP", "name": "Forklift (Counterbalance) & Elevating Work Platform (MEWP)", "authority": "CSA B335 / B354", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Lift truck and scissor/boom lift operator training."}, {"uid": "CRED-IND-025", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "RPAS-B", "name": "RPAS Pilot Certificate \u2014 Basic Operations", "authority": "Transport Canada", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Drone operations in uncontrolled airspace outside controlled zones."}, {"uid": "CRED-IND-026", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "RPAS-A", "name": "RPAS Pilot Certificate \u2014 Advanced Operations", "authority": "Transport Canada", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Controlled airspace, near people, and flight review qualification."}, {"uid": "CRED-IND-027", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "PPL", "name": "Private Pilot Licence (PPL)", "authority": "Transport Canada", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Day VFR private aircraft operation."}, {"uid": "CRED-IND-028", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "CPL", "name": "Commercial Pilot Licence (CPL)", "authority": "Transport Canada", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Commercial flight operations and instrument/multi ratings path."}, {"uid": "CRED-IND-029", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "SVOP", "name": "Small Vessel Operator Proficiency (SVOP)", "authority": "Transport Canada Marine Safety", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Commercial small vessel navigation and safety."}, {"uid": "CRED-IND-030", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "MED-A1", "name": "Marine Emergency Duties (MED A1)", "authority": "Transport Canada Marine Safety", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Shipboard safety, firefighting, and survival on small vessels."}, {"uid": "CRED-IND-031", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "AWS-CCP", "name": "AWS Certified Cloud Practitioner", "authority": "Amazon Web Services", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "AWS cloud architecture, security, billing, and support."}, {"uid": "CRED-IND-032", "sector": "INDUSTRY", "category": "IT & Cloud", "code": "AWS-SAA", "name": "AWS Certified Solutions Architect \u2014 Associate", "authority": "Amazon Web Services", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Resilient, high-performing, secure, and cost-optimized AWS architectures."}, {"uid": "CRED-IND-033", "sector": "INDUSTRY", "category": "Project Management", "code": "CSM", "name": "Certified ScrumMaster (CSM)", "authority": "Scrum Alliance", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Scrum framework facilitation, sprint planning, and team coaching."}, {"uid": "CRED-IND-034", "sector": "INDUSTRY", "category": "Heavy Equipment & Transport", "code": "RIG-SIG", "name": "Crane Rigging & Signaling Qualification", "authority": "IHSA / Industry Standard", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Hitches, sling angles, load estimation, and hand/radio signals."}, {"uid": "CRED-IND-035", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "ROC-A", "name": "Restricted Operator Certificate \u2014 Aeronautical (ROC-A)", "authority": "Innovation, Science and Economic Development Canada", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Aviation radio procedures and phraseology."}, {"uid": "CRED-IND-036", "sector": "INDUSTRY", "category": "Aviation / Marine / Drone", "code": "PCOC", "name": "Pleasure Craft Operator Card (PCOC)", "authority": "Transport Canada", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Recreational motorized boat operator competency."}, {"uid": "CRED-PUB-001", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "MOL-4S", "name": "Ontario Worker Health & Safety Awareness (4-Step)", "authority": "MLITSD Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "OHSA mandatory baseline awareness for workers."}, {"uid": "CRED-PUB-002", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "MOL-5S", "name": "Ontario Supervisor Health & Safety Awareness (5-Step)", "authority": "MLITSD Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "OHSA mandatory supervisor hazard & duty compliance."}, {"uid": "CRED-PUB-003", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "WHMIS-2015", "name": "WHMIS (GHS) Hazardous Materials Training", "authority": "Health Canada / MLITSD", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Labels, SDS, hazard classes, and safe handling of hazardous products."}, {"uid": "CRED-PUB-004", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "WAH", "name": "Working at Heights (CPO Approved)", "authority": "MLITSD / CPO", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Fall protection equipment, anchor points, and rescue planning."}, {"uid": "CRED-PUB-005", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "JHSC-1", "name": "Joint Health & Safety Committee (JHSC) Part 1", "authority": "MLITSD / CPO", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Foundational legal duties, hazard recognition, and inspections."}, {"uid": "CRED-PUB-006", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "JHSC-2", "name": "Joint Health & Safety Committee (JHSC) Part 2", "authority": "MLITSD / CPO", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Sector-specific workplace hazards, investigations, and controls."}, {"uid": "CRED-PUB-007", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "IHSA-HV", "name": "High Voltage Safety Awareness", "authority": "IHSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Limit of approach distances and overhead/underground powerline hazards."}, {"uid": "CRED-PUB-008", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "IHSA-CS", "name": "Confined Space Entry & Rescue Awareness", "authority": "IHSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Atmospheric testing, ventilation, permits, and entry controls."}, {"uid": "CRED-PUB-009", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "IHSA-EXC", "name": "Trenching & Excavation Safety", "authority": "IHSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Soil types, shoring/sloping, locates, and cave-in prevention."}, {"uid": "CRED-PUB-010", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "LOTO", "name": "Lockout / Tagout (LOTO) Hazardous Energy Control", "authority": "OHSA / CSA Z460", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "De-energization, isolation devices, verification, and group lockout."}, {"uid": "CRED-PUB-011", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "FA-CPR", "name": "Standard First Aid & CPR / AED", "authority": "WSIB Approved Provider", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Emergency response, wound care, CPR, and AED operation."}, {"uid": "CRED-PUB-012", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "ODP", "name": "Ontario Traffic Manual Book 7 (Temporary Work Zones)", "authority": "MTO Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Roadway traffic control, signage layouts, and work zone protection."}, {"uid": "CRED-PUB-013", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "OTM-B7", "name": "Traffic Control Person (TCP) / Flagperson", "authority": "IHSA / MTO Standards", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Safe traffic direction, signaling, and work zone visibility."}, {"uid": "CRED-PUB-014", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "WSN-SAW", "name": "Chainsaw Safety & Tree Felling Operations", "authority": "Workplace Safety North", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Chainsaw kickback prevention, bucking, and directional felling."}, {"uid": "CRED-PUB-015", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "CNSC-RP", "name": "Radiation Protection & Nuclear Site Access", "authority": "CNSC / Nuclear Operator", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "ALARA principles, dosimetry, and nuclear facility security/safety."}, {"uid": "CRED-PUB-016", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "ASB-A", "name": "Asbestos Abatement Worker (Type 1 / Type 2 / Type 3)", "authority": "MLITSD / Training Provider", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Containment, HEPA filtration, PPE, and asbestos handling controls."}, {"uid": "CRED-PUB-017", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "PROP-H", "name": "Propane Handling, Storage & Cylinder Exchange", "authority": "TSSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Safe cylinder handling, transfer, and propane safety compliance."}, {"uid": "CRED-PUB-018", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "VIOL-HR", "name": "Workplace Violence & Harassment Policy Compliance", "authority": "MLITSD / Employer", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "OHSA Bill 168 / Bill 132 workplace violence and harassment awareness."}, {"uid": "CRED-PUB-019", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "SCAFF-S", "name": "Scaffold Erection, Inspection & Use", "authority": "IHSA / O. Reg. 213/91", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Supported and suspended scaffold safety rules."}, {"uid": "CRED-PUB-020", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "TDG", "name": "Transportation of Dangerous Goods (TDG)", "authority": "Transport Canada", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Classification, placards, shipping documents, and emergency response."}, {"uid": "CRED-PUB-021", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "SILICA", "name": "Crystalline Silica Control in Construction", "authority": "MLITSD / IHSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Wet methods, dust extraction, and respirator protection."}, {"uid": "CRED-PUB-022", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "FIRE-W", "name": "Fire Watch & Hot Work Safety", "authority": "NFPA 51B / Site Standard", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Welding, cutting, and grinding fire prevention and monitoring."}, {"uid": "CRED-PUB-023", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "E-COLLAR", "name": "Electrical Safety in the Workplace (CSA Z462)", "authority": "CSA Group / ESA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Arc flash boundaries, PPE categories, and safe work practices."}, {"uid": "CRED-PUB-024", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "SMART-S", "name": "Smart Serve Responsible Alcohol Service", "authority": "AGCO Ontario", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Responsible service and alcohol regulations in Ontario."}, {"uid": "CRED-PUB-025", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "LEAD-AW", "name": "Lead Awareness on Construction Projects", "authority": "IHSA / MLITSD", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Lead exposure controls, hygiene, and respiratory protection."}, {"uid": "CRED-PUB-026", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "MOLD-AW", "name": "Mould Remediation & Moisture Control Awareness", "authority": "CCA / Industry Standard", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Mould hazard identification, containment, and air filtration."}, {"uid": "CRED-PUB-027", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "CWB-INS", "name": "Welding Inspector Level 1 / Level 2 / Level 3", "authority": "CWB Group", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Weld inspection, NDE fundamentals, and code compliance."}, {"uid": "CRED-PUB-028", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "ESA-ACP", "name": "ESA Authorized Contractor / Licensed Electrical Contractor", "authority": "Electrical Safety Authority", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Ontario electrical contracting and Master Electrician oversight."}, {"uid": "CRED-PUB-029", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "RESP-FIT", "name": "Qualitative / Quantitative Respirator Fit Testing", "authority": "CSA Z94.4", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Tight-fitting respirator seal verification."}, {"uid": "CRED-PUB-030", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "NOISE-AW", "name": "Occupational Noise & Hearing Conservation", "authority": "MLITSD / OHSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "85 dBA exposure limits, engineering controls, and hearing protection."}, {"uid": "CRED-PUB-031", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "TSSA-ELEV", "name": "Elevating Devices Mechanic (EDM-A / EDM-B)", "authority": "TSSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Elevators, escalators, and elevating devices licensing."}, {"uid": "CRED-PUB-032", "sector": "PUBLIC", "category": "Regulatory Authority", "code": "TSSA-OP", "name": "Operating Engineer (4th / 3rd / 2nd / 1st Class)", "authority": "TSSA", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Boilers, pressure vessels, and power/refrigeration plants."}, {"uid": "CRED-PUB-033", "sector": "PUBLIC", "category": "Site & Hazard Tickets", "code": "CRN-INS", "name": "Crane & Hoisting Equipment Annual Inspection", "authority": "CSA Z150 / B167", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Inspection readiness and crane safety compliance."}, {"uid": "CRED-PUB-034", "sector": "PUBLIC", "category": "Mandatory Statutory (O. Reg.)", "code": "ERG-AW", "name": "Workplace Ergonomics & Manual Materials Handling", "authority": "MLITSD / WSIB", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Musculoskeletal injury prevention and workstation/lifting posture."}, {"uid": "CRED-ACD-001", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-MECH", "name": "Mechanical Engineering Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-year diploma aligned with C.Tech. pathway."}, {"uid": "CRED-ACD-002", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-MTECH", "name": "Mechanical Engineering Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-year advanced diploma aligned with C.E.T. pathway."}, {"uid": "CRED-ACD-003", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-ELEC", "name": "Electrical Engineering Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-year electrical technician diploma aligned with C.Tech."}, {"uid": "CRED-ACD-004", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-ETECH", "name": "Electrical Engineering Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-year electrical technology diploma aligned with C.E.T."}, {"uid": "CRED-ACD-005", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-CIV", "name": "Civil Engineering Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-year civil/infrastructure technician diploma."}, {"uid": "CRED-ACD-006", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-CTECH", "name": "Civil Engineering Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-year civil engineering technology advanced diploma."}, {"uid": "CRED-ACD-007", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-COMP", "name": "Computer Systems Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Systems administration, networking, and IT support diploma."}, {"uid": "CRED-ACD-008", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-CTECH-IT", "name": "Computer Systems Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Enterprise networks, cloud, and systems architecture diploma."}, {"uid": "CRED-ACD-009", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-TRD", "name": "Pre-Trades / Construction Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-year certificate introducing trades fundamentals and shop skills."}, {"uid": "CRED-ACD-010", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-WELD", "name": "Welding & Fabrication Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-year welding and metal fabrication certificate."}, {"uid": "CRED-ACD-011", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-CNC", "name": "CNC / Precision Machining Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-year machining, metrology, and CNC fundamentals certificate."}, {"uid": "CRED-ACD-012", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-HVAC", "name": "Heating, Refrigeration & Air Conditioning Techniques", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-year HVAC-R techniques certificate."}, {"uid": "CRED-ACD-013", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-AUTO", "name": "Automotive Service Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-year automotive service diploma."}, {"uid": "CRED-ACD-014", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-AUTO-T", "name": "Automotive Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-year automotive engineering technology diploma."}, {"uid": "CRED-ACD-015", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-ARCH", "name": "Architectural Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-year CAD, building codes, and architectural drafting diploma."}, {"uid": "CRED-ACD-016", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-ARCH-T", "name": "Architectural Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-year architectural design and building systems diploma."}, {"uid": "CRED-ACD-017", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-6.0001", "name": "MIT OCW \u2014 Introduction to Computer Science and Programming in Python", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Computational thinking and Python programming coursework."}, {"uid": "CRED-ACD-018", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-18.01", "name": "MIT OCW \u2014 Single Variable Calculus", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Differentiation, integration, and series fundamentals."}, {"uid": "CRED-ACD-019", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-8.01", "name": "MIT OCW \u2014 Classical Mechanics", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Kinematics, Newton's laws, energy, momentum, and rotational motion."}, {"uid": "CRED-ACD-020", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-6.002", "name": "MIT OCW \u2014 Circuits and Electronics", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Lumped circuit abstraction, op-amps, MOSFETS, and digital gates."}, {"uid": "CRED-ACD-021", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-2.001", "name": "MIT OCW \u2014 Mechanics and Materials I", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Stress, strain, torsion, bending, and structural deflection."}, {"uid": "CRED-ACD-022", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-15.071", "name": "MIT OCW \u2014 The Analytics Edge", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Data analytics, regression, classification, and optimization."}, {"uid": "CRED-ACD-023", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-T192", "name": "OpenLearn \u2014 Engineering: Origins, Methods, Context", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Engineering design, systems, and real-world constraints."}, {"uid": "CRED-ACD-024", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-PM", "name": "OpenLearn \u2014 Project Management Foundations", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Scope, schedules, risk, and stakeholder management."}, {"uid": "CRED-ACD-025", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-MATH", "name": "OpenLearn \u2014 Mathematics for Science and Technology", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Applied algebra, trigonometry, and quantitative problem solving."}, {"uid": "CRED-ACD-026", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-FIN", "name": "OpenLearn \u2014 Personal Finance & Business Basics", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Budgeting, cash flow, and foundational financial literacy."}, {"uid": "CRED-ACD-027", "sector": "ACADEMIC", "category": "Open Course", "code": "HU-CS50", "name": "Harvard \u2014 CS50's Introduction to Computer Science", "authority": "Harvard University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "C, Python, SQL, algorithms, data structures, and web basics."}, {"uid": "CRED-ACD-028", "sector": "ACADEMIC", "category": "Open Course", "code": "HU-CS50W", "name": "Harvard \u2014 CS50's Web Programming with Python and JavaScript", "authority": "Harvard University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Django, SQL, APIs, testing, and CI/CD web engineering."}, {"uid": "CRED-ACD-029", "sector": "ACADEMIC", "category": "Open Course", "code": "YU-ECON", "name": "Yale \u2014 Financial Markets", "authority": "Yale University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Risk management, insurance, banking, and capital markets."}, {"uid": "CRED-ACD-030", "sector": "ACADEMIC", "category": "Open Course", "code": "SU-CS229", "name": "Stanford \u2014 Machine Learning Foundations", "authority": "Stanford University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Supervised/unsupervised learning, regularization, and model evaluation."}, {"uid": "CRED-ACD-031", "sector": "ACADEMIC", "category": "Open Course", "code": "KHAN-CALC", "name": "Khan Academy \u2014 AP / College Calculus & Linear Algebra", "authority": "Khan Academy", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Interactive practice problems for calculus and vectors/matrices."}, {"uid": "CRED-ACD-032", "sector": "ACADEMIC", "category": "Open Course", "code": "KHAN-STAT", "name": "Khan Academy \u2014 Statistics & Probability", "authority": "Khan Academy", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Distributions, inference, hypothesis testing, and probability."}, {"uid": "CRED-ACD-033", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-CHEM", "name": "Chemical Engineering Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-Yr Advanced Technology (OACETT C.E.T.) module tracked under Ontario Colleges / OACETT."}, {"uid": "CRED-ACD-034", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-ENV", "name": "Environmental Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-Yr Technician (OACETT C.Tech.) module tracked under Ontario Colleges / OACETT."}, {"uid": "CRED-ACD-035", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-ENV-T", "name": "Environmental Technology \u2014 Advanced Diploma", "authority": "Ontario Colleges / OACETT", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-Yr Advanced Technology (OACETT C.E.T.) module tracked under Ontario Colleges / OACETT."}, {"uid": "CRED-ACD-036", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-BIO", "name": "Biotechnology Technician \u2014 Ontario College Diploma", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-Yr Technician (OACETT C.Tech.) module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-037", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-BUS", "name": "Business Administration \u2014 Ontario College Diploma", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-Yr Technician (OACETT C.Tech.) module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-038", "sector": "ACADEMIC", "category": "3-Yr Advanced Technology (OACETT C.E.T.)", "code": "OC-TECH-BUS-A", "name": "Business Administration \u2014 Advanced Diploma", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "3-Yr Advanced Technology (OACETT C.E.T.) module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-039", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-ACC", "name": "Business Accounting \u2014 Ontario College Diploma", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-Yr Technician (OACETT C.Tech.) module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-040", "sector": "ACADEMIC", "category": "2-Yr Technician (OACETT C.Tech.)", "code": "OC-TECH-SUP", "name": "Supply Chain & Operations \u2014 Ontario College Diploma", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "2-Yr Technician (OACETT C.Tech.) module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-041", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-ELEC", "name": "Electrical Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-Yr Technique module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-042", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-PLB", "name": "Plumbing Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-Yr Technique module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-043", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-CARP", "name": "Carpentry & Renovation Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-Yr Technique module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-044", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-AUTO", "name": "Automotive Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-Yr Technique module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-045", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-MASON", "name": "Masonry Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-Yr Technique module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-046", "sector": "ACADEMIC", "category": "1-Yr Technique", "code": "OC-CERT-IT", "name": "IT Support / Network Techniques \u2014 Ontario College Certificate", "authority": "Ontario Colleges", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "1-Yr Technique module tracked under Ontario Colleges."}, {"uid": "CRED-ACD-047", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-18.02", "name": "MIT OCW \u2014 Multivariable Calculus", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under MIT OpenCourseWare."}, {"uid": "CRED-ACD-048", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-18.06", "name": "MIT OCW \u2014 Linear Algebra", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under MIT OpenCourseWare."}, {"uid": "CRED-ACD-049", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-8.02", "name": "MIT OCW \u2014 Electricity and Magnetism", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under MIT OpenCourseWare."}, {"uid": "CRED-ACD-050", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-6.006", "name": "MIT OCW \u2014 Introduction to Algorithms", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under MIT OpenCourseWare."}, {"uid": "CRED-ACD-051", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-2.003", "name": "MIT OCW \u2014 Modeling and Simulation in Engineering", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under MIT OpenCourseWare."}, {"uid": "CRED-ACD-052", "sector": "ACADEMIC", "category": "Open Course", "code": "MIT-16.01", "name": "MIT OCW \u2014 Unified Engineering: Systems & Structures", "authority": "MIT OpenCourseWare", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under MIT OpenCourseWare."}, {"uid": "CRED-ACD-053", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-SUST", "name": "OpenLearn \u2014 Sustainability & Energy Systems", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under The Open University (OpenLearn)."}, {"uid": "CRED-ACD-054", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-DATA", "name": "OpenLearn \u2014 Data & Digital Skills Foundations", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under The Open University (OpenLearn)."}, {"uid": "CRED-ACD-055", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-LEAD", "name": "OpenLearn \u2014 Leadership & Team Management", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under The Open University (OpenLearn)."}, {"uid": "CRED-ACD-056", "sector": "ACADEMIC", "category": "Open Course", "code": "OU-COMM", "name": "OpenLearn \u2014 Technical & Workplace Communication", "authority": "The Open University (OpenLearn)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under The Open University (OpenLearn)."}, {"uid": "CRED-ACD-057", "sector": "ACADEMIC", "category": "Open Course", "code": "HU-CS50P", "name": "Harvard \u2014 CS50's Introduction to Programming with Python", "authority": "Harvard University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Harvard University."}, {"uid": "CRED-ACD-058", "sector": "ACADEMIC", "category": "Open Course", "code": "HU-CS50SQL", "name": "Harvard \u2014 CS50's Introduction to Databases with SQL", "authority": "Harvard University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Harvard University."}, {"uid": "CRED-ACD-059", "sector": "ACADEMIC", "category": "Open Course", "code": "YU-PSYCH", "name": "Yale \u2014 Introduction to Psychology", "authority": "Yale University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Yale University."}, {"uid": "CRED-ACD-060", "sector": "ACADEMIC", "category": "Open Course", "code": "SU-CS106A", "name": "Stanford \u2014 Programming Methodology", "authority": "Stanford University", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Stanford University."}, {"uid": "CRED-ACD-061", "sector": "ACADEMIC", "category": "Open Course", "code": "KHAN-PHYS", "name": "Khan Academy \u2014 Physics (Mechanics & Electromagnetism)", "authority": "Khan Academy", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Khan Academy."}, {"uid": "CRED-ACD-062", "sector": "ACADEMIC", "category": "Open Course", "code": "KHAN-CHEM", "name": "Khan Academy \u2014 Chemistry Foundations", "authority": "Khan Academy", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Khan Academy."}, {"uid": "CRED-ACD-063", "sector": "ACADEMIC", "category": "Open Course", "code": "KHAN-ECON", "name": "Khan Academy \u2014 Micro & Macroeconomics", "authority": "Khan Academy", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Khan Academy."}, {"uid": "CRED-ACD-064", "sector": "ACADEMIC", "category": "Open Course", "code": "KHAN-COMP", "name": "Khan Academy \u2014 Computer Science & SQL", "authority": "Khan Academy", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Khan Academy."}, {"uid": "CRED-ACD-065", "sector": "ACADEMIC", "category": "Open Course", "code": "KHAN-ALG", "name": "Khan Academy \u2014 Algebra 1, 2 & Trigonometry", "authority": "Khan Academy", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Open Course module tracked under Khan Academy."}, {"uid": "CRED-FRC-001", "sector": "FORCES", "category": "Qualification Level (BMQ, DP1, DP2/QL5)", "code": "BMQ", "name": "Basic Military Qualification (BMQ)", "authority": "Canadian Armed Forces (CAF)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Foundational CAF recruit training, drill, weapons safety, and field skills."}, {"uid": "CRED-FRC-002", "sector": "FORCES", "category": "Qualification Level (BMQ, DP1, DP2/QL5)", "code": "BMQ-L / SQ", "name": "Basic Military Qualification \u2014 Land / Soldier Qualification", "authority": "Canadian Armed Forces (CAF)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Army field craft, navigation, and tactical soldier fundamentals."}, {"uid": "CRED-FRC-003", "sector": "FORCES", "category": "Qualification Level (BMQ, DP1, DP2/QL5)", "code": "DP1 / QL3", "name": "Development Period 1 (DP1 / QL3) Trade Qualification", "authority": "Canadian Armed Forces (CAF)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Initial occupation/trade training for NCM or Officer MOSID."}, {"uid": "CRED-FRC-004", "sector": "FORCES", "category": "Qualification Level (BMQ, DP1, DP2/QL5)", "code": "DP2 / QL5", "name": "Development Period 2 (DP2 / QL5) Journeyman Qualification", "authority": "Canadian Armed Forces (CAF)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Advanced trade qualification and operational proficiency."}, {"uid": "CRED-FRC-005", "sector": "FORCES", "category": "Civilian Trade Equivalency (TEA)", "code": "MOSID-TEA", "name": "CAF MOSID to Civilian Trade Equivalency Assessment (TEA)", "authority": "DND / Provincial Apprenticeship Boards", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Mapping military trade training & service hours toward Red Seal / C of Q."}, {"uid": "CRED-FRC-006", "sector": "FORCES", "category": "Element (Army, RCAF, RCN)", "code": "MPRR-MAP", "name": "Military Personnel Record Resume (MPRR) Credential Mapping", "authority": "Canadian Armed Forces (CAF)", "otj_hours": 0, "blocks": 0, "status": "Not Started", "notes": "Documenting CAF courses, qualifications, and employment history for civilian credit."}];
+    const I18N = {
+      en: {
+        brandTitle: 'POCKET CREDIT', brandSubtitle: 'Manage Credentials Online',
+        signedOut: 'Signed Out', signIn: 'Sign in', signOut: 'Sign Out', welcome: 'Welcome',
+        searchPlaceholder: 'Search library entries, codes, providers...',
+        allCategories: 'All Topics',
+        statusNotStarted: 'Not Started', statusInProgress: 'In Progress', statusCompleted: 'Completed', statusRenewalDue: 'Renewal Due',
+        backToCategories: 'Back to Categories', backToHome: 'Back to Home',
+        coachHeading: 'Free AI Career Coach', backFromCoach: 'Back to Home', copyPromptBtn: 'Copy Prompt', copiedPromptMsg: 'Prompt copied to clipboard.',
+        coachSummaryTitle: 'Profile & Credentials Context',
+        coachSummaryDesc: 'Uses your current profile state, completed credentials, and saved entries to guide your next career, trade, or study steps.',
+        coachLblProfile: 'Profile', coachLblCreds: 'Tracked Credentials',
+        coachCredsStat: (comp, saved) => `${comp} Completed · ${saved} Saved`,
+        coachPromptLabel: 'Career Coach Prompt (From Your Profile & Credentials)',
+        openGemini: 'Open Gemini (Free)', openChatGpt: 'Open ChatGPT (Free)', openCopilot: 'Open Copilot (Free)',
+        profileHeading: 'My Profile & Library', lblCompletedCreds: 'Completed', lblSavedCreds: 'Saved', savedCredsHeading: 'Saved Entries',
+        settingsHeading: 'Account & App Settings', appearanceSectionTitle: 'Appearance & Accessibility',
+        lblTheme: 'Theme', descTheme: 'Switch between dark, light, or system color mode.',
+        themeDark: 'Dark', themeLight: 'Light', themeSystem: 'System',
+        lblTextSize: 'Text Size', descTextSize: 'Adjust base text scale.',
+        lblReduceMotion: 'Reduce Motion', descReduceMotion: 'Minimize animations and transitions.',
+        lblHighContrast: 'High-Contrast Focus', descHighContrast: 'Strengthen borders and focus outlines.',
+        accountSectionTitle: 'Account Status', signedOutAccountInfo: 'Signed out.', signedInAccountInfo: (id) => `Signed in as ${id}.`,
+        localDataSectionTitle: 'Local Data', localDataDesc: 'Clear saved progress stored in this browser.', clearLocalBtn: 'Clear Local Progress', localClearedMsg: 'Local progress cleared.',
+        requiredLabel: 'Reference Items', statusLabel: 'Status', saveBtn: 'Save to Library', removeBtn: 'Remove',
+        savedLocalMsg: 'Saved',
+        showingBanner: (count, label) => `Showing ${count} library entries (${label})`,
+        noMatchingCreds: 'No matching library entries found.',
+        emptyProfileMsg: 'No saved library entries yet. Pick a category or search on Home and click <strong>Save to Library</strong>.',
+        types: {
+          RED_SEAL: { label: 'RED SEAL', desc: 'Skilled trade certifications, trade school blocks, and apprenticeship hours.' },
+          FORCES: { label: 'FORCES', desc: 'Military service qualifications, trade training, and equivalency records.' },
+          ACADEMIC: { label: 'ACADEMIC', desc: 'Certificates, diplomas, and open university coursework tracks.' },
+          PROFESSIONAL: { label: 'PRO', desc: 'Industry certifications, commercial licences, and operational credentials.' },
+          LITERACY: { label: 'LITERACY', desc: 'Safety compliance, workplace rights, numeracy, and digital readiness.' }
+        }
+      },
+      fr: {
+        brandTitle: 'POCKET CREDIT', brandSubtitle: 'Gérer vos accréditations en ligne',
+        signedOut: 'Déconnecté', signIn: 'Connexion', signOut: 'Déconnexion', welcome: 'Bienvenue',
+        searchPlaceholder: 'Rechercher fiches, codes, organismes...',
+        allCategories: 'Tous les thèmes',
+        statusNotStarted: 'Non commencé', statusInProgress: 'En cours', statusCompleted: 'Terminé', statusRenewalDue: 'Renouvellement requis',
+        backToCategories: 'Retour aux catégories', backToHome: "Retour à l'accueil",
+        coachHeading: 'Coach carrière IA gratuit', backFromCoach: "Retour à l'accueil", copyPromptBtn: 'Copier le prompt', copiedPromptMsg: 'Prompt copié dans le presse-papiers.',
+        coachSummaryTitle: 'Contexte du profil et des accréditations',
+        coachSummaryDesc: 'Utilise votre profil actuel, vos titres terminés et vos fiches enregistrées pour orienter vos prochaines étapes.',
+        coachLblProfile: 'Profil', coachLblCreds: 'Accréditations suivies',
+        coachCredsStat: (comp, saved) => `${comp} Terminées · ${saved} Enregistrées`,
+        coachPromptLabel: 'Prompt Coach Carrière (Profil et Accréditations)',
+        openGemini: 'Ouvrir Gemini (Gratuit)', openChatGpt: 'Ouvrir ChatGPT (Gratuit)', openCopilot: 'Ouvrir Copilot (Gratuit)',
+        profileHeading: 'Mon profil et ma bibliothèque', lblCompletedCreds: 'Terminées', lblSavedCreds: 'Enregistrées', savedCredsHeading: 'Fiches enregistrées',
+        settingsHeading: 'Paramètres du compte et de l’app', appearanceSectionTitle: 'Apparence et accessibilité',
+        lblTheme: 'Thème', descTheme: 'Choisir un mode sombre, clair ou système.',
+        themeDark: 'Sombre', themeLight: 'Clair', themeSystem: 'Système',
+        lblTextSize: 'Taille du texte', descTextSize: 'Ajuster la taille du texte.',
+        lblReduceMotion: 'Réduire les animations', descReduceMotion: 'Limiter les animations et transitions.',
+        lblHighContrast: 'Contraste et focus élevés', descHighContrast: 'Renforcer les bordures et contours de focus.',
+        accountSectionTitle: 'État du compte', signedOutAccountInfo: 'Déconnecté.', signedInAccountInfo: (id) => `Connecté en tant que ${id}.`,
+        localDataSectionTitle: 'Données locales', localDataDesc: 'Effacer la progression enregistrée dans ce navigateur.', clearLocalBtn: 'Effacer la progression locale', localClearedMsg: 'Progression locale effacée.',
+        requiredLabel: 'Points clés', statusLabel: 'Statut', saveBtn: 'Enregistrer', removeBtn: 'Retirer',
+        savedLocalMsg: 'Enregistré',
+        showingBanner: (count, label) => `${count} fiches affichées (${label})`,
+        noMatchingCreds: 'Aucune fiche correspondante.',
+        emptyProfileMsg: 'Aucune fiche enregistrée. Choisissez une catégorie ou recherchez sur Accueil et cliquez sur <strong>Enregistrer</strong>.',
+        types: {
+          RED_SEAL: { label: 'SCEAU ROUGE', desc: 'Certifications des métiers, blocs de formation et heures d’apprentissage.' },
+          FORCES: { label: 'FORCES', desc: 'Qualifications militaires, formation métier et dossiers d’équivalence.' },
+          ACADEMIC: { label: 'ACADÉMIQUE', desc: 'Certificats, diplômes et parcours de cours universitaires ouverts.' },
+          PROFESSIONAL: { label: 'PRO', desc: 'Certifications industrielles, permis commerciaux et titres opérationnels.' },
+          LITERACY: { label: 'LITTÉRATIE', desc: 'Conformité sécurité, droits au travail, numératie et préparation numérique.' }
+        }
+      }
+    };
 
-    const SECTORS = ['TRADE', 'INDUSTRY', 'PUBLIC', 'ACADEMIC', 'FORCES', 'ALL'];
-    let catalog = [...EMBEDDED_CATALOG];
-    let activeSector = 'TRADE';
+    const CREDENTIAL_TYPE_ICONS = {
+      RED_SEAL: `<svg class="cat-solid-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3a8 8 0 0 0-8 8v3h16v-3a8 8 0 0 0-8-8zm-1 2.1V9h2V5.1a6.01 6.01 0 0 1 4.9 5.9H6.1A6.01 6.01 0 0 1 11 5.1zM2 16h20v3H2v-3z"/></svg>`,
+      FORCES: `<svg class="cat-solid-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.1 5.2 4.7-1.6-1.4 5.3L21.5 12l-3.7 2.4 1.2 4.1-6.2-.8V22h-2v-4.3l-6.2.8 1.2-4.1L2.5 12l4.1-1.1-1.4-5.3 4.7 1.6L12 2z"/></svg>`,
+      ACADEMIC: `<svg class="cat-solid-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L1.5 8.5 12 14l10.5-5.5L12 3z"/><path d="M5 11.4v5.1c0 2 3.1 3.5 7 3.5s7-1.5 7-3.5v-5.1"/><path d="M22.5 8.5V15"/></svg>`,
+      PROFESSIONAL: `<svg class="cat-solid-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5l-1.2 3L15 16l-3 5-3-5 1.7-10.5-1.2-3z"/><path d="M10.7 5.5h2.6"/></svg>`,
+      LITERACY: `<svg class="cat-solid-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="2"/><line x1="8" y1="7.5" x2="16" y2="7.5"/><line x1="8" y1="11.5" x2="16" y2="11.5"/><line x1="8" y1="15.5" x2="13" y2="15.5"/></svg>`
+    };
+    const TYPE_KEYS = ['RED_SEAL', 'FORCES', 'ACADEMIC', 'PROFESSIONAL', 'LITERACY'];
+
+    const allLibraryEntries = TYPE_KEYS.flatMap((sector) =>
+      (TYPE_LIBRARIES[sector] || []).map((entry, idx) => ({
+        ...entry,
+        sector,
+        entryId: entry.uid || `${sector}-LIB-${idx + 1}`
+      }))
+    );
+
+    let selectedType = null;
+    let activeView = 'home';
     let currentUser = null;
     let userProgressMap = {};
+    let currentLang = 'en';
+    let prefs = { theme: 'dark', textScale: 'md', reduceMotion: false, highContrast: false };
 
-    const sectorTabsEl = document.getElementById('sectorTabs');
-    const searchInputEl = document.getElementById('searchInput');
-    const categoryFilterEl = document.getElementById('categoryFilter');
-    const statusFilterEl = document.getElementById('statusFilter');
-    const catalogGridEl = document.getElementById('catalogGrid');
-    const bannerEl = document.getElementById('dataSourceBanner');
-    const tradeCalcEl = document.getElementById('tradeCalculator');
-    const calcTargetHoursEl = document.getElementById('calcTargetHours');
-    const authStatusEl = document.getElementById('authStatus');
-    const googleLoginBtn = document.getElementById('googleLoginBtn');
-    const signOutBtn = document.getElementById('signOutBtn');
+    const t = () => I18N[currentLang] || I18N.en;
+    const getTypeMeta = (key) => {
+      const tr = t().types[key] || I18N.en.types[key];
+      return { key, label: tr.label, desc: tr.desc, icon: CREDENTIAL_TYPE_ICONS[key] || '' };
+    };
+    const isListingActive = () => Boolean(selectedType) || Boolean((document.getElementById('searchInput').value || '').trim());
 
-    function getItemProgress(item) {
-      const saved = userProgressMap[item.uid];
-      return {
-        status: saved?.status ?? item.status ?? 'Not Started',
-        otj_hours: saved?.otj_hours ?? item.otj_hours ?? 0,
-        blocks_completed: saved?.blocks_completed ?? item.blocks ?? 0
-      };
+    function applyPrefs() {
+      const mode = prefs.theme === 'system'
+        ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+        : prefs.theme;
+      document.documentElement.setAttribute('data-theme', mode);
+      document.documentElement.classList.remove('text-scale-sm', 'text-scale-md', 'text-scale-lg');
+      document.documentElement.classList.add(`text-scale-${prefs.textScale}`);
+      document.documentElement.classList.toggle('reduce-motion', Boolean(prefs.reduceMotion));
+      document.documentElement.classList.toggle('high-contrast', Boolean(prefs.highContrast));
+      localStorage.setItem('pocketcredit_prefs', JSON.stringify(prefs));
     }
 
-    function renderTabs() {
-      sectorTabsEl.innerHTML = '';
-      SECTORS.forEach((sec) => {
-        const count = sec === 'ALL'
-          ? catalog.length
-          : catalog.filter((c) => c.sector === sec).length;
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'tab-btn' + (sec === activeSector ? ' active' : '');
-        btn.innerHTML = `${sec} <span class="tab-count">${count}</span>`;
-        btn.addEventListener('click', () => {
-          activeSector = sec;
-          populateCategoryFilter();
-          renderTabs();
-          renderCatalog();
+    function updateNavIconStates() {
+      document.getElementById('profileIconBtn').classList.toggle('active', activeView === 'profile');
+      document.getElementById('settingsIconBtn').classList.toggle('active', activeView === 'settings');
+      document.getElementById('processorIconBtn').classList.toggle('active', activeView === 'coach');
+    }
+
+    function buildCareerCoachPrompt() {
+      const saved = getSavedEntries();
+      const completed = saved.filter((e) => getEntryProgress(e).status === 'Completed');
+      const activeTracked = saved.filter((e) => getEntryProgress(e).status !== 'Completed');
+      const profileLabel = currentUser ? (currentUser.email || currentUser.id) : t().signedOut;
+      const completedList = completed.length
+        ? completed.map((e) => `- ${e.title} [${getTypeMeta(e.sector).label}] (${getEntryProgress(e).status})`).join('\n')
+        : '- None marked Completed yet';
+      const savedList = activeTracked.length
+        ? activeTracked.map((e) => `- ${e.title} [${getTypeMeta(e.sector).label}] (${getEntryProgress(e).status})`).join('\n')
+        : (saved.length ? saved.map((e) => `- ${e.title} [${getTypeMeta(e.sector).label}] (${getEntryProgress(e).status})`).join('\n') : '- No saved credentials yet');
+
+      if (currentLang === 'fr') {
+        return [
+          "Agis comme un coach de carrière gratuit et pragmatique (métiers spécialisés, forces, études et certifications).",
+          `Profil utilisateur : ${profileLabel}`,
+          `Accréditations terminées (${completed.length}) :`,
+          completedList,
+          `Accréditations suivies / enregistrées (${saved.length}) :`,
+          savedList,
+          "Propose : 1) les prochaines étapes concrètes à partir de ces titres, 2) les lacunes ou prérequis à vérifier, et 3) un plan d'action sur 30-60-90 jours."
+        ].join('\n');
+      }
+
+      return [
+        "Act as a practical, free career coach across skilled trades, military pathways, academic tracks, professional licences, and workplace literacy.",
+        `User Profile: ${profileLabel}`,
+        `Completed Credentials (${completed.length}):`,
+        completedList,
+        `Saved / Tracked Credentials (${saved.length}):`,
+        savedList,
+        "Give me: 1) high-value career & credential next steps based on my profile and credentials, 2) prerequisites or equivalencies I should verify, and 3) a focused 30-60-90 day action plan."
+      ].join('\n');
+    }
+
+    function renderCareerCoach() {
+      updateProfileStats();
+      const tr = t();
+      const saved = getSavedEntries();
+      const completedCount = saved.filter((e) => getEntryProgress(e).status === 'Completed').length;
+      document.getElementById('coachProfileVal').textContent = currentUser ? (currentUser.email || currentUser.id) : tr.signedOut;
+      document.getElementById('coachCredsVal').textContent = tr.coachCredsStat(completedCount, saved.length);
+      const chipsEl = document.getElementById('coachCredChips');
+      chipsEl.innerHTML = '';
+      if (!saved.length) {
+        chipsEl.innerHTML = `<span class="coach-chip">${tr.emptyProfileMsg.replace(/<[^>]+>/g, '')}</span>`;
+      } else {
+        saved.forEach((e) => {
+          const st = getEntryProgress(e).status;
+          const chip = document.createElement('span');
+          chip.className = 'coach-chip';
+          chip.textContent = `${e.code || e.entryId} · ${st}`;
+          chipsEl.appendChild(chip);
         });
-        sectorTabsEl.appendChild(btn);
+      }
+      document.getElementById('coachPromptText').value = buildCareerCoachPrompt();
+    }
+
+    function setActiveView(viewName) {
+      activeView = viewName;
+      document.getElementById('homeView').classList.toggle('active', viewName === 'home');
+      document.getElementById('coachView').classList.toggle('active', viewName === 'coach');
+      document.getElementById('profileView').classList.toggle('active', viewName === 'profile');
+      document.getElementById('settingsView').classList.toggle('active', viewName === 'settings');
+      updateNavIconStates();
+      if (viewName === 'profile') renderProfile();
+      else if (viewName === 'coach') renderCareerCoach();
+      else if (viewName === 'home') syncListingState();
+    }
+
+    function getEntryProgress(entry) {
+      const saved = userProgressMap[entry.entryId];
+      return { status: saved?.status || 'Not Started', completed_reqs: Array.isArray(saved?.completed_reqs) ? saved.completed_reqs : [] };
+    }
+
+    function getSavedEntries() { return allLibraryEntries.filter((e) => Boolean(userProgressMap[e.entryId])); }
+
+    function updateProfileStats() {
+      const saved = getSavedEntries();
+      document.getElementById('profileNavCount').textContent = String(saved.length);
+      document.getElementById('profSavedCount').textContent = String(saved.length);
+      const completed = saved.filter((e) => getEntryProgress(e).status === 'Completed').length;
+      document.getElementById('profCompletedCount').textContent = String(completed);
+    }
+
+    function renderTypeTabs() {
+      const wrap = document.getElementById('typeTabs');
+      wrap.innerHTML = '';
+      TYPE_KEYS.forEach((key) => {
+        const meta = getTypeMeta(key);
+        const count = allLibraryEntries.filter((e) => e.sector === key && e.uid).length;
+        const isActive = selectedType === key;
+        const row = document.createElement('div');
+        row.setAttribute('role', 'tab');
+        row.setAttribute('tabindex', '0');
+        row.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        row.className = 'cat-group-row' + (isActive ? ' active' : '');
+        row.innerHTML = `
+          <span class="cat-group-icon">${meta.icon}</span>
+          <div class="cat-label-box">
+            <div class="cat-row-top">
+              <span class="cat-row-title">${meta.label}</span>
+              <span class="cat-row-count">[${count}]</span>
+            </div>
+            <div class="cat-row-desc">${meta.desc}</div>
+          </div>`;
+        const pick = () => {
+          selectedType = key;
+          populateCategoryFilter();
+          renderTypeTabs();
+          syncListingState();
+        };
+        row.addEventListener('click', pick);
+        row.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+        wrap.appendChild(row);
       });
     }
 
     function populateCategoryFilter() {
-      const scoped = activeSector === 'ALL'
-        ? catalog
-        : catalog.filter((c) => c.sector === activeSector);
-      const cats = [...new Set(scoped.map((c) => c.category).filter(Boolean))].sort();
-      categoryFilterEl.innerHTML = '<option value="ALL">All Sub-Categories</option>';
-      cats.forEach((cat) => {
-        const opt = document.createElement('option');
-        opt.value = cat;
-        opt.textContent = cat;
-        categoryFilterEl.appendChild(opt);
+      const catSel = document.getElementById('categoryFilter');
+      const scoped = selectedType ? allLibraryEntries.filter((e) => e.sector === selectedType) : allLibraryEntries;
+      const cats = [...new Set(scoped.map((e) => e.category).filter(Boolean))].sort();
+      catSel.innerHTML = `<option value="ALL">${t().allCategories}</option>`;
+      cats.forEach((c) => {
+        const o = document.createElement('option');
+        o.value = c; o.textContent = c;
+        catSel.appendChild(o);
       });
     }
 
-    function getFilteredItems() {
-      const q = (searchInputEl.value || '').trim().toLowerCase();
-      const cat = categoryFilterEl.value;
-      const st = statusFilterEl.value;
-
-      return catalog.filter((item) => {
-        if (activeSector !== 'ALL' && item.sector !== activeSector) return false;
-        if (cat !== 'ALL' && item.category !== cat) return false;
-        const prog = getItemProgress(item);
-        if (st !== 'ALL' && prog.status !== st) return false;
-        if (!q) return true;
-        const hay = `${item.uid} ${item.code} ${item.name} ${item.authority} ${item.category} ${item.notes}`.toLowerCase();
-        return hay.includes(q);
-      });
-    }
-
-    function updateCalculator(items) {
-      const showCalc = activeSector === 'TRADE';
-      tradeCalcEl.classList.toggle('visible', showCalc);
-      if (!showCalc) return;
-
-      const target = Math.max(0, Number(calcTargetHoursEl.value) || 0);
-      let loggedHours = 0;
-      let blocksDone = 0;
-      items.forEach((item) => {
-        const p = getItemProgress(item);
-        loggedHours += Number(p.otj_hours) || 0;
-        blocksDone += Number(p.blocks_completed) || 0;
-      });
-      document.getElementById('calcLoggedHours').textContent = loggedHours.toLocaleString();
-      document.getElementById('calcRemainingHours').textContent = Math.max(0, target - loggedHours).toLocaleString();
-      document.getElementById('calcBlocksDone').textContent = String(blocksDone);
-    }
-
-    async function saveItem(uid, status, otjHours, blocksCompleted, msgEl) {
-      const cleanHours = Math.max(0, Number(otjHours) || 0);
-      const cleanBlocks = Math.max(0, parseInt(blocksCompleted, 10) || 0);
-
-      userProgressMap[uid] = {
-        status,
-        otj_hours: cleanHours,
-        blocks_completed: cleanBlocks
-      };
+    async function saveEntry(entryId, status, msgEl, completedReqs) {
+      const tr = t();
+      userProgressMap[entryId] = { status, completed_reqs: completedReqs || [] };
       localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
-
-      if (!sbClient || !currentUser) {
-        msgEl.textContent = 'Saved locally (sign in for cloud sync)';
-        updateCalculator(getFilteredItems());
-        return;
-      }
-
-      msgEl.textContent = 'Syncing...';
-      const { error } = await sbClient
-        .from('user_credentials')
-        .upsert(
-          {
-            user_id: currentUser.id,
-            cred_uid: uid,
-            status,
-            otj_hours: cleanHours,
-            blocks_completed: cleanBlocks,
-            updated_at: new Date().toISOString()
-          },
+      updateProfileStats();
+      msgEl.style.color = 'var(--accent-2)';
+      msgEl.textContent = tr.savedLocalMsg;
+      if (sbClient && currentUser) {
+        await sbClient.from('user_credentials').upsert(
+          { user_id: currentUser.id, cred_uid: entryId, status, updated_at: new Date().toISOString() },
           { onConflict: 'user_id,cred_uid' }
         );
-
-      if (error) {
-        msgEl.style.color = 'var(--danger)';
-        msgEl.textContent = `Sync error: ${error.message}`;
-      } else {
-        msgEl.style.color = 'var(--accent-2)';
-        msgEl.textContent = 'Saved to Supabase';
       }
-      updateCalculator(getFilteredItems());
     }
 
-    function renderCatalog() {
-      const items = getFilteredItems();
-      updateCalculator(items);
-      catalogGridEl.innerHTML = '';
+    function createLibraryCard(entry, isProfileView = false) {
+      const tr = t();
+      const prog = getEntryProgress(entry);
+      const reqs = Array.isArray(entry.requirements) ? entry.requirements : [];
+      const checkedSet = new Set(prog.completed_reqs || []);
+      const doneCount = reqs.filter((r) => checkedSet.has(r.id)).length;
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <div>
+          <div class="card-top">
+            <span class="uid">${entry.provider}${entry.uid ? ' · ' + entry.uid : ''}</span>
+            <span class="badge">${getTypeMeta(entry.sector).label}</span>
+          </div>
+          <h3 class="card-title">${entry.title}</h3>
+          ${entry.tag ? `<span class="lib-pill">${entry.tag}</span>` : ''}
+          <p class="card-notes" style="margin-top:8px;">${entry.summary || ''}</p>
+          ${reqs.length ? `
+          <div class="req-list">
+            <div class="req-header"><span>${tr.requiredLabel}</span><span class="req-progress">${doneCount}/${reqs.length}</span></div>
+            ${reqs.map((r) => `<label class="req-item ${checkedSet.has(r.id) ? 'checked' : ''}"><input type="checkbox" class="req-chk" data-req-id="${r.id}" ${checkedSet.has(r.id) ? 'checked' : ''} /><span>${r.label}</span></label>`).join('')}
+          </div>` : ''}
+        </div>
+        <div class="card-inputs">
+          <label>${tr.statusLabel}
+            <select class="inp-status">
+              <option value="Not Started" ${prog.status === 'Not Started' ? 'selected' : ''}>${tr.statusNotStarted}</option>
+              <option value="In Progress" ${prog.status === 'In Progress' ? 'selected' : ''}>${tr.statusInProgress}</option>
+              <option value="Completed" ${prog.status === 'Completed' ? 'selected' : ''}>${tr.statusCompleted}</option>
+              <option value="Renewal Due" ${prog.status === 'Renewal Due' ? 'selected' : ''}>${tr.statusRenewalDue}</option>
+            </select>
+          </label>
+        </div>
+        <div class="card-actions">
+          <span class="save-msg"></span>
+          <div style="display:flex;gap:6px;">
+            ${isProfileView ? `<button class="btn btn-small remove-btn" type="button">${tr.removeBtn}</button>` : ''}
+            <button class="btn btn-small btn-primary save-btn" type="button">${tr.saveBtn}</button>
+          </div>
+        </div>`;
 
-      if (!items.length) {
-        catalogGridEl.innerHTML = '<p style="color:var(--muted);">No matching credentials found.</p>';
+      const statusSel = card.querySelector('.inp-status');
+      const saveBtn = card.querySelector('.save-btn');
+      const removeBtn = card.querySelector('.remove-btn');
+      const msgEl = card.querySelector('.save-msg');
+      const reqProgressEl = card.querySelector('.req-progress');
+      const reqCheckboxes = [...card.querySelectorAll('.req-chk')];
+      const checkedIds = () => reqCheckboxes.filter((c) => c.checked).map((c) => c.dataset.reqId);
+
+      reqCheckboxes.forEach((chk) => {
+        chk.addEventListener('change', () => {
+          chk.closest('.req-item').classList.toggle('checked', chk.checked);
+          const sel = checkedIds();
+          if (reqProgressEl) reqProgressEl.textContent = `${sel.length}/${reqs.length}`;
+          if (reqs.length && sel.length === reqs.length) statusSel.value = 'Completed';
+          else if (sel.length > 0 && statusSel.value === 'Not Started') statusSel.value = 'In Progress';
+          saveEntry(entry.entryId, statusSel.value, msgEl, sel);
+        });
+      });
+      saveBtn.addEventListener('click', () => saveEntry(entry.entryId, statusSel.value, msgEl, checkedIds()));
+      if (removeBtn) {
+        removeBtn.addEventListener('click', async () => {
+          delete userProgressMap[entry.entryId];
+          localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
+          if (sbClient && currentUser) {
+            await sbClient.from('user_credentials').delete().eq('user_id', currentUser.id).eq('cred_uid', entry.entryId);
+          }
+          renderProfile();
+      renderCareerCoach();
+          if (isListingActive()) renderLibrary();
+        });
+      }
+      return card;
+    }
+
+    function renderLibrary() {
+      const tr = t();
+      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+      const activeKey = selectedType || null;
+      const meta = activeKey ? getTypeMeta(activeKey) : null;
+      const entries = allLibraryEntries.filter((e) => {
+        if (activeKey && e.sector !== activeKey) return false;
+        if (cat !== 'ALL' && e.category !== cat) return false;
+        if (!q) return true;
+        return `${e.entryId} ${e.code || ''} ${e.title} ${e.provider} ${e.category || ''} ${e.summary || ''}`.toLowerCase().includes(q);
+      });
+      updateProfileStats();
+      document.getElementById('libraryTitle').textContent = meta ? `${meta.label} Library` : tr.allCategories;
+      document.getElementById('dataSourceBanner').textContent = tr.showingBanner(entries.length, meta ? meta.label : tr.allCategories);
+      const grid = document.getElementById('libraryGrid');
+      grid.innerHTML = '';
+      if (!entries.length) { grid.innerHTML = `<p style="color:var(--muted);">${tr.noMatchingCreds}</p>`; return; }
+      entries.forEach((e) => grid.appendChild(createLibraryCard(e, false)));
+    }
+
+    function renderProfile() {
+      updateProfileStats();
+      const saved = getSavedEntries();
+      const grid = document.getElementById('profileGrid');
+      grid.innerHTML = '';
+      if (!saved.length) {
+        grid.innerHTML = `<div class="empty-profile" style="grid-column:1/-1;">${t().emptyProfileMsg}</div>`;
         return;
       }
-
-      items.forEach((item) => {
-        const prog = getItemProgress(item);
-        const card = document.createElement('article');
-        card.className = 'card';
-
-        card.innerHTML = `
-          <div>
-            <div class="card-top">
-              <span class="uid">${item.uid} · ${item.code || 'N/A'}</span>
-              <span class="badge">${item.sector}</span>
-            </div>
-            <h3 class="card-title">${item.name}</h3>
-            <div class="card-meta">${item.authority} · ${item.category}</div>
-            <p class="card-notes" style="margin-top:6px;">${item.notes || ''}</p>
-          </div>
-
-          <div class="card-inputs">
-            <label>
-              Status
-              <select class="inp-status">
-                ${['Not Started', 'In Progress', 'Completed', 'Renewal Due'].map((s) =>
-                  `<option value="${s}" ${prog.status === s ? 'selected' : ''}>${s}</option>`
-                ).join('')}
-              </select>
-            </label>
-            <label>
-              OTJ Hours
-              <input class="inp-hours" type="number" min="0" step="10" value="${prog.otj_hours}" />
-            </label>
-            <label>
-              Blocks
-              <input class="inp-blocks" type="number" min="0" step="1" value="${prog.blocks_completed}" />
-            </label>
-          </div>
-
-          <div class="card-actions">
-            <span class="save-msg"></span>
-            <button class="btn btn-small btn-primary save-btn" type="button">Save</button>
-          </div>
-        `;
-
-        const statusSel = card.querySelector('.inp-status');
-        const hoursInp = card.querySelector('.inp-hours');
-        const blocksInp = card.querySelector('.inp-blocks');
-        const saveBtn = card.querySelector('.save-btn');
-        const msgEl = card.querySelector('.save-msg');
-
-        saveBtn.addEventListener('click', () => {
-          saveItem(item.uid, statusSel.value, hoursInp.value, blocksInp.value, msgEl);
-        });
-
-        catalogGridEl.appendChild(card);
-      });
+      saved.forEach((entry) => grid.appendChild(createLibraryCard(entry, true)));
     }
 
-    async function loadCatalogJson() {
-      try {
-        const res = await fetch('./data/catalog.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const jsonData = await res.json();
-        if (Array.isArray(jsonData) && jsonData.length > 0) {
-          catalog = jsonData;
-          bannerEl.textContent = `Loaded ${catalog.length} credentials from ./data/catalog.json`;
-        } else {
-          bannerEl.textContent = `Loaded ${catalog.length} embedded credentials`;
-        }
-      } catch (_err) {
-        bannerEl.textContent = `Loaded ${catalog.length} embedded credentials (offline/fallback mode)`;
-      }
+    function syncListingState() {
+      const active = isListingActive();
+      document.getElementById('listingTools').classList.toggle('visible', active);
+      document.getElementById('librarySection').classList.toggle('visible', active);
+      if (active) renderLibrary();
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang === 'fr' ? 'fr' : 'en';
+      document.documentElement.lang = currentLang;
+      localStorage.setItem('pocketcredit_lang', currentLang);
+      document.getElementById('langEnBtn').classList.toggle('active', currentLang === 'en');
+      document.getElementById('langFrBtn').classList.toggle('active', currentLang === 'fr');
+      const tr = t();
+      document.getElementById('brandTitle').textContent = tr.brandTitle;
+      document.getElementById('brandSubtitle').textContent = tr.brandSubtitle;
+      document.getElementById('signedOutLabel').textContent = tr.signedOut;
+      document.getElementById('signInBtnText').textContent = tr.signIn;
+      document.getElementById('signOutBtn').textContent = tr.signOut;
+      document.getElementById('searchInput').placeholder = tr.searchPlaceholder;
+      document.getElementById('backToCategoriesBtn').textContent = tr.backToCategories;
+      document.getElementById('coachHeading').textContent = tr.coachHeading;
+      document.getElementById('backFromCoachBtn').textContent = tr.backFromCoach;
+      document.getElementById('coachSummaryTitle').textContent = tr.coachSummaryTitle;
+      document.getElementById('coachSummaryDesc').textContent = tr.coachSummaryDesc;
+      document.getElementById('coachLblProfile').textContent = tr.coachLblProfile;
+      document.getElementById('coachLblCreds').textContent = tr.coachLblCreds;
+      document.getElementById('coachPromptLabel').textContent = tr.coachPromptLabel;
+      document.getElementById('copyCoachPromptBtn').textContent = tr.copyPromptBtn;
+      document.getElementById('openGeminiCoachLink').textContent = tr.openGemini;
+      document.getElementById('openChatGptCoachLink').textContent = tr.openChatGpt;
+      document.getElementById('openCopilotCoachLink').textContent = tr.openCopilot;
+      document.getElementById('backFromProfileBtn').textContent = tr.backToHome;
+      document.getElementById('backFromSettingsBtn').textContent = tr.backToHome;
+      document.getElementById('profileHeading').textContent = tr.profileHeading;
+      document.getElementById('lblCompletedCreds').textContent = tr.lblCompletedCreds;
+      document.getElementById('lblSavedCreds').textContent = tr.lblSavedCreds;
+      document.getElementById('savedCredsHeading').textContent = tr.savedCredsHeading;
+      document.getElementById('settingsHeading').textContent = tr.settingsHeading;
+      document.getElementById('lblTheme').textContent = tr.lblTheme;
+      document.getElementById('lblTextSize').textContent = tr.lblTextSize;
+      document.getElementById('lblReduceMotion').textContent = tr.lblReduceMotion;
+      document.getElementById('lblHighContrast').textContent = tr.lblHighContrast;
+      document.getElementById('clearLocalProgressBtn').textContent = tr.clearLocalBtn;
       populateCategoryFilter();
-      renderTabs();
-      renderCatalog();
+      renderTypeTabs();
+      syncListingState();
+      renderProfile();
     }
 
-    async function loadCloudProgress() {
-      if (!sbClient || !currentUser) return;
-      const { data, error } = await sbClient
-        .from('user_credentials')
-        .select('cred_uid, status, otj_hours, blocks_completed')
-        .eq('user_id', currentUser.id);
-
-      if (!error && Array.isArray(data)) {
-        data.forEach((row) => {
-          userProgressMap[row.cred_uid] = {
-            status: row.status,
-            otj_hours: row.otj_hours,
-            blocks_completed: row.blocks_completed
-          };
-        });
-        renderCatalog();
+    document.getElementById('profileIconBtn').addEventListener('click', () => setActiveView('profile'));
+    document.getElementById('settingsIconBtn').addEventListener('click', () => setActiveView('settings'));
+    document.getElementById('processorIconBtn').addEventListener('click', () => setActiveView('coach'));
+    document.getElementById('backFromCoachBtn').addEventListener('click', () => setActiveView('home'));
+    document.getElementById('backFromProfileBtn').addEventListener('click', () => setActiveView('home'));
+    document.getElementById('backFromSettingsBtn').addEventListener('click', () => setActiveView('home'));
+    document.getElementById('langEnBtn').addEventListener('click', () => applyLanguage('en'));
+    document.getElementById('langFrBtn').addEventListener('click', () => applyLanguage('fr'));
+    const handleSearchTrigger = () => {
+      if (activeView !== 'home') {
+        activeView = 'home';
+        document.getElementById('homeView').classList.add('active');
+        document.getElementById('coachView').classList.remove('active');
+        document.getElementById('profileView').classList.remove('active');
+        document.getElementById('settingsView').classList.remove('active');
+        updateNavIconStates();
       }
-    }
-
-    googleLoginBtn.addEventListener('click', async () => {
-      if (!sbClient) return;
-      await sbClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: SITE_URL }
-      });
+      syncListingState();
+    };
+    document.getElementById('searchInput').addEventListener('input', handleSearchTrigger);
+    document.getElementById('searchSubmitBtn').addEventListener('click', handleSearchTrigger);
+    document.getElementById('copyCoachPromptBtn').addEventListener('click', async () => {
+      const txt = document.getElementById('coachPromptText').value;
+      try { await navigator.clipboard.writeText(txt); } catch (_e) {}
+      document.getElementById('coachCopyMsg').textContent = t().copiedPromptMsg;
     });
+    document.getElementById('categoryFilter').addEventListener('change', () => { if (isListingActive()) renderLibrary(); });
 
-    signOutBtn.addEventListener('click', async () => {
-      if (!sbClient) return;
-      await sbClient.auth.signOut();
-    });
-
-    async function initAuth() {
-      try {
-        const localSaved = JSON.parse(localStorage.getItem('pocketcredit_local_progress') || '{}');
-        if (localSaved && typeof localSaved === 'object') {
-          userProgressMap = { ...localSaved };
-        }
-      } catch (_e) {}
-
-      if (!sbClient) return;
-      const { data: { session } } = await sbClient.auth.getSession();
-      currentUser = session?.user ?? null;
-      updateAuthUI();
-      if (currentUser) await loadCloudProgress();
-
-      sbClient.auth.onAuthStateChange(async (_event, nextSession) => {
-        currentUser = nextSession?.user ?? null;
-        updateAuthUI();
-        if (currentUser) {
-          await loadCloudProgress();
-        } else {
-          renderCatalog();
-        }
-      });
-    }
-
-    function updateAuthUI() {
-      if (currentUser) {
-        authStatusEl.textContent = `Signed in: ${currentUser.email || currentUser.id}`;
-        googleLoginBtn.style.display = 'none';
-        signOutBtn.style.display = 'inline-block';
+    const resetHome = () => {
+      document.getElementById('searchInput').value = '';
+      selectedType = null;
+      document.getElementById('categoryFilter').value = 'ALL';
+      if (activeView !== 'home') {
+        setActiveView('home');
       } else {
-        authStatusEl.textContent = 'Signed out (local preview)';
-        googleLoginBtn.style.display = 'inline-block';
-        signOutBtn.style.display = 'none';
+        populateCategoryFilter();
+        renderTypeTabs();
+        syncListingState();
       }
-    }
+    };
+    document.getElementById('clearSearchBtn').addEventListener('click', resetHome);
+    document.getElementById('backToCategoriesBtn').addEventListener('click', resetHome);
 
-    searchInputEl.addEventListener('input', renderCatalog);
-    categoryFilterEl.addEventListener('change', renderCatalog);
-    statusFilterEl.addEventListener('change', renderCatalog);
-    calcTargetHoursEl.addEventListener('input', () => updateCalculator(getFilteredItems()));
+    document.querySelectorAll('[data-theme-opt]').forEach((btn) => btn.addEventListener('click', () => {
+      prefs.theme = btn.dataset.themeOpt;
+      document.querySelectorAll('[data-theme-opt]').forEach((b) => b.classList.toggle('active', b === btn));
+      applyPrefs();
+    }));
+    document.querySelectorAll('[data-scale-opt]').forEach((btn) => btn.addEventListener('click', () => {
+      prefs.textScale = btn.dataset.scaleOpt;
+      document.querySelectorAll('[data-scale-opt]').forEach((b) => b.classList.toggle('active', b === btn));
+      applyPrefs();
+    }));
+    document.getElementById('reduceMotionChk').addEventListener('change', (e) => { prefs.reduceMotion = e.target.checked; applyPrefs(); });
+    document.getElementById('highContrastChk').addEventListener('change', (e) => { prefs.highContrast = e.target.checked; applyPrefs(); });
+    document.getElementById('clearLocalProgressBtn').addEventListener('click', () => {
+      userProgressMap = {};
+      localStorage.removeItem('pocketcredit_local_progress');
+      updateProfileStats();
+      renderProfile();
+      if (isListingActive()) renderLibrary();
+      document.getElementById('settingsMsg').textContent = t().localClearedMsg;
+    });
 
-    loadCatalogJson().then(initAuth);
+    document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+      if (sbClient) await sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: SITE_URL } });
+    });
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+      if (sbClient) await sbClient.auth.signOut();
+    });
+
+    (async () => {
+      try { userProgressMap = JSON.parse(localStorage.getItem('pocketcredit_local_progress') || '{}') || {}; } catch (_e) {}
+      try { prefs = { ...prefs, ...(JSON.parse(localStorage.getItem('pocketcredit_prefs') || '{}') || {}) }; } catch (_e) {}
+      applyPrefs();
+      updateNavIconStates();
+      applyLanguage(localStorage.getItem('pocketcredit_lang') === 'fr' ? 'fr' : 'en');
+      if (sbClient) {
+        const { data: { session } } = await sbClient.auth.getSession();
+        currentUser = session?.user ?? null;
+        if (currentUser) {
+          document.getElementById('signedOutPanel').style.display = 'none';
+          document.getElementById('signedInPanel').style.display = 'flex';
+          document.getElementById('authStatus').textContent = `${t().welcome}, ${currentUser.email || currentUser.id}`;
+        }
+      }
+    })();
   </script>
 </body>
 </html>
