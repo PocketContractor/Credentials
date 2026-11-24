@@ -50,7 +50,7 @@
       color: var(--text);
       line-height: 1.45;
     }
-    button, input, select { font-family: inherit; }
+    button, input, select, textarea { font-family: inherit; }
     :focus-visible { outline: var(--focus-outline); outline-offset: 2px; }
     header {
       position: sticky; top: 0; z-index: 20;
@@ -69,14 +69,13 @@
     .lang-btn { border: 0; background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
     .lang-btn.active { background: var(--accent); color: #061224; }
     .auth-bar { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.82rem; }
-    .auth-border-column { display: flex; flex-direction: column; min-width: 140px; max-width: 210px; }
-    .auth-signed-out-panel { display: flex; flex-direction: column; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+    .auth-border-column { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 140px; max-width: 210px; }
+    .auth-signed-out-panel { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
     .auth-signed-in-panel { display: none; flex-direction: column; gap: 8px; }
-    .auth-welcome-box { background: var(--surface-2); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 10px; padding: 7px 11px; }
+    .auth-welcome-box { background: var(--surface-2); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 10px; padding: 7px 11px; text-align: center; }
     .auth-status-text { font-size: 0.78rem; font-weight: 700; color: var(--muted); word-break: break-word; }
     .auth-welcome-box .auth-status-text { color: var(--text); }
 
-    /* Hollow unselected, solid selected */
     .header-icon-btn {
       position: relative; width: 64px; height: 64px; border-radius: 50%;
       border: 2px solid var(--border); background: transparent; color: var(--muted);
@@ -148,7 +147,6 @@
     .uid { font-size: 0.74rem; color: var(--muted); font-family: monospace; }
     .badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); }
     .card-title { margin: 4px 0 0; font-size: 0.98rem; font-weight: 700; }
-    .card-meta { font-size: 0.8rem; color: var(--muted); }
     .card-notes { font-size: 0.82rem; color: var(--muted); margin: 0; }
     .req-list { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
     .req-header { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
@@ -168,13 +166,107 @@
     .library-header h2 { margin: 0; font-size: 1.02rem; }
     .lib-pill { font-size: 0.7rem; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); display: inline-block; margin-top: 6px; }
     .empty-profile { background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 24px 16px; text-align: center; color: var(--muted); font-size: 0.88rem; }
+
+    /* Career Coach UI */
     .coach-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); margin-bottom: 14px; }
-    .coach-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 10px 0 14px; }
-    .coach-prompt-box { width: 100%; min-height: 150px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.82rem; line-height: 1.5; resize: vertical; }
-    .coach-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .coach-link-btn { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
-    .coach-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .coach-chip { font-size: 0.72rem; padding: 3px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
+    .coach-controls-grid { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-bottom: 10px; }
+    @media (max-width: 720px) { .coach-controls-grid { grid-template-columns: 1fr; } }
+    .coach-field { display: flex; flex-direction: column; gap: 5px; font-size: 0.76rem; color: var(--muted); }
+        .advisor-params-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .advisor-goal-types {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 0;
+    }
+    .advisor-goal-types legend {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      padding: 0 4px;
+    }
+    .advisor-radio {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .advisor-radio input { accent-color: var(--accent); }
+    .advisor-agent-row {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .advisor-generate-btn {
+      min-width: 110px;
+      padding: 7px 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .advisor-add-agent-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--accent); font-size: 1.1rem; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .advisor-add-agent-text { font-size: 0.82rem; color: var(--muted); }
+    .ai-disclaimer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin: 8px 0 0;
+    }
+    .site-footer {
+      max-width: 1280px; margin: 28px auto 18px; padding: 0 16px;
+      color: var(--muted); font-size: 0.78rem; text-align: center;
+    }
+    .site-nav {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+      margin-bottom: 10px;
+    }
+    .site-nav button {
+      background: transparent;
+      border: 0;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 2px;
+    }
+    .site-nav button:hover { text-decoration: underline; }
+.coach-chatbox {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px; min-height: 220px; max-height: 400px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
+    }
+    .coach-msg { border-radius: 10px; padding: 10px 12px; font-size: 0.83rem; line-height: 1.5; white-space: pre-wrap; }
+    .coach-msg.user { background: var(--surface-2); border: 1px solid rgba(56, 189, 248, 0.35); align-self: flex-end; max-width: 92%; }
+    .coach-msg.ai { background: var(--surface); border: 1px solid var(--border); align-self: stretch; }
+    .coach-msg-head { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; }
+    .coach-logo-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; flex: 0 0 auto; }
+    .coach-input-row { display: flex; flex-direction: column; gap: 8px; }
+    .coach-input-box { width: 100%; min-height: 76px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.84rem; line-height: 1.45; resize: vertical; }
+    .coach-actions-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+    .coach-ai-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .coach-ai-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; padding: 5px 10px; font-size: 0.75rem; }
+
     .settings-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
     .settings-row:last-child { border-bottom: 0; padding-bottom: 0; }
     .settings-row-info { flex: 1 1 240px; }
@@ -213,6 +305,12 @@
           <div id="signedOutPanel" class="auth-signed-out-panel">
             <span id="signedOutLabel" class="auth-status-text">Signed Out</span>
             <button id="googleLoginBtn" class="google-signin-btn" type="button">
+              <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.7 1.22 9.19 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.03 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.47-13.46-8.42l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              </svg>
               <span id="signInBtnText">Sign in</span>
             </button>
           </div>
@@ -236,16 +334,6 @@
           <span id="profileNavCount" class="icon-badge-count">0</span>
         </button>
 
-        <button id="settingsIconBtn" class="header-icon-btn" type="button" title="Settings" aria-label="Open Settings">
-          <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
-          <svg class="icon-solid" width="31" height="31" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 15.6 12 3.6 3.6 0 0 1 12 15.6z"/>
-          </svg>
-        </button>
-
         <button id="processorIconBtn" class="header-icon-btn" type="button" title="Free AI Career Coach" aria-label="Free AI Career Coach">
           <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="6" y="6" width="12" height="12" rx="2" />
@@ -261,6 +349,16 @@
           </svg>
           <svg class="icon-solid" width="31" height="31" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M9 2h2v2h2V2h2v2h1a2 2 0 0 1 2 2v1h2v2h-2v2h2v2h-2v1a2 2 0 0 1-2 2h-1v2h-2v-2h-2v2H9v-2H8a2 2 0 0 1-2-2v-1H4v-2h2v-2H4V9h2V7a2 2 0 0 1 2-2h1V2zm1 8v4h4v-4h-4z"/>
+          </svg>
+        </button>
+
+        <button id="settingsIconBtn" class="header-icon-btn" type="button" title="Settings" aria-label="Open Settings">
+          <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          <svg class="icon-solid" width="31" height="31" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 15.6 12 3.6 3.6 0 0 1 12 15.6z"/>
           </svg>
         </button>
       </div>
@@ -279,7 +377,6 @@
     </div>
 
     <section id="homeView" class="view-section active">
-
       <div id="typeTabs" class="cat-matrix-wrap" role="tablist" aria-label="Library Categories"></div>
 
       <div id="listingTools" class="listing-tools">
@@ -299,47 +396,48 @@
       </div>
     </section>
 
-    <!-- PROFILE VIEW: ONLY Completed and Saved -->
     <section id="coachView" class="view-section">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
-        <h2 id="coachHeading" style="margin:0;font-size:1.08rem;">Free AI Career Coach</h2>
-        <button id="backFromCoachBtn" class="btn btn-small" type="button">Back to Home</button>
-      </div>
+      <h2 id="coachHeading" style="margin:0 0 12px;font-size:1.08rem;">Advisor</h2>
       <div class="coach-panel">
-        <strong id="coachSummaryTitle">Profile &amp; Credentials Context</strong>
-        <p id="coachSummaryDesc" style="font-size:0.82rem;color:var(--muted);margin:6px 0 0;">Uses your current profile state, completed credentials, and saved entries to generate a tailored career coaching prompt and launch free AI tools.</p>
-        <div class="coach-meta-grid">
-          <div class="stat-box">
-            <div id="coachLblProfile" class="stat-label">Profile</div>
-            <div id="coachProfileVal" style="font-size:0.95rem;font-weight:700;margin-top:4px;color:var(--accent);">Signed Out</div>
-          </div>
-          <div class="stat-box">
-            <div id="coachLblCreds" class="stat-label">Tracked Credentials</div>
-            <div id="coachCredsVal" style="font-size:0.95rem;font-weight:700;margin-top:4px;color:var(--accent-2);">0 Completed · 0 Saved</div>
+        <div class="advisor-params-box">
+          <fieldset class="advisor-goal-types">
+            <legend id="targetVocationLabel">End Goal</legend>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="vocation"> Vocation</label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="trade"> Trade</label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="designation"> Designation</label>
+          </fieldset>
+          <label class="coach-field">
+            <span for="goalSelect">Choose One</span>
+            <select id="goalSelect" disabled>
+              <option value="">Select a goal type first</option>
+            </select>
+          </label>
+          <div class="advisor-agent-row">
+            <span class="coach-logo-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>
+            </span>
+            <button id="generatePlanBtn" class="btn btn-primary advisor-generate-btn" type="button">Generate</button>
+            <button id="addAgentBtn" class="btn advisor-add-agent-btn" type="button">+</button>
+            <span class="advisor-add-agent-text">Add Agent</span>
           </div>
         </div>
-        <div id="coachCredChips" class="coach-chips"></div>
-      </div>
-      <div class="coach-panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
-          <strong id="coachPromptLabel">Career Coach Prompt (From Your Profile &amp; Credentials)</strong>
-          <button id="copyCoachPromptBtn" class="btn btn-small" type="button">Copy Prompt</button>
-        </div>
-        <textarea id="coachPromptText" class="coach-prompt-box" readonly></textarea>
-        <span id="coachCopyMsg" class="save-msg" style="display:block;margin-top:6px;"></span>
-        <div class="coach-links">
-          <a id="openGeminiCoachLink" class="btn btn-small btn-primary coach-link-btn" href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Open Gemini (Free)</a>
-          <a id="openChatGptCoachLink" class="btn btn-small coach-link-btn" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT (Free)</a>
-          <a id="openCopilotCoachLink" class="btn btn-small coach-link-btn" href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer">Open Copilot (Free)</a>
+
+        <div id="coachChatbox" class="coach-chatbox" role="log" aria-live="polite" aria-label="Career coach conversation"></div>
+
+        <div class="ai-disclaimer">AI Powered Content - Please Use Responsibly</div>
+
+        <div class="coach-input-row">
+          <textarea id="coachQuestionInput" class="coach-input-box" placeholder="Ask a follow-up question about your pathway, exams, hours, or equivalencies..."></textarea>
+          <div class="coach-actions-row">
+            <span id="coachStatusMsg" class="save-msg"></span>
+            
+          </div>
         </div>
       </div>
     </section>
 
     <section id="profileView" class="view-section">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
-        <h2 id="profileHeading" style="margin:0;font-size:1.08rem;">My Profile &amp; Library</h2>
-        <button id="backFromProfileBtn" class="btn btn-small" type="button">Back to Home</button>
-      </div>
+      <h2 id="profileHeading" style="margin:0 0 14px;font-size:1.08rem;">Profile</h2>
       <div class="calc-panel">
         <div class="calc-grid-two" style="margin-top:0;">
           <div class="stat-box">
@@ -357,10 +455,7 @@
     </section>
 
     <section id="settingsView" class="view-section">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
-        <h2 id="settingsHeading" style="margin:0;font-size:1.08rem;">Account &amp; App Settings</h2>
-        <button id="backFromSettingsBtn" class="btn btn-small" type="button">Back to Home</button>
-      </div>
+      <h2 id="settingsHeading" style="margin:0 0 14px;font-size:1.08rem;">Settings</h2>
       <div class="calc-panel">
         <strong id="appearanceSectionTitle">Appearance &amp; Accessibility</strong>
         <div class="settings-row">
@@ -428,16 +523,14 @@
         searchPlaceholder: 'Search library entries, codes, providers...',
         allCategories: 'All Topics',
         statusNotStarted: 'Not Started', statusInProgress: 'In Progress', statusCompleted: 'Completed', statusRenewalDue: 'Renewal Due',
-        backToCategories: 'Back to Categories', backToHome: 'Back to Home',
-        coachHeading: 'Free AI Career Coach', backFromCoach: 'Back to Home', copyPromptBtn: 'Copy Prompt', copiedPromptMsg: 'Prompt copied to clipboard.',
-        coachSummaryTitle: 'Profile & Credentials Context',
-        coachSummaryDesc: 'Uses your current profile state, completed credentials, and saved entries to guide your next career, trade, or study steps.',
-        coachLblProfile: 'Profile', coachLblCreds: 'Tracked Credentials',
-        coachCredsStat: (comp, saved) => `${comp} Completed · ${saved} Saved`,
-        coachPromptLabel: 'Career Coach Prompt (From Your Profile & Credentials)',
-        openGemini: 'Open Gemini (Free)', openChatGpt: 'Open ChatGPT (Free)', openCopilot: 'Open Copilot (Free)',
-        profileHeading: 'My Profile & Library', lblCompletedCreds: 'Completed', lblSavedCreds: 'Saved', savedCredsHeading: 'Saved Entries',
-        settingsHeading: 'Account & App Settings', appearanceSectionTitle: 'Appearance & Accessibility',
+        backToCategories: 'Back to Categories',
+        coachHeading: 'Advisor',
+        targetVocationLabel: 'End Goal', generatePlanBtn: 'Generate',
+        coachInputPlaceholder: 'Ask a follow-up question about your pathway, exams, hours, or equivalencies...',
+        copiedAndReadyMsg: 'Pathway generated & coaching prompt copied for free AI chat.',
+        openGemini: 'Gemini', openChatGpt: 'ChatGPT', openCopilot: 'Copilot',
+        profileHeading: 'Profile', lblCompletedCreds: 'Completed', lblSavedCreds: 'Saved', savedCredsHeading: 'Saved Entries',
+        settingsHeading: 'Settings', appearanceSectionTitle: 'Appearance & Accessibility',
         lblTheme: 'Theme', descTheme: 'Switch between dark, light, or system color mode.',
         themeDark: 'Dark', themeLight: 'Light', themeSystem: 'System',
         lblTextSize: 'Text Size', descTextSize: 'Adjust base text scale.',
@@ -464,16 +557,14 @@
         searchPlaceholder: 'Rechercher fiches, codes, organismes...',
         allCategories: 'Tous les thèmes',
         statusNotStarted: 'Non commencé', statusInProgress: 'En cours', statusCompleted: 'Terminé', statusRenewalDue: 'Renouvellement requis',
-        backToCategories: 'Retour aux catégories', backToHome: "Retour à l'accueil",
-        coachHeading: 'Coach carrière IA gratuit', backFromCoach: "Retour à l'accueil", copyPromptBtn: 'Copier le prompt', copiedPromptMsg: 'Prompt copié dans le presse-papiers.',
-        coachSummaryTitle: 'Contexte du profil et des accréditations',
-        coachSummaryDesc: 'Utilise votre profil actuel, vos titres terminés et vos fiches enregistrées pour orienter vos prochaines étapes.',
-        coachLblProfile: 'Profil', coachLblCreds: 'Accréditations suivies',
-        coachCredsStat: (comp, saved) => `${comp} Terminées · ${saved} Enregistrées`,
-        coachPromptLabel: 'Prompt Coach Carrière (Profil et Accréditations)',
-        openGemini: 'Ouvrir Gemini (Gratuit)', openChatGpt: 'Ouvrir ChatGPT (Gratuit)', openCopilot: 'Ouvrir Copilot (Gratuit)',
-        profileHeading: 'Mon profil et ma bibliothèque', lblCompletedCreds: 'Terminées', lblSavedCreds: 'Enregistrées', savedCredsHeading: 'Fiches enregistrées',
-        settingsHeading: 'Paramètres du compte et de l’app', appearanceSectionTitle: 'Apparence et accessibilité',
+        backToCategories: 'Retour aux catégories',
+        coachHeading: 'Conseiller',
+        targetVocationLabel: 'Objectif', generatePlanBtn: 'Générer',
+        coachInputPlaceholder: 'Posez une question sur le parcours, les examens, les heures ou les équivalences...',
+        copiedAndReadyMsg: 'Parcours généré et prompt copié pour le chat IA gratuit.',
+        openGemini: 'Gemini', openChatGpt: 'ChatGPT', openCopilot: 'Copilot',
+        profileHeading: 'Profil', lblCompletedCreds: 'Terminées', lblSavedCreds: 'Enregistrées', savedCredsHeading: 'Fiches enregistrées',
+        settingsHeading: 'Paramètres', appearanceSectionTitle: 'Apparence et accessibilité',
         lblTheme: 'Thème', descTheme: 'Choisir un mode sombre, clair ou système.',
         themeDark: 'Sombre', themeLight: 'Clair', themeSystem: 'Système',
         lblTextSize: 'Taille du texte', descTextSize: 'Ajuster la taille du texte.',
@@ -545,62 +636,96 @@
       document.getElementById('processorIconBtn').classList.toggle('active', activeView === 'coach');
     }
 
-    function buildCareerCoachPrompt() {
+    const COACH_LOGO_SVG = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>`;
+    let coachMessages = [];
+
+    function buildHiddenCoachPrompt(targetVocation, extraNote) {
       const saved = getSavedEntries();
       const completed = saved.filter((e) => getEntryProgress(e).status === 'Completed');
-      const activeTracked = saved.filter((e) => getEntryProgress(e).status !== 'Completed');
       const profileLabel = currentUser ? (currentUser.email || currentUser.id) : t().signedOut;
-      const completedList = completed.length
-        ? completed.map((e) => `- ${e.title} [${getTypeMeta(e.sector).label}] (${getEntryProgress(e).status})`).join('\n')
-        : '- None marked Completed yet';
-      const savedList = activeTracked.length
-        ? activeTracked.map((e) => `- ${e.title} [${getTypeMeta(e.sector).label}] (${getEntryProgress(e).status})`).join('\n')
-        : (saved.length ? saved.map((e) => `- ${e.title} [${getTypeMeta(e.sector).label}] (${getEntryProgress(e).status})`).join('\n') : '- No saved credentials yet');
+      const compText = completed.length ? completed.map((e) => `${e.code || e.entryId} (${e.title})`).join(', ') : 'None';
+      const savedText = saved.length ? saved.map((e) => `${e.code || e.entryId} [${getEntryProgress(e).status}]`).join(', ') : 'None';
+      const noteLine = extraNote ? `\nQuestion / Note: ${extraNote}` : '';
+      return `Career Coach request. Target Vocation: ${targetVocation}. Profile: ${profileLabel}. Completed: ${compText}. Saved/Tracked: ${savedText}.${noteLine} Provide step-by-step pathway, prerequisites, and action plan.`;
+    }
 
-      if (currentLang === 'fr') {
-        return [
-          "Agis comme un coach de carrière gratuit et pragmatique (métiers spécialisés, forces, études et certifications).",
-          `Profil utilisateur : ${profileLabel}`,
-          `Accréditations terminées (${completed.length}) :`,
-          completedList,
-          `Accréditations suivies / enregistrées (${saved.length}) :`,
-          savedList,
-          "Propose : 1) les prochaines étapes concrètes à partir de ces titres, 2) les lacunes ou prérequis à vérifier, et 3) un plan d'action sur 30-60-90 jours."
-        ].join('\n');
-      }
+    function buildPathwayPlanText(targetVocation, extraNote) {
+      const saved = getSavedEntries();
+      const completed = saved.filter((e) => getEntryProgress(e).status === 'Completed');
+      const inProg = saved.filter((e) => getEntryProgress(e).status === 'In Progress');
+      const profileLabel = currentUser ? (currentUser.email || currentUser.id) : t().signedOut;
+      const doneCodes = completed.map((e) => e.code || e.entryId).join(', ') || 'None yet';
+      const progCodes = inProg.map((e) => e.code || e.entryId).join(', ') || 'None yet';
+
+      const stepsByVocation = {
+        'P.Eng (Professional Engineer)': [
+          '1. Academic / Equivalency Check: Confirm an accredited engineering degree or technical diploma/academic assessment toward licensing.',
+          '2. National Professional Practice Exam (NPPE): Complete ethics, professional practice, and engineering law requirements.',
+          '3. Supervised Engineering Experience (48 months): Document progressive engineering work experience with validated competencies.',
+          '4. Final Licensing & Stamp: Submit final experience record and application for P.Eng licensure.'
+        ],
+        'Red Seal Skilled Tradesperson (C of Q)': [
+          '1. Apprenticeship / Trade Hours: Log trade hours and verify prior trade or military/Forces equivalencies (MOSID-TEA / PLAR).',
+          '2. Trade School Blocks: Complete required in-school technical training blocks.',
+          '3. Red Seal / C of Q Exam: Pass the Certificate of Qualification / Red Seal examination for your trade.'
+        ],
+        'Certified Engineering Technologist (C.E.T.)': [
+          '1. Academic Foundation: Complete an approved engineering technology diploma or equivalent technical coursework.',
+          '2. Engineering Experience: Accumulate verified engineering technology work experience.',
+          '3. Professional Practice Exam: Pass the engineering practice/ethics exam and complete registration.'
+        ],
+        'Certified Technician (C.Tech.)': [
+          '1. Technical Diploma: Complete a technician-level diploma or approved technical credentials.',
+          '2. Applied Experience: Build verified technical work experience.',
+          '3. Registration: Complete application and ethics review for technician certification.'
+        ],
+        'Cloud & IT Infrastructure Specialist': [
+          '1. Core Fundamentals: Build networking, OS, security, and cloud foundations (A+, Net+, Sec+, cloud fundamentals).',
+          '2. Role Certification: Earn an associate/role-based cloud or infrastructure credential.',
+          '3. Hands-On Portfolio: Document lab/production deployments, monitoring, and security controls.'
+        ],
+        'Commercial & Heavy Operations Specialist': [
+          '1. Safety & Compliance Tickets: Keep mandatory safety, hazard, and site compliance credentials current.',
+          '2. Licensing & Endorsements: Complete required commercial training, endorsements, or operator qualifications.',
+          '3. Logged Field Hours: Track supervised commercial or equipment operating hours.'
+        ]
+      };
+
+      const steps = stepsByVocation[targetVocation] || stepsByVocation['P.Eng (Professional Engineer)'];
+      const noteSection = extraNote ? `Your Question: ${extraNote}\nFocused Guidance: Align your next milestone to "${extraNote}" while completing the steps below.` : '';
 
       return [
-        "Act as a practical, free career coach across skilled trades, military pathways, academic tracks, professional licences, and workplace literacy.",
-        `User Profile: ${profileLabel}`,
-        `Completed Credentials (${completed.length}):`,
-        completedList,
-        `Saved / Tracked Credentials (${saved.length}):`,
-        savedList,
-        "Give me: 1) high-value career & credential next steps based on my profile and credentials, 2) prerequisites or equivalencies I should verify, and 3) a focused 30-60-90 day action plan."
-      ].join('\n');
+        `Target Vocation: ${targetVocation}`,
+        `Current Status (${profileLabel}): ${completed.length} Completed (${doneCodes}) · ${saved.length} Saved (${inProg.length} In Progress: ${progCodes})`,
+        noteSection,
+        'Pathway Steps:',
+        ...steps
+      ].filter(Boolean).join('\n');
+    }
+
+    function renderCoachChatbox() {
+      const box = document.getElementById('coachChatbox');
+      if (!box) return;
+      const goalTypeRadio = document.querySelector('input[name="goalType"]:checked');
+      const goalType = goalTypeRadio ? goalTypeRadio.value : '';
+      const targetVocation = goalSelect && goalSelect.value ? (goalType + ': ' + goalSelect.value) : '';
+      box.innerHTML = '';
+      coachMessages.forEach((m) => {
+        const div = document.createElement('div');
+        div.className = `coach-msg ${m.role}`;
+        if (m.role === 'ai') {
+          div.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Career Coach</span></div><div>${m.text.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</div>`;
+        } else {
+          div.textContent = m.text;
+        }
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
     }
 
     function renderCareerCoach() {
       updateProfileStats();
-      const tr = t();
-      const saved = getSavedEntries();
-      const completedCount = saved.filter((e) => getEntryProgress(e).status === 'Completed').length;
-      document.getElementById('coachProfileVal').textContent = currentUser ? (currentUser.email || currentUser.id) : tr.signedOut;
-      document.getElementById('coachCredsVal').textContent = tr.coachCredsStat(completedCount, saved.length);
-      const chipsEl = document.getElementById('coachCredChips');
-      chipsEl.innerHTML = '';
-      if (!saved.length) {
-        chipsEl.innerHTML = `<span class="coach-chip">${tr.emptyProfileMsg.replace(/<[^>]+>/g, '')}</span>`;
-      } else {
-        saved.forEach((e) => {
-          const st = getEntryProgress(e).status;
-          const chip = document.createElement('span');
-          chip.className = 'coach-chip';
-          chip.textContent = `${e.code || e.entryId} · ${st}`;
-          chipsEl.appendChild(chip);
-        });
-      }
-      document.getElementById('coachPromptText').value = buildCareerCoachPrompt();
+      renderCoachChatbox();
     }
 
     function setActiveView(viewName) {
@@ -758,7 +883,7 @@
             await sbClient.from('user_credentials').delete().eq('user_id', currentUser.id).eq('cred_uid', entry.entryId);
           }
           renderProfile();
-      renderCareerCoach();
+          renderCareerCoach();
           if (isListingActive()) renderLibrary();
         });
       }
@@ -818,21 +943,12 @@
       document.getElementById('signInBtnText').textContent = tr.signIn;
       document.getElementById('signOutBtn').textContent = tr.signOut;
       document.getElementById('searchInput').placeholder = tr.searchPlaceholder;
-      document.getElementById('backToCategoriesBtn').textContent = tr.backToCategories;
+      document.getElementById('backToLandingBtn').textContent = tr.backToCategories;
       document.getElementById('coachHeading').textContent = tr.coachHeading;
-      document.getElementById('backFromCoachBtn').textContent = tr.backFromCoach;
-      document.getElementById('coachSummaryTitle').textContent = tr.coachSummaryTitle;
-      document.getElementById('coachSummaryDesc').textContent = tr.coachSummaryDesc;
-      document.getElementById('coachLblProfile').textContent = tr.coachLblProfile;
-      document.getElementById('coachLblCreds').textContent = tr.coachLblCreds;
-      document.getElementById('coachPromptLabel').textContent = tr.coachPromptLabel;
-      document.getElementById('copyCoachPromptBtn').textContent = tr.copyPromptBtn;
-      document.getElementById('openGeminiCoachLink').textContent = tr.openGemini;
-      document.getElementById('openChatGptCoachLink').textContent = tr.openChatGpt;
-      document.getElementById('openCopilotCoachLink').textContent = tr.openCopilot;
-      document.getElementById('backFromProfileBtn').textContent = tr.backToHome;
-      document.getElementById('backFromSettingsBtn').textContent = tr.backToHome;
-      document.getElementById('profileHeading').textContent = tr.profileHeading;
+      document.getElementById('targetVocationLabel').textContent = tr.targetVocationLabel;
+      document.getElementById('generatePlanBtn').textContent = tr.generatePlanBtn;
+      document.getElementById('coachQuestionInput').placeholder = tr.coachInputPlaceholder;
+                        document.getElementById('profileHeading').textContent = tr.profileHeading;
       document.getElementById('lblCompletedCreds').textContent = tr.lblCompletedCreds;
       document.getElementById('lblSavedCreds').textContent = tr.lblSavedCreds;
       document.getElementById('savedCredsHeading').textContent = tr.savedCredsHeading;
@@ -851,11 +967,9 @@
     document.getElementById('profileIconBtn').addEventListener('click', () => setActiveView('profile'));
     document.getElementById('settingsIconBtn').addEventListener('click', () => setActiveView('settings'));
     document.getElementById('processorIconBtn').addEventListener('click', () => setActiveView('coach'));
-    document.getElementById('backFromCoachBtn').addEventListener('click', () => setActiveView('home'));
-    document.getElementById('backFromProfileBtn').addEventListener('click', () => setActiveView('home'));
-    document.getElementById('backFromSettingsBtn').addEventListener('click', () => setActiveView('home'));
     document.getElementById('langEnBtn').addEventListener('click', () => applyLanguage('en'));
     document.getElementById('langFrBtn').addEventListener('click', () => applyLanguage('fr'));
+
     const handleSearchTrigger = () => {
       if (activeView !== 'home') {
         activeView = 'home';
@@ -869,11 +983,128 @@
     };
     document.getElementById('searchInput').addEventListener('input', handleSearchTrigger);
     document.getElementById('searchSubmitBtn').addEventListener('click', handleSearchTrigger);
-    document.getElementById('copyCoachPromptBtn').addEventListener('click', async () => {
-      const txt = document.getElementById('coachPromptText').value;
-      try { await navigator.clipboard.writeText(txt); } catch (_e) {}
-      document.getElementById('coachCopyMsg').textContent = t().copiedPromptMsg;
+
+    
+    function goHome() {
+      selectedType = null;
+      document.getElementById('searchInput').value = '';
+      document.getElementById('categoryFilter').value = 'ALL';
+      setActiveView('home');
+      populateCategoryFilter();
+      renderTypeTabs();
+      syncListingState();
+    }
+
+    const GOAL_OPTIONS = {
+      vocation: [
+        ['Engineer', 'Engineer'],
+        ['Engineering Technologist', 'Engineering Technologist'],
+        ['Skilled Tradesperson', 'Skilled Tradesperson'],
+        ['Cloud & IT Infrastructure Specialist', 'Cloud & IT Infrastructure Specialist'],
+        ['Commercial & Heavy Operations Specialist', 'Commercial & Heavy Operations Specialist']
+      ],
+      trade: [
+        ['Electrician', 'Electrician'],
+        ['Welder', 'Welder'],
+        ['Heavy Equipment Technician', 'Heavy Equipment Technician'],
+        ['Industrial Mechanic Millwright', 'Industrial Mechanic Millwright'],
+        ['Plumber', 'Plumber'],
+        ['Carpenter', 'Carpenter']
+      ],
+      designation: [
+        ['P.Eng', 'P.Eng — Professional Engineer'],
+        ['C.E.T.', 'C.E.T. — Certified Engineering Technologist'],
+        ['C.Tech.', 'C.Tech. — Certified Technician'],
+        ['Red Seal', 'Red Seal Endorsement'],
+        ['C of Q', 'C of Q — Certificate of Qualification']
+      ]
+    };
+
+    const goalTypeRadios = document.querySelectorAll('input[name="goalType"]');
+    const goalSelect = document.getElementById('goalSelect');
+    const addAgentBtn = document.getElementById('addAgentBtn');
+
+    goalTypeRadios.forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        const type = radio.value;
+        goalSelect.innerHTML = '';
+        if (!type) {
+          goalSelect.disabled = true;
+          goalSelect.innerHTML = '<option value="">Select a goal type first</option>';
+          return;
+        }
+        goalSelect.disabled = false;
+        goalSelect.innerHTML = '<option value="">Choose One</option>';
+        GOAL_OPTIONS[type].forEach(function (item) {
+          const opt = document.createElement('option');
+          opt.value = item[0];
+          opt.textContent = item[1];
+          goalSelect.appendChild(opt);
+        });
+      });
     });
+
+    function runGeminiPlan() {
+      const checked = document.querySelector('input[name="goalType"]:checked');
+      const goalType = checked ? checked.value : '';
+      const goal = goalSelect.value;
+      const status = document.getElementById('coachStatusMsg');
+      if (!goalType || !goal) {
+        status.textContent = 'Choose an end goal before generating.';
+        return;
+      }
+      const prompt = 'Act as a Canadian career-pathway advisor.\n\n' +
+        'My selected goal is: ' + goalType + ': ' + goal + '\n\n' +
+        'Create a practical, step-by-step pathway anywhere in Canada.\n\n' +
+        'Use only authoritative Canadian public and non-profit sources. Prioritize and verify using these types of sources:\n' +
+        '1. Government of Canada websites, including Job Bank, the National Occupational Classification (NOC), and Employment and Social Development Canada.\n' +
+        '2. Provincial and territorial government websites and occupational regulators.\n' +
+        '3. Canadian non-profit member associations and professional certifying bodies, such as Engineers Canada, provincial engineering regulators, and relevant trade associations.\n' +
+        '4. Canadian employment-assistance organizations and non-profits, including YMCA employment services and similar public or non-profit providers.\n' +
+        '5. Canadian public colleges and universities only.\n' +
+        '6. Coursera and edX when relevant.\n\n' +
+        'Do not recommend private career colleges or private universities.\n\n' +
+        'For every important requirement, provide:\n' +
+        '- The requirement or next step\n' +
+        '- The official source name\n' +
+        '- A direct link\n' +
+        '- Whether it is federal, provincial/territorial, regulatory, association, union, employment assistance, or academic\n' +
+        '- Any fees, timelines, prerequisites, or documents mentioned\n\n' +
+        'Do not invent requirements. If information varies by province or territory, say so and identify the official source to verify.\n\n' +
+        'End with a concise checklist of the next 5 actions.';
+      window.open('https://gemini.google.com/app?q=' + encodeURIComponent(prompt), '_blank', 'noopener');
+      status.textContent = 'Gemini opened with your career pathway prompt.';
+    }
+
+    document.getElementById('generatePlanBtn').addEventListener('click', runGeminiPlan);
+
+    document.addEventListener('click', function (event) {
+      const target = event.target.closest('#homeNavBtn, #profileNavBtn, #advisorNavBtn, #settingsNavBtn, #authNavBtn');
+      if (!target) return;
+      if (target.id === 'homeNavBtn') {
+        goHome();
+      } else if (target.id === 'profileNavBtn') {
+        setActiveView('profile');
+      } else if (target.id === 'advisorNavBtn') {
+        setActiveView('coach');
+      } else if (target.id === 'settingsNavBtn') {
+        setActiveView('settings');
+      } else if (target.id === 'authNavBtn') {
+        if (currentUser) {
+          if (sbClient) sbClient.auth.signOut();
+        } else if (sbClient) {
+          sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: SITE_URL } });
+        }
+      }
+    });
+    
+    document.getElementById('coachQuestionInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        runCoachPlan();
+      }
+    });
+
     document.getElementById('categoryFilter').addEventListener('change', () => { if (isListingActive()) renderLibrary(); });
 
     const resetHome = () => {
@@ -889,7 +1120,7 @@
       }
     };
     document.getElementById('clearSearchBtn').addEventListener('click', resetHome);
-    document.getElementById('backToCategoriesBtn').addEventListener('click', resetHome);
+    document.getElementById('backToLandingBtn').addEventListener('click', resetHome);
 
     document.querySelectorAll('[data-theme-opt]').forEach((btn) => btn.addEventListener('click', () => {
       prefs.theme = btn.dataset.themeOpt;
@@ -934,7 +1165,20 @@
           document.getElementById('authStatus').textContent = `${t().welcome}, ${currentUser.email || currentUser.id}`;
         }
       }
+
+      goHome();
     })();
+  renderTypeTabs();
   </script>
+  <footer class="site-footer">
+    <nav class="site-nav" aria-label="Site navigation">
+      <button id="homeNavBtn" type="button">Home</button>
+      <button id="profileNavBtn" type="button">Profile</button>
+      <button id="advisorNavBtn" type="button">Advisor</button>
+      <button id="settingsNavBtn" type="button">Settings</button>
+      <button id="authNavBtn" type="button">Log In</button>
+    </nav>
+    <div>© 2026 Sean Maclean</div>
+  </footer>
 </body>
 </html>

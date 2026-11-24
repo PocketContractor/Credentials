@@ -1,0 +1,91 @@
+{
+  "knowledgeLibrary": {
+    "Software": [
+      "GUID",
+      "UID",
+      "Title",
+      "Link",
+      "Category",
+      "Example Wording",
+      "Source Link",
+      "Status"
+    ],
+    "Tool": [
+      "GUID",
+      "UID",
+      "Title",
+      "Link",
+      "Category",
+      "Example Wording",
+      "Source Link",
+      "Status"
+    ],
+    "Licence": [
+      "GUID",
+      "UID",
+      "Title",
+      "Link",
+      "Category",
+      "Example Wording",
+      "Source Link",
+      "Status"
+    ],
+    "Certification": [
+      "GUID",
+      "UID",
+      "Title",
+      "Link",
+      "Category",
+      "Example Wording",
+      "Source Link",
+      "Status"
+    ],
+    "Skill": [
+      "GUID",
+      "UID",
+      "Title",
+      "Link",
+      "Category",
+      "Example Wording",
+      "Source Link",
+      "Status"
+    ],
+    "Education": [
+      "GUID",
+      "UID",
+      "Title",
+      "Link",
+      "Category",
+      "Example Wording",
+      "Source Link",
+      "Status"
+    ],
+    "Requirement": [
+      "GUID",
+      "UID",
+      "Title",
+      "Link",
+      "Category",
+      "Example Wording",
+      "Source Link",
+      "Status"
+    ]
+  },
+  "profile": [
+    "GUID",
+    "Username",
+    "Email",
+    "Occupation",
+    "Locations",
+    "Languages",
+    "Availability",
+    "Education",
+    "Skills",
+    "Software",
+    "Tools",
+    "Licences",
+    "Certifications",
+    "Experience",
+    "Achievements"
+  ]
+}
