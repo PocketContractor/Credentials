@@ -76,7 +76,7 @@
     .lang-switch { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px; }
     .lang-btn { border: 0; background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
     .lang-btn.active { background: var(--accent); color: #061224; }
-    .auth-bar { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.82rem; }
+    .auth-bar { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.82rem; flex-wrap: wrap; }
     .auth-border-column { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 140px; max-width: 210px; }
     .auth-signed-out-panel { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
     .auth-signed-in-panel { display: none; flex-direction: column; gap: 8px; }
@@ -150,7 +150,7 @@
     .stat-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
     .stat-label { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; }
     .stat-val { font-size: 1.3rem; font-weight: 700; margin-top: 4px; color: var(--accent); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: var(--grid-gap); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: var(--grid-gap); }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .uid { font-size: 0.74rem; color: var(--muted); font-family: monospace; min-width: 0; }
@@ -161,6 +161,7 @@
     }
     .card-title { margin: 4px 0 0; font-size: 0.98rem; font-weight: 700; }
     .card-notes { font-size: 0.82rem; color: var(--muted); margin: 0; }
+    .card-source { color: var(--accent); font-size: .8rem; }
     .req-list { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
     .req-header { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
     .req-item { display: flex; align-items: flex-start; gap: 7px; font-size: 0.79rem; cursor: pointer; }
@@ -264,13 +265,16 @@
     .site-nav button:hover { text-decoration: underline; }
     .coach-chatbox {
       background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-      padding: 12px; min-height: 160px; max-height: 360px; overflow-y: auto;
+      padding: 12px; min-height: 160px; max-height: 440px; overflow-y: auto;
       display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
     }
     .coach-msg { border-radius: 10px; padding: 10px 12px; font-size: 0.83rem; line-height: 1.5; white-space: pre-wrap; }
     .coach-msg.user { background: var(--surface-2); border: 1px solid rgba(56, 189, 248, 0.35); align-self: flex-end; max-width: 92%; }
     .coach-msg.ai { background: var(--surface); border: 1px solid var(--border); align-self: stretch; }
+    .coach-msg.catalog-source { background: var(--surface); border: 1px solid var(--accent); align-self: stretch; }
     .coach-msg-head { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; }
+    .ai-badge-tag { font-size: 0.68rem; padding: 1px 7px; border-radius: 999px; background: rgba(56, 189, 248, 0.16); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.4); }
+    .catalog-badge-tag { font-size: 0.68rem; padding: 1px 7px; border-radius: 999px; background: rgba(34, 197, 94, 0.16); color: var(--accent-2); border: 1px solid rgba(34, 197, 94, 0.4); }
     .coach-logo-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; flex: 0 0 auto; }
     .coach-input-row { display: flex; flex-direction: column; gap: 8px; }
     .coach-input-box { width: 100%; min-height: 76px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.84rem; line-height: 1.45; resize: vertical; }
@@ -286,16 +290,13 @@
     .seg-btn.active { background: var(--accent); color: #061224; }
     .toggle-chk { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
-    .grid { grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr)); }
-    .auth-bar { flex-wrap:wrap; }
-    .card-source { color:var(--accent); font-size:.8rem; }
-    .plan-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin:10px 0; }
     .plan-group { margin:10px 0 4px; font-weight:700; color:var(--accent); font-size:.85rem; }
-    .plan-item { display:flex; gap:8px; align-items:flex-start; font-size:.82rem; margin:5px 0; }
+    .plan-item { display:flex; gap:8px; align-items:flex-start; font-size:.82rem; margin:5px 0; flex-wrap:wrap; }
     .plan-item a { color:var(--accent); word-break:break-word; }
     .plan-status { font-size:.7rem; padding:2px 6px; border-radius:999px; border:1px solid var(--border); background:var(--surface-2); white-space:nowrap; }
     .plan-status.completed { color:var(--accent-2); }
     .plan-status.inprogress { color:var(--accent); }
+    .plan-status.renewal { color:#f59e0b; }
     .plan-warning { font-size:.75rem; color:var(--muted); margin-top:8px; }
     .pdf-btn { margin-top:8px; }
   </style>
@@ -449,7 +450,7 @@
 
         <div id="coachChatbox" class="coach-chatbox" role="log" aria-live="polite" aria-label="Career coach conversation"></div>
 
-        <div class="ai-disclaimer">AI Powered Content - Please Use Responsibly</div>
+        <div class="ai-disclaimer">Catalog pathway is sourced directly from Pocket Credit records. Optional AI explanation is clearly labeled.</div>
 
         <div class="coach-input-row">
           <textarea id="coachQuestionInput" class="coach-input-box" placeholder="Ask a follow-up question about your pathway, exams, hours, or equivalencies..."></textarea>
@@ -553,7 +554,7 @@
         coachHeading: 'Advisor',
         targetVocationLabel: 'End Goal', generatePlanBtn: 'Generate',
         coachInputPlaceholder: 'Ask a follow-up question about your pathway, exams, hours, or equivalencies...',
-        coachWelcome: 'Select an End Goal (Vocation, Trade, or Designation), pick an option, and click Generate to build your Canadian credential pathway.',
+        coachWelcome: 'Select an End Goal (Vocation, Trade, or Designation) and pick an option to view your catalog pathway and download a PDF immediately, or click Generate for an optional AI-generated explanation.',
         profileHeading: 'Profile', lblCompletedCreds: 'Completed', lblSavedCreds: 'Saved', savedCredsHeading: 'Saved Entries',
         settingsHeading: 'Settings', appearanceSectionTitle: 'Appearance & Accessibility',
         lblTheme: 'Theme', descTheme: 'Switch between dark, light, or system color mode.',
@@ -572,7 +573,7 @@
           RED_SEAL: { label: 'RED SEAL', desc: 'Skilled trade certifications, trade school blocks, and apprenticeship hours.' },
           FORCES: { label: 'FORCES', desc: 'Military service qualifications, trade training, and equivalency records.' },
           ACADEMIC: { label: 'ACADEMIC', desc: 'Certificates, diplomas, and open university coursework tracks.' },
-          PROFESSIONAL: { label: 'PROFESSIONAL', desc: 'Industry certifications, commercial licences, and operational credentials.' },
+          PROFESSIONAL: { label: 'PROFESSIONAL — INCLUDES DESIGNATIONS', desc: 'Industry certifications, commercial licences, designations, and operational credentials.' },
           LITERACY: { label: 'LITERACY', desc: 'Safety compliance, workplace rights, numeracy, and digital readiness.' }
         }
       },
@@ -586,7 +587,7 @@
         coachHeading: 'Conseiller',
         targetVocationLabel: 'Objectif', generatePlanBtn: 'Générer',
         coachInputPlaceholder: 'Posez une question sur le parcours, les examens, les heures ou les équivalences...',
-        coachWelcome: 'Choisissez un objectif (Vocation, Métier ou Désignation), sélectionnez une option et cliquez sur Générer pour obtenir votre parcours canadien.',
+        coachWelcome: 'Choisissez un objectif (Vocation, Métier ou Désignation) et sélectionnez une option pour afficher le parcours du catalogue et télécharger le PDF immédiatement, ou cliquez sur Générer pour une explication IA facultative.',
         profileHeading: 'Profil', lblCompletedCreds: 'Terminées', lblSavedCreds: 'Enregistrées', savedCredsHeading: 'Fiches enregistrées',
         settingsHeading: 'Paramètres', appearanceSectionTitle: 'Apparence et accessibilité',
         lblTheme: 'Thème', descTheme: 'Choisir un mode sombre, clair ou système.',
@@ -605,7 +606,7 @@
           RED_SEAL: { label: 'SCEAU ROUGE', desc: 'Certifications des métiers, blocs de formation et heures d’apprentissage.' },
           FORCES: { label: 'FORCES', desc: 'Qualifications militaires, formation métier et dossiers d’équivalence.' },
           ACADEMIC: { label: 'ACADÉMIQUE', desc: 'Certificats, diplômes et parcours de cours universitaires ouverts.' },
-          PROFESSIONAL: { label: 'PROFESSIONNEL', desc: 'Certifications industrielles, permis commerciaux et titres opérationnels.' },
+          PROFESSIONAL: { label: 'PROFESSIONNEL — INCLUT LES DÉSIGNATIONS', desc: 'Certifications industrielles, permis commerciaux, désignations et titres opérationnels.' },
           LITERACY: { label: 'LITTÉRATIE', desc: 'Conformité sécurité, droits au travail, numératie et préparation numérique.' }
         }
       }
@@ -772,24 +773,169 @@
     }
 
     const COACH_LOGO_SVG = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>`;
+    const CATALOG_LOGO_SVG = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>`;
     let coachMessages = [];
+    let currentCatalogPathway = null;
+    let geminiUsedForSession = false;
+
+    function buildCatalogPathway(targetGuid, goalType) {
+      const target = catalogByGuid.get(String(targetGuid || '').toUpperCase());
+      if (!target) return null;
+
+      const directLinked = linkedEntries(target);
+      const secondHop = directLinked.flatMap((e) => linkedEntries(e));
+      const allRecordsMap = new Map();
+      [target, ...directLinked, ...secondHop].forEach((entry) => {
+        if (entry && entry.guid) allRecordsMap.set(entry.guid.toUpperCase(), entry);
+      });
+
+      const steps = [...allRecordsMap.values()].map((entry) => {
+        const saved = userProgressMap[entry.entryId];
+        const prog = getEntryProgress(entry);
+        const isSaved = Boolean(saved);
+        const durationParts = Object.entries(entry.durations || {}).map(([k, v]) => `${k}: ${v}`);
+        return {
+          guid: entry.guid,
+          title: entry.title,
+          category: entry.category || (entry.guid === target.guid ? 'Target Goal' : 'Related Requirement'),
+          provider: entry.provider || '',
+          province: entry.tag || '',
+          format: entry.summary || '',
+          cost: entry.cost || '',
+          durations: durationParts.join(' · '),
+          sourceUrl: entry.sourceUrl || '',
+          isTarget: entry.guid.toUpperCase() === target.guid.toUpperCase(),
+          isSaved,
+          status: isSaved ? prog.status : 'Not Started',
+          completedReqs: prog.completed_reqs || []
+        };
+      });
+
+      const savedEntries = getSavedEntries().map((entry) => {
+        const prog = getEntryProgress(entry);
+        return {
+          guid: entry.guid,
+          title: entry.title,
+          category: entry.category || '',
+          provider: entry.provider || '',
+          status: prog.status
+        };
+      });
+
+      return {
+        goalType: goalType || '',
+        targetGuid: target.guid,
+        targetTitle: target.title,
+        targetProvider: target.provider || '',
+        targetProvince: target.tag || '',
+        targetCategory: target.category || '',
+        targetSourceUrl: target.sourceUrl || '',
+        steps,
+        savedEntries
+      };
+    }
+
+    function renderCatalogPathway(pathway) {
+      const box = document.getElementById('coachChatbox');
+      if (!box || !pathway) return;
+
+      const existing = box.querySelector('#catalogPathwayCard');
+      if (existing) existing.remove();
+
+      const div = document.createElement('div');
+      div.id = 'catalogPathwayCard';
+      div.className = 'coach-msg catalog-source';
+
+      const groups = {};
+      pathway.steps.forEach((step) => {
+        const key = step.isTarget ? 'Selected End Goal' : (step.category || 'Catalog Pathway Steps');
+        (groups[key] = groups[key] || []).push(step);
+      });
+
+      let html = `
+        <div class="coach-msg-head">
+          ${CATALOG_LOGO_SVG}
+          <span>Pocket Credit Catalog Pathway</span>
+          <span class="catalog-badge-tag">Source of Truth</span>
+        </div>
+        <div><strong>${escapeHtml(pathway.targetTitle)}</strong> <span class="uid">(${escapeHtml(pathway.targetGuid)})</span></div>
+        ${pathway.targetProvider ? `<div class="card-notes">Provider / Authority: ${escapeHtml(pathway.targetProvider)}${pathway.targetProvince ? ' · ' + escapeHtml(pathway.targetProvince) : ''}</div>` : ''}
+      `;
+
+      Object.entries(groups).forEach(([groupName, items]) => {
+        html += `<div class="plan-group">${escapeHtml(groupName)}</div>`;
+        items.forEach((item) => {
+          const statusCls = item.status === 'Completed'
+            ? 'completed'
+            : (item.status === 'In Progress' ? 'inprogress' : (item.status === 'Renewal Due' ? 'renewal' : ''));
+          const metaBits = [
+            item.guid,
+            item.provider,
+            item.province,
+            item.format,
+            item.durations,
+            item.cost ? `Cost: ${item.cost}` : ''
+          ].filter(Boolean).join(' · ');
+
+          html += `
+            <div class="plan-item">
+              <span class="plan-status ${statusCls}">${escapeHtml(item.status)}</span>
+              <span><strong>${escapeHtml(item.title)}</strong>${metaBits ? ` — ${escapeHtml(metaBits)}` : ''}</span>
+            </div>
+          `;
+          if (item.sourceUrl) {
+            html += `<div class="plan-item"><span></span><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">Official source ↗</a></div>`;
+          }
+        });
+      });
+
+      if (pathway.savedEntries.length) {
+        html += `<div class="plan-group">Your Saved / Completed Catalog Progress (${pathway.savedEntries.length})</div>`;
+        pathway.savedEntries.forEach((s) => {
+          const statusCls = s.status === 'Completed'
+            ? 'completed'
+            : (s.status === 'In Progress' ? 'inprogress' : (s.status === 'Renewal Due' ? 'renewal' : ''));
+          html += `
+            <div class="plan-item">
+              <span class="plan-status ${statusCls}">${escapeHtml(s.status)}</span>
+              <span>${escapeHtml(s.title)} <span class="uid">(${escapeHtml(s.guid)})</span></span>
+            </div>
+          `;
+        });
+      }
+
+      html += `
+        <div class="plan-warning">Informational only. Verify all requirements with the official provider, regulator, or institution.</div>
+        <button id="downloadPlanPdfBtn" class="btn btn-small btn-primary pdf-btn" type="button">Download PDF</button>
+      `;
+
+      div.innerHTML = html;
+      box.prepend(div);
+      div.querySelector('#downloadPlanPdfBtn')?.addEventListener('click', () => downloadPlanPdf(pathway));
+    }
 
     function renderCoachChatbox() {
       const box = document.getElementById('coachChatbox');
       if (!box) return;
       box.innerHTML = '';
-      if (!coachMessages.length) {
+
+      if (currentCatalogPathway) {
+        renderCatalogPathway(currentCatalogPathway);
+      }
+
+      if (!coachMessages.length && !currentCatalogPathway) {
         const welcomeDiv = document.createElement('div');
         welcomeDiv.className = 'coach-msg ai';
         welcomeDiv.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span></div><div>${t().coachWelcome}</div>`;
         box.appendChild(welcomeDiv);
         return;
       }
+
       coachMessages.forEach((m) => {
         const div = document.createElement('div');
         div.className = `coach-msg ${m.role}`;
         if (m.role === 'ai') {
-          div.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span></div><div>${m.text.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</div>`;
+          div.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span><span class="ai-badge-tag">AI-Generated Explanation</span></div><div>${escapeHtml(m.text)}</div>`;
         } else {
           div.textContent = m.text;
         }
@@ -800,6 +946,10 @@
 
     function renderCareerCoach() {
       updateProfileStats();
+      if (goalSelect && goalSelect.value) {
+        const checked = document.querySelector('input[name="goalType"]:checked');
+        currentCatalogPathway = buildCatalogPathway(goalSelect.value, checked ? checked.value : '');
+      }
       renderCoachChatbox();
     }
 
@@ -881,6 +1031,11 @@
       userProgressMap[entryId] = { status, completed_reqs: completedReqs || [] };
       localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
       updateProfileStats();
+      if (goalSelect && goalSelect.value) {
+        const checked = document.querySelector('input[name="goalType"]:checked');
+        currentCatalogPathway = buildCatalogPathway(goalSelect.value, checked ? checked.value : '');
+        if (activeView === 'coach') renderCoachChatbox();
+      }
       msgEl.style.color = 'var(--accent-2)';
       msgEl.textContent = tr.savedLocalMsg;
       await syncIndividualProgress();
@@ -1084,17 +1239,34 @@
     }
 
     function getGoalOptions(type) {
-      const prefix={vocation:'NOC-',trade:'TRD-',designation:'DSG-'}[type];
-      return allLibraryEntries.filter(e=>prefix&&e.guid.toUpperCase().startsWith(prefix)).sort((a,b)=>a.title.localeCompare(b.title));
+      if (type === 'designation') {
+        return allLibraryEntries
+          .filter((e) => e.sector === 'PROFESSIONAL')
+          .sort((a, b) => a.title.localeCompare(b.title));
+      }
+      const prefix = { vocation: 'NOC-', trade: 'TRD-' }[type];
+      return allLibraryEntries
+        .filter((e) => prefix && e.guid.toUpperCase().startsWith(prefix))
+        .sort((a, b) => a.title.localeCompare(b.title));
     }
+
     function refreshGoalOptions() {
-      const type=document.querySelector('input[name="goalType"]:checked')?.value;
-      const old=goalSelect.value;
-      goalSelect.replaceChildren(new Option(currentLang==='fr'?'Choisir un objectif':'Choose a goal',''));
-      const entries=getGoalOptions(type);
-      entries.forEach(e=>goalSelect.add(new Option(e.title,e.guid)));
-      goalSelect.disabled=!entries.length;
-      if(entries.some(e=>e.guid===old))goalSelect.value=old;
+      const type = document.querySelector('input[name="goalType"]:checked')?.value;
+      const old = goalSelect.value;
+      goalSelect.replaceChildren(new Option(currentLang === 'fr' ? 'Choisir un objectif' : 'Choose a goal', ''));
+      const entries = getGoalOptions(type);
+      entries.forEach((e) => goalSelect.add(new Option(e.title, e.guid)));
+      goalSelect.disabled = !entries.length;
+      if (entries.some((e) => e.guid === old)) goalSelect.value = old;
+
+      if (goalSelect.value) {
+        currentCatalogPathway = buildCatalogPathway(goalSelect.value, type || '');
+      } else {
+        currentCatalogPathway = null;
+      }
+      geminiUsedForSession = false;
+      coachMessages = [];
+      renderCoachChatbox();
     }
 
     const goalTypeRadios = document.querySelectorAll('input[name="goalType"]');
@@ -1112,108 +1284,229 @@
       updateActiveAgentUI();
     });
 
-    goalTypeRadios.forEach(radio=>radio.addEventListener('change',refreshGoalOptions));
+    goalTypeRadios.forEach((radio) => radio.addEventListener('change', refreshGoalOptions));
 
-    const ADVISOR_INSTRUCTIONS = "You are Pocket Credit's catalog-based pathway assistant. Use ONLY supplied catalog records, user statements and source content explicitly returned by an enabled approved retrieval tool. Do not add requirements, equivalencies, fees, durations or credit-transfer claims from general knowledge. The goal and linked records supply the pathway; explain and organize them without inventing milestones or GUIDs. Preserve categories, qualifications and conditional wording. Saved achievements are self-reported, not verified. Not recorded does not mean not achieved. Ask focused questions if necessary. Do not claim a URL was read unless retrieval succeeded. Cite supplied official links and identify unresolved details for confirmation with the supplied authority. Keep duration fields independent without conversion. Do not guarantee admission or recognition. Return the required JSON object only.";
-    let advisorBusy=false;
-    let lastPlan=null;
+    goalSelect.addEventListener('change', () => {
+      const checked = document.querySelector('input[name="goalType"]:checked');
+      const goalType = checked ? checked.value : '';
+      currentCatalogPathway = goalSelect.value ? buildCatalogPathway(goalSelect.value, goalType) : null;
+      geminiUsedForSession = false;
+      coachMessages = [];
+      const status = document.getElementById('coachStatusMsg');
+      if (currentCatalogPathway) {
+        status.style.color = 'var(--accent-2)';
+        status.textContent = 'Catalog pathway loaded. Download PDF or click Generate for an AI explanation.';
+      } else {
+        status.textContent = '';
+      }
+      renderCoachChatbox();
+    });
 
-    function renderPlan(plan) {
-      const box=document.getElementById('coachChatbox');
-      const div=document.createElement('div');
-      div.className='coach-msg ai';
-      const groups={};
-      (plan.checklist||[]).forEach(item=>{(groups[item.subcategory||'Pathway']=groups[item.subcategory||'Pathway']||[]).push(item);});
-      let html=`<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span></div>`;
-      if(plan.overview)html+=`<div>${escapeHtml(plan.overview)}</div>`;
-      Object.entries(groups).forEach(([group,items])=>{
-        html+=`<div class="plan-group">${escapeHtml(group)}</div>`;
-        items.forEach(item=>{
-          const status=escapeHtml(item.selfReportedStatus||'Not recorded');
-          const cls=({'Completed':'completed','In Progress':'inprogress'})[item.selfReportedStatus]||'';
-          html+=`<div class="plan-item"><span class="plan-status ${cls}">${status}</span><span>${escapeHtml(item.milestone||'')}</span></div>`;
-          if(item.explanation)html+=`<div class="plan-item"><span></span><span>${escapeHtml(item.explanation)}</span></div>`;
-          if(item.sourceUrl)html+=`<div class="plan-item"><span></span><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">Official source ↗</a></div>`;
-          if(item.confirmationNote)html+=`<div class="plan-item"><span></span><span class="plan-warning">${escapeHtml(item.confirmationNote)}</span></div>`;
-        });
+    const ADVISOR_INSTRUCTIONS = "You are Pocket Credit's catalog-based pathway assistant. Use ONLY supplied catalog records, user statements and source content explicitly returned by an enabled approved retrieval tool. Do not add requirements, equivalencies, fees, durations or credit-transfer claims from general knowledge. The goal and linked records supply the pathway; provide a concise explanation of them without inventing milestones or GUIDs. Preserve categories, qualifications and conditional wording. Saved achievements are self-reported, not verified. Not recorded does not mean not achieved. Ask focused questions if necessary. Do not claim a URL was read unless retrieval succeeded. Cite supplied official links and identify unresolved details for confirmation with the supplied authority. Keep duration fields independent without conversion. Do not guarantee admission or recognition. Return the required JSON object only.";
+    let advisorBusy = false;
+
+    function downloadPlanPdf(pathway) {
+      if (!pathway) return;
+      const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+      const width = doc.internal.pageSize.getWidth();
+      const margin = 48;
+      let y = 58;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(20);
+      doc.text('POCKET CREDIT', margin, y);
+      y += 20;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Catalog-Based Credential Pathway Report', margin, y);
+      y += 22;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      const goalHeading = `Selected Goal: ${pathway.targetTitle || 'Career Pathway'} (${pathway.targetGuid || ''})`;
+      const goalLines = doc.splitTextToSize(goalHeading, width - margin * 2);
+      doc.text(goalLines, margin, y);
+      y += goalLines.length * 16 + 6;
+
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      const goalTypeLabel = pathway.goalType ? pathway.goalType.toUpperCase() : 'CATALOG';
+      doc.text(`Date Generated: ${new Date().toLocaleString()} | Goal Type: ${goalTypeLabel}`, margin, y);
+      y += 18;
+
+      const groups = {};
+      (pathway.steps || []).forEach((step) => {
+        const groupName = step.isTarget ? 'Selected End Goal' : (step.category || 'Catalog Pathway Steps');
+        (groups[groupName] = groups[groupName] || []).push(step);
       });
-      (plan.questions||[]).forEach(q=>{html+=`<div class="plan-warning">Question: ${escapeHtml(q)}</div>`;});
-      (plan.warnings||[]).forEach(w=>{html+=`<div class="plan-warning">${escapeHtml(w)}</div>`;});
-      html+=`<button id="downloadPlanPdfBtn" class="btn btn-small btn-primary pdf-btn" type="button">Download PDF</button>`;
-      div.innerHTML=html;
-      box.appendChild(div);
-      box.scrollTop=box.scrollHeight;
-      div.querySelector('#downloadPlanPdfBtn')?.addEventListener('click',()=>downloadPlanPdf(plan));
-    }
 
-    function downloadPlanPdf(plan) {
-      const doc=new window.jspdf.jsPDF({unit:'pt',format:'letter'});
-      const width=doc.internal.pageSize.getWidth();
-      const margin=48;
-      let y=58;
-      doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text('POCKET CREDIT',margin,y);y+=22;
-      doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Credential pathway checklist',margin,y);y+=24;
-      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text(doc.splitTextToSize(plan.targetTitle||'Career pathway',width-margin*2),margin,y);y+=24;
-      doc.setFontSize(8);doc.setFont('helvetica','normal');
-      doc.text(`Generated: ${new Date().toLocaleString()} | Self-reported progress; not an assessment or guarantee.`,margin,y);y+=20;
-      if(plan.overview){doc.setFontSize(10);const lines=doc.splitTextToSize(plan.overview,width-margin*2);doc.text(lines,margin,y);y+=lines.length*13+10;}
-      const groups={};
-      (plan.checklist||[]).forEach(item=>{(groups[item.subcategory||'Pathway']=groups[item.subcategory||'Pathway']||[]).push(item);});
-      Object.entries(groups).forEach(([group,items])=>{
-        if(y>700){doc.addPage();y=58;}
-        doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(group,margin,y);y+=16;
-        items.forEach(item=>{
-          doc.setFont('helvetica','normal');doc.setFontSize(9);
-          const status=item.selfReportedStatus||'Not recorded';
-          const lines=doc.splitTextToSize(`[${status}] ${item.milestone||''}${item.explanation?' — '+item.explanation:''}`,width-margin*2-14);
-          if(y+lines.length*12>720){doc.addPage();y=58;}
-          doc.text(lines,margin+14,y);y+=lines.length*12+3;
-          if(item.sourceUrl){const link=doc.splitTextToSize(item.sourceUrl,width-margin*2-14);if(y+link.length*10>720){doc.addPage();y=58;}doc.setTextColor(2,132,199);doc.textWithLink(link,margin+14,y,{url:item.sourceUrl});doc.setTextColor(0,0,0);y+=link.length*10+3;}
-          if(item.confirmationNote){const note=doc.splitTextToSize(`Confirm: ${item.confirmationNote}`,width-margin*2-14);if(y+note.length*10>720){doc.addPage();y=58;}doc.setTextColor(90,90,90);doc.text(note,margin+14,y);doc.setTextColor(0,0,0);y+=note.length*10+3;}
+      Object.entries(groups).forEach(([group, items]) => {
+        if (y > 690) { doc.addPage(); y = 58; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.text(group, margin, y);
+        y += 16;
+
+        items.forEach((item) => {
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          const metaParts = [
+            item.guid,
+            item.provider,
+            item.province,
+            item.format,
+            item.durations,
+            item.cost ? `Cost: ${item.cost}` : ''
+          ].filter(Boolean).join(' | ');
+          const stepText = `[Status: ${item.status}] ${item.title}${metaParts ? ' — ' + metaParts : ''}`;
+          const lines = doc.splitTextToSize(stepText, width - margin * 2 - 14);
+          if (y + lines.length * 12 > 710) { doc.addPage(); y = 58; }
+          doc.text(lines, margin + 14, y);
+          y += lines.length * 12 + 3;
+
+          if (item.sourceUrl) {
+            const linkLines = doc.splitTextToSize(item.sourceUrl, width - margin * 2 - 14);
+            if (y + linkLines.length * 10 > 710) { doc.addPage(); y = 58; }
+            doc.setTextColor(2, 132, 199);
+            doc.textWithLink(linkLines, margin + 14, y, { url: item.sourceUrl });
+            doc.setTextColor(0, 0, 0);
+            y += linkLines.length * 10 + 4;
+          }
         });
-        y+=8;
+        y += 8;
       });
-      if(y>690){doc.addPage();y=58;}
-      doc.setFontSize(7);doc.setTextColor(90,90,90);
-      const warning=(plan.warnings||[]).concat(['Planning aid based on catalog information and self-reported progress. Not an assessment, credential, admission decision, or guarantee of recognition. Confirm current requirements and recognition of prior learning with the linked provider or authority.']).join(' ');
-      doc.text(doc.splitTextToSize(warning,width-margin*2),margin,y);
+
+      if (pathway.savedEntries && pathway.savedEntries.length) {
+        if (y > 680) { doc.addPage(); y = 58; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.text('User Saved / Completed Progress (Self-Reported)', margin, y);
+        y += 16;
+
+        pathway.savedEntries.forEach((s) => {
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          const line = `[Status: ${s.status}] ${s.title} (${s.guid})${s.provider ? ' — ' + s.provider : ''}`;
+          const lines = doc.splitTextToSize(line, width - margin * 2 - 14);
+          if (y + lines.length * 12 > 710) { doc.addPage(); y = 58; }
+          doc.text(lines, margin + 14, y);
+          y += lines.length * 12 + 3;
+        });
+        y += 8;
+      }
+
+      if (y > 660) { doc.addPage(); y = 58; }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(60, 60, 60);
+      const requiredWarning = 'Informational only. Verify all requirements with the official provider, regulator, or institution.';
+      const warnLines = doc.splitTextToSize(requiredWarning, width - margin * 2);
+      doc.text(warnLines, margin, y);
+      y += warnLines.length * 11 + 4;
+
+      if (geminiUsedForSession) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(90, 90, 90);
+        const aiNote = 'AI-Use Disclaimer: Gemini AI was used separately in the Advisor chat to provide an optional explanation of the catalog records. All credentials, requirements, durations, sources, and pathway steps in this document come exclusively from the Pocket Credit catalog and your self-reported progress.';
+        const aiLines = doc.splitTextToSize(aiNote, width - margin * 2);
+        doc.text(aiLines, margin, y);
+      }
+
       doc.save('pocket-credit-pathway.pdf');
     }
 
     async function runAdvisorPlan() {
-      if(advisorBusy)return;
-      const checked=document.querySelector('input[name="goalType"]:checked');
-      const goalType=checked?checked.value:'';
-      const target=catalogByGuid.get(goalSelect.value.toUpperCase());
-      const goal=target?.title||'';
-      const followUpNote=(document.getElementById('coachQuestionInput').value||'').trim();
-      const status=document.getElementById('coachStatusMsg');
-      const agent=AI_AGENTS[selectedAgentIdx];
-      if(!target&&!followUpNote){status.style.color='var(--danger)';status.textContent='Select an end goal or enter a question first.';return;}
-      if(!agent.inline){status.style.color='var(--danger)';status.textContent='Choose the Gemini agent for the catalog-based Advisor.';return;}
-      const selectedContext=target?[target,...linkedEntries(target)]:[];
-      const providers=selectedContext.flatMap(e=>linkedEntries(e)).filter(e=>e.guid.toUpperCase().startsWith('PRV-'));
-      const catalogContext=[...new Map([...selectedContext,...providers].map(e=>[e.guid,e])).values()].map(advisorRecord);
-      const profileContext=getSavedEntries().map(e=>({...advisorRecord(e),...getEntryProgress(e),selfReported:true}));
-      coachMessages.push({role:'user',text:`Goal: ${goalType} — ${goal}${followUpNote?'\nNote: '+followUpNote:''}`});
-      coachMessages.push({role:'ai',text:'Assembling supplied catalog pathway...'});
-      const thinkingIdx=coachMessages.length-1;renderCoachChatbox();
-      status.style.color='var(--muted)';status.textContent='Contacting advisor-chat...';advisorBusy=true;
-      document.getElementById('generatePlanBtn').disabled=true;
-      try{
-        const res=await fetch(ADVISOR_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify({goalType,goal,targetGuid:target?.guid||null,question:followUpNote,completed:[],inProgress:[],history:coachMessages.slice(0,thinkingIdx).slice(-6),model:GEMINI_MODEL_NAME,catalogContext,profile:profileContext,instructions:ADVISOR_INSTRUCTIONS})});
-        const rawText=await res.text();let payload={};
-        try{payload=rawText?JSON.parse(rawText):{};}catch{throw new Error(rawText||`HTTP ${res.status} from advisor-chat`);}
-        if(!res.ok||!payload.plan)throw new Error(payload.error||payload.message||`HTTP ${res.status}: Could not get a structured response from advisor-chat.`);
-        lastPlan=payload.plan;
-        coachMessages[thinkingIdx]={role:'ai',text:payload.reply||payload.plan.overview||'Pathway prepared.'};
-        document.getElementById('coachQuestionInput').value='';
-        status.style.color='var(--accent-2)';status.textContent='Pathway prepared. PDF is available below.';
-        renderCoachChatbox();renderPlan(payload.plan);
-      }catch(err){
-        coachMessages[thinkingIdx]={role:'ai',text:`Advisor error: ${err.message}`};
-        status.style.color='var(--danger)';status.textContent='Advisor request failed.';
-      }finally{advisorBusy=false;document.getElementById('generatePlanBtn').disabled=false;renderCoachChatbox();}
+      if (advisorBusy) return;
+      const checked = document.querySelector('input[name="goalType"]:checked');
+      const goalType = checked ? checked.value : '';
+      const target = catalogByGuid.get(goalSelect.value.toUpperCase());
+      const goal = target?.title || '';
+      const followUpNote = (document.getElementById('coachQuestionInput').value || '').trim();
+      const status = document.getElementById('coachStatusMsg');
+      const agent = AI_AGENTS[selectedAgentIdx];
+
+      if (!target && !followUpNote) {
+        status.style.color = 'var(--danger)';
+        status.textContent = 'Select an end goal or enter a question first.';
+        return;
+      }
+      if (!agent.inline) {
+        status.style.color = 'var(--danger)';
+        status.textContent = 'Choose the Gemini agent for the catalog-based Advisor.';
+        return;
+      }
+
+      if (target) {
+        currentCatalogPathway = buildCatalogPathway(target.guid, goalType);
+      }
+
+      const selectedContext = target ? [target, ...linkedEntries(target)] : [];
+      const providers = selectedContext.flatMap((e) => linkedEntries(e)).filter((e) => e.guid.toUpperCase().startsWith('PRV-'));
+      const catalogContext = [...new Map([...selectedContext, ...providers].map((e) => [e.guid, e])).values()].map(advisorRecord);
+      const profileContext = getSavedEntries().map((e) => ({ ...advisorRecord(e), ...getEntryProgress(e), selfReported: true }));
+
+      coachMessages.push({ role: 'user', text: `Goal: ${goalType} — ${goal}${followUpNote ? '
+Question: ' + followUpNote : ''}` });
+      coachMessages.push({ role: 'ai', text: 'Generating AI explanation from catalog records...' });
+      const thinkingIdx = coachMessages.length - 1;
+      renderCoachChatbox();
+
+      status.style.color = 'var(--muted)';
+      status.textContent = 'Contacting advisor-chat...';
+      advisorBusy = true;
+      document.getElementById('generatePlanBtn').disabled = true;
+
+      try {
+        const res = await fetch(ADVISOR_FUNCTION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          },
+          body: JSON.stringify({
+            goalType,
+            goal,
+            targetGuid: target?.guid || null,
+            question: followUpNote,
+            completed: [],
+            inProgress: [],
+            history: coachMessages.slice(0, thinkingIdx).slice(-6),
+            model: GEMINI_MODEL_NAME,
+            catalogContext,
+            profile: profileContext,
+            instructions: ADVISOR_INSTRUCTIONS
+          })
+        });
+        const rawText = await res.text();
+        let payload = {};
+        try {
+          payload = rawText ? JSON.parse(rawText) : {};
+        } catch {
+          throw new Error(rawText || `HTTP ${res.status} from advisor-chat`);
+        }
+        if (!res.ok || (!payload.plan && !payload.reply)) {
+          throw new Error(payload.error || payload.message || `HTTP ${res.status}: Could not get a response from advisor-chat.`);
+        }
+
+        geminiUsedForSession = true;
+        const explanationText = payload.reply || payload.plan?.overview || 'Explanation generated from the selected catalog pathway.';
+        coachMessages[thinkingIdx] = { role: 'ai', text: explanationText };
+        document.getElementById('coachQuestionInput').value = '';
+        status.style.color = 'var(--accent-2)';
+        status.textContent = 'AI explanation added below. Catalog pathway remains the source of truth.';
+        renderCoachChatbox();
+      } catch (err) {
+        coachMessages[thinkingIdx] = { role: 'ai', text: `Advisor error: ${err.message}` };
+        status.style.color = 'var(--danger)';
+        status.textContent = 'Advisor request failed.';
+        renderCoachChatbox();
+      } finally {
+        advisorBusy = false;
+        document.getElementById('generatePlanBtn').disabled = false;
+      }
     }
 
     document.getElementById('generatePlanBtn').addEventListener('click', runAdvisorPlan);
@@ -1280,6 +1573,7 @@
       await syncIndividualProgress();
       updateProfileStats();
       renderProfile();
+      if (activeView === 'coach') renderCareerCoach();
       if (isListingActive()) renderLibrary();
       document.getElementById('settingsMsg').textContent = t().localClearedMsg;
     });
