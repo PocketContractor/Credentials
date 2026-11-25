@@ -4,18 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pocket Credit — Manage Credentials Online</title>
-  <meta name="description" content="Organize self-reported credentials and explore Canadian career pathways with Pocket Credit.">
-  <link rel="canonical" href="https://pocketcredit.online/">
-  <meta property="og:title" content="Pocket Credit — Manage Credentials Online">
-  <meta property="og:description" content="Explore credentials, providers and Canadian career pathways.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://pocketcredit.online/">
-  <meta name="twitter:card" content="summary">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg: #0b1020;
@@ -76,7 +68,7 @@
     .lang-switch { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px; }
     .lang-btn { border: 0; background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
     .lang-btn.active { background: var(--accent); color: #061224; }
-    .auth-bar { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.82rem; flex-wrap: wrap; }
+    .auth-bar { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.82rem; }
     .auth-border-column { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 140px; max-width: 210px; }
     .auth-signed-out-panel { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
     .auth-signed-in-panel { display: none; flex-direction: column; gap: 8px; }
@@ -124,7 +116,6 @@
     .icon-action-btn.primary-icon { background: var(--accent); border-color: var(--accent); color: #061224; }
     .home-search-input { flex: 1; min-width: 0; height: 42px; padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; }
     .cat-matrix-wrap { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
-    .cat-matrix-wrap.hidden-drill { display: none; }
     .cat-group-row { display: flex; align-items: center; gap: 12px; cursor: pointer; }
     .cat-group-icon { flex: 0 0 40px; width: 40px; height: 40px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
     .cat-group-row.active .cat-group-icon { color: var(--accent); }
@@ -150,18 +141,15 @@
     .stat-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
     .stat-label { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; }
     .stat-val { font-size: 1.3rem; font-weight: 700; margin-top: 4px; color: var(--accent); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: var(--grid-gap); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: var(--grid-gap); }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-    .uid { font-size: 0.74rem; color: var(--muted); font-family: monospace; min-width: 0; }
-    .badge {
-      font-size: 0.7rem; padding: 2px 9px; border-radius: 999px; font-weight: 700;
-      background: var(--surface-2); color: var(--accent); border: 1px solid var(--border);
-      white-space: nowrap; flex-shrink: 0; line-height: 1.35;
-    }
+    .uid { font-size: 0.74rem; color: var(--muted); font-family: monospace; }
+    .badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
     .card-title { margin: 4px 0 0; font-size: 0.98rem; font-weight: 700; }
     .card-notes { font-size: 0.82rem; color: var(--muted); margin: 0; }
-    .card-source { color: var(--accent); font-size: .8rem; }
+    .card-link { display: inline-block; margin-top: 6px; font-size: 0.76rem; color: var(--accent); text-decoration: none; font-weight: 600; }
+    .card-link:hover { text-decoration: underline; }
     .req-list { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
     .req-header { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
     .req-item { display: flex; align-items: flex-start; gap: 7px; font-size: 0.79rem; cursor: pointer; }
@@ -178,9 +166,10 @@
     .library-section.visible { display: block; }
     .library-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px; }
     .library-header h2 { margin: 0; font-size: 1.02rem; }
-    .lib-pill { font-size: 0.7rem; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); display: inline-block; margin-top: 6px; }
+    .lib-pill { font-size: 0.7rem; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); display: inline-block; margin-top: 6px; margin-right: 4px; }
     .empty-profile { background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 24px 16px; text-align: center; color: var(--muted); font-size: 0.88rem; }
 
+    /* Career Coach UI */
     .coach-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); margin-bottom: 14px; }
     .coach-field { display: flex; flex-direction: column; gap: 5px; font-size: 0.76rem; color: var(--muted); }
     .advisor-params-box {
@@ -220,7 +209,6 @@
     .advisor-agent-row {
       grid-column: 1 / -1;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       gap: 10px;
@@ -242,7 +230,7 @@
       text-align: center;
       color: var(--muted);
       font-size: 0.78rem;
-      margin: 8px 0;
+      margin: 8px 0 0;
     }
     .site-footer {
       max-width: 1280px; margin: 28px auto 18px; padding: 0 16px;
@@ -265,18 +253,15 @@
     .site-nav button:hover { text-decoration: underline; }
     .coach-chatbox {
       background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-      padding: 12px; min-height: 160px; max-height: 440px; overflow-y: auto;
+      padding: 12px; min-height: 220px; max-height: 400px; overflow-y: auto;
       display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
     }
     .coach-msg { border-radius: 10px; padding: 10px 12px; font-size: 0.83rem; line-height: 1.5; white-space: pre-wrap; }
     .coach-msg.user { background: var(--surface-2); border: 1px solid rgba(56, 189, 248, 0.35); align-self: flex-end; max-width: 92%; }
     .coach-msg.ai { background: var(--surface); border: 1px solid var(--border); align-self: stretch; }
-    .coach-msg.catalog-source { background: var(--surface); border: 1px solid var(--accent); align-self: stretch; }
     .coach-msg-head { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; }
-    .ai-badge-tag { font-size: 0.68rem; padding: 1px 7px; border-radius: 999px; background: rgba(56, 189, 248, 0.16); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.4); }
-    .catalog-badge-tag { font-size: 0.68rem; padding: 1px 7px; border-radius: 999px; background: rgba(34, 197, 94, 0.16); color: var(--accent-2); border: 1px solid rgba(34, 197, 94, 0.4); }
-    .coach-logo-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; flex: 0 0 auto; }
-    .coach-input-row { display: flex; flex-direction: column; gap: 8px; }
+    .coach-logo-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; flex: 0 0 auto; }
+    .coach-input-row { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
     .coach-input-box { width: 100%; min-height: 76px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.84rem; line-height: 1.45; resize: vertical; }
     .coach-actions-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
 
@@ -289,16 +274,6 @@
     .seg-btn { border: 0; background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
     .seg-btn.active { background: var(--accent); color: #061224; }
     .toggle-chk { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
-    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
-    .plan-group { margin:10px 0 4px; font-weight:700; color:var(--accent); font-size:.85rem; }
-    .plan-item { display:flex; gap:8px; align-items:flex-start; font-size:.82rem; margin:5px 0; flex-wrap:wrap; }
-    .plan-item a { color:var(--accent); word-break:break-word; }
-    .plan-status { font-size:.7rem; padding:2px 6px; border-radius:999px; border:1px solid var(--border); background:var(--surface-2); white-space:nowrap; }
-    .plan-status.completed { color:var(--accent-2); }
-    .plan-status.inprogress { color:var(--accent); }
-    .plan-status.renewal { color:#f59e0b; }
-    .plan-warning { font-size:.75rem; color:var(--muted); margin-top:8px; }
-    .pdf-btn { margin-top:8px; }
   </style>
 </head>
 <body>
@@ -357,7 +332,7 @@
           <span id="profileNavCount" class="icon-badge-count">0</span>
         </button>
 
-        <button id="processorIconBtn" class="header-icon-btn" type="button" title="Advisor" aria-label="Advisor">
+        <button id="processorIconBtn" class="header-icon-btn" type="button" title="Free AI Career Coach" aria-label="Free AI Career Coach">
           <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="6" y="6" width="12" height="12" rx="2" />
             <rect x="9.5" y="9.5" width="5" height="5" />
@@ -393,16 +368,13 @@
       <button id="clearSearchBtn" class="icon-action-btn" type="button" title="Home" aria-label="Home">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3L2 11h3v9h6v-6h2v6h6v-9h3L12 3z"/></svg>
       </button>
-      <input id="searchInput" aria-label="Search credentials" class="home-search-input" type="search" placeholder="Search credentials..." />
+      <input id="searchInput" class="home-search-input" type="search" placeholder="Search credentials..." />
       <button id="searchSubmitBtn" class="icon-action-btn primary-icon" type="button" title="Search" aria-label="Search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.32l5.39 5.39 1.42-1.42-5.39-5.39A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
       </button>
     </div>
 
     <section id="homeView" class="view-section active">
-      <div class="sr-only"><h2>Explore credentials and Canadian career pathways</h2><p>Browse trades, military qualifications, academic programs, professional credentials and workplace learning. Save self-reported progress and explore pathways with the Advisor.</p></div>
-      <div id="catalogStatus" class="status-banner" role="status" aria-live="polite">Loading catalog…</div>
-      <noscript><p>Enable JavaScript to use the catalog and Advisor.</p></noscript>
       <div id="typeTabs" class="cat-matrix-wrap" role="tablist" aria-label="Library Categories"></div>
 
       <div id="listingTools" class="listing-tools">
@@ -428,29 +400,29 @@
         <div class="advisor-params-box">
           <fieldset class="advisor-goal-types">
             <legend id="targetVocationLabel">End Goal</legend>
-            <label class="advisor-radio"><input type="radio" name="goalType" value="vocation"> Vocation</label>
-            <label class="advisor-radio"><input type="radio" name="goalType" value="trade"> Trade</label>
-            <label class="advisor-radio"><input type="radio" name="goalType" value="designation"> Designation</label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="vocation"> <span id="lblGoalVocation">Vocation</span></label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="trade"> <span id="lblGoalTrade">Trade</span></label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="designation"> <span id="lblGoalDesignation">Designation</span></label>
           </fieldset>
           <div class="coach-field">
-            <label for="goalSelect">Choose One</label>
+            <label for="goalSelect" id="lblChooseOne">Choose One</label>
             <select id="goalSelect" disabled>
               <option value="">Select a goal type first</option>
             </select>
           </div>
           <div class="advisor-agent-row">
-            <span id="activeAgentBadge" class="coach-logo-badge" aria-hidden="true">
+            <span class="coach-logo-badge" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>
             </span>
             <button id="generatePlanBtn" class="btn btn-primary advisor-generate-btn" type="button">Generate</button>
-            <button id="addAgentBtn" class="btn advisor-add-agent-btn" type="button" title="Switch AI Agent" aria-label="Switch AI Agent">+</button>
-            <span id="activeAgentLabel" class="advisor-add-agent-text">Agent: Gemini</span>
+            <button id="addAgentBtn" class="btn advisor-add-agent-btn" type="button">+</button>
+            <span id="lblAddAgent" class="advisor-add-agent-text">Add Agent</span>
           </div>
         </div>
 
         <div id="coachChatbox" class="coach-chatbox" role="log" aria-live="polite" aria-label="Career coach conversation"></div>
 
-        <div class="ai-disclaimer">Catalog pathway is sourced directly from Pocket Credit records. Optional AI explanation is clearly labeled.</div>
+        <div id="aiDisclaimer" class="ai-disclaimer">AI Powered Content - Please Use Responsibly</div>
 
         <div class="coach-input-row">
           <textarea id="coachQuestionInput" class="coach-input-box" placeholder="Ask a follow-up question about your pathway, exams, hours, or equivalencies..."></textarea>
@@ -537,11 +509,9 @@
     const SUPABASE_URL = 'https://ntyrejoqfwgyxrojglom.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_uCgDNlN3CQsNVJ9WDFbucQ_kCH1dMmZ';
     const SITE_URL = 'https://pocketcredit.online';
-    const ADVISOR_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/advisor-chat`;
-    const GEMINI_MODEL_NAME = 'gemini-3.8-flash';
     const sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    const TYPE_LIBRARIES = {"RED_SEAL": [], "FORCES": [], "ACADEMIC": [], "PROFESSIONAL": [], "LITERACY": []};
+    const TYPE_LIBRARIES = {"RED_SEAL": [{"title": "Red Seal Trades — Official Standards & Exam Guides", "provider": "Red Seal Program / Skilled Trades Ontario", "tag": "Standard", "summary": "National occupational standards, trade school blocks, and Certificate of Qualification pathways.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-TRD-001", "code": "309A", "title": "309A — Construction and Maintenance Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Red Seal trade with trade school blocks and on-the-job apprenticeship requirements.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-002", "code": "433A", "title": "433A — Millwright (Industrial Mechanic)", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Industrial maintenance and machinery installation trade.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-003", "code": "442A", "title": "442A — Industrial Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Plant electrical systems, controls, and automation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-004", "code": "306A", "title": "306A — Plumber", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Water distribution, drainage, venting, and fixture installation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-005", "code": "313A", "title": "313A — Refrigeration and Air Conditioning Systems Mechanic", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "HVAC-R systems, heat pumps, and commercial refrigeration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-006", "code": "403A", "title": "403A — General Carpenter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Framing, structural carpentry, finishing, and formwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-007", "code": "456A", "title": "456A — Sheet Metal Worker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Architectural and industrial sheet metal fabrication and ductwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-008", "code": "421A", "title": "421A — Steamfitter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "High/low pressure piping, process steam, and hydronics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-009", "code": "310T", "title": "310T — Automotive Service Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Light-duty automotive diagnostics, powertrain, and chassis systems.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-010", "code": "310S", "title": "310S — Truck and Coach Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Heavy commercial vehicles, air brakes, and diesel diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-011", "code": "429A", "title": "429A — Welder", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural and pressure welding across SMAW, GMAW, GTAW, and FCAW.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-017", "code": "G.3", "title": "G.3 — Gas Technician 3", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Entry fuel technician certification for natural gas and propane appliances.", "requirements": [{"id": "THEORY", "label": "TSSA G.3 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.3 Practical Assessment"}]}, {"uid": "CRED-TRD-018", "code": "G.2", "title": "G.2 — Gas Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, service, and maintenance up to 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G3", "label": "Prerequisite: Active Gas Technician 3 (G.3)"}, {"id": "THEORY", "label": "TSSA G.2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.2 Practical Assessment"}]}, {"uid": "CRED-TRD-019", "code": "G.1", "title": "G.1 — Gas Technician 1", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "High-capacity commercial/industrial fuel systems over 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G2", "label": "Prerequisite: Active Gas Technician 2 (G.2)"}, {"id": "THEORY", "label": "TSSA G.1 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.1 Practical Assessment"}]}, {"uid": "CRED-TRD-012", "code": "415A", "title": "415A — Heavy Duty Equipment Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Off-road heavy machinery, hydraulics, powertrains, and undercarriage diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-013", "code": "434A", "title": "434A — Tool and Die Maker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Precision tooling, CNC machining, dies, jigs, and fixture manufacturing.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-014", "code": "339A", "title": "339A — Hoisting Engineer — Mobile Crane Operator 1", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Mobile crane rigging, load charts, lift planning, and heavy hoisting operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-015", "code": "426A", "title": "426A — Brick and Stone Mason", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural masonry, stone veneer, refractory brick, and restoration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-016", "code": "307A", "title": "307A — Arborist", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Tree care, rigging, aerial lift safety, pruning, and urban forestry operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-020", "code": "OBT-2", "title": "OBT-2 — Oil Burner Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, servicing, and combustion testing of fuel-oil heating equipment.", "requirements": [{"id": "THEORY", "label": "TSSA OBT-2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA OBT-2 Practical Assessment"}]}, {"uid": "CRED-TRD-021", "code": "CWB-W47.1", "title": "CWB-W47.1 — Structural Steel Welding Qualification (FCAW / SMAW)", "provider": "Canadian Welding Bureau (CWB)", "category": "Welding Qualifications", "tag": "Welding Qualifications", "summary": "All-position structural steel welding qualification under CSA W47.1 standards.", "requirements": [{"id": "1G-2G", "label": "Flat & Horizontal Position Plates"}, {"id": "3G-4G", "label": "Vertical & Overhead Position Plates"}]}, {"uid": "CRED-TRD-022", "code": "433A-MRO", "title": "433A-MRO — Industrial Hydraulics, Pneumatics & Rigging Endorsement", "provider": "Skilled Trades / Industry Standards", "category": "Industrial Maintenance", "tag": "Industrial Maintenance", "summary": "Fluid power schematics, proportional valves, laser shaft alignment, and heavy rigging.", "requirements": [{"id": "HYD-PNEU", "label": "Fluid Power Troubleshooting Assessment"}, {"id": "RIG-ALIGN", "label": "Precision Alignment & Rigging Sign-Off"}]}], "FORCES": [{"title": "CAF Qualification & Trade Equivalency Guide", "provider": "Canadian Armed Forces / DND", "tag": "Military Pathway", "summary": "Mapping BMQ, SQ, DP1/QL3, DP2/QL5, and MOSID training toward civilian credentials.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-FRC-001", "code": "BMQ", "title": "BMQ — Basic Military Qualification (BMQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Foundational CAF recruit training, drill, weapons safety, and field skills.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ"}]}, {"uid": "CRED-FRC-002", "code": "BMQ-L / SQ", "title": "BMQ-L / SQ — Basic Military Qualification — Land / Soldier Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Army field craft, navigation, and tactical soldier fundamentals.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ-L / SQ"}]}, {"uid": "CRED-FRC-003", "code": "DP1 / QL3", "title": "DP1 / QL3 — Development Period 1 (DP1 / QL3) Trade Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Initial occupation/trade training for NCM or Officer MOSID.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP1 / QL3"}]}, {"uid": "CRED-FRC-004", "code": "DP2 / QL5", "title": "DP2 / QL5 — Development Period 2 (DP2 / QL5) Journeyman Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Advanced trade qualification and operational proficiency.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP2 / QL5"}]}, {"uid": "CRED-FRC-005", "code": "MOSID-TEA", "title": "MOSID-TEA — MOSID to Civilian Trade Equivalency Assessment (TEA)", "provider": "DND / Provincial Apprenticeship Boards", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Mapping military trade training toward Red Seal / C of Q.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOSID-TEA"}]}, {"uid": "CRED-FRC-006", "code": "BMOQ", "title": "BMOQ — Basic Military Officer Qualification (BMOQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Officer Leadership", "tag": "Officer Leadership", "summary": "Foundational officer leadership, mission command, ethics, and field operations.", "requirements": [{"id": "MOD-1", "label": "BMOQ Module 1 (Common Core)"}, {"id": "MOD-2", "label": "BMOQ Module 2 (Field Leadership)"}]}, {"uid": "CRED-FRC-007", "code": "PLQ", "title": "PLQ — Primary Leadership Qualification (PLQ)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Small-team command, instructional technique, and section-level leadership.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete PLQ"}]}, {"uid": "CRED-FRC-008", "code": "ILP", "title": "ILP — Intermediate Leadership Program (ILP)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Platoon/troop warrant officer leadership, administration, and operational planning.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete ILP"}]}, {"uid": "CRED-FRC-009", "code": "CAF-DND-404", "title": "CAF-DND-404 — DND 404 Military Driver Permit & Air Brake Endorsement", "provider": "Canadian Armed Forces (CAF)", "category": "Logistics & Transport", "tag": "Logistics & Transport", "summary": "Military vehicle qualification transferable toward provincial commercial licence classes.", "requirements": [{"id": "DDC", "label": "Defensive Driving Course"}, {"id": "ROAD", "label": "DND 404 Road & Air Brake Test"}]}, {"uid": "CRED-FRC-010", "code": "CAF-PLAR", "title": "CAF-PLAR — MPRR Service Record & Post-Secondary PLAR Portfolio", "provider": "Canadian Armed Forces / Ontario Colleges", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Translating Member's Personnel Record Resume (MPRR) into civilian college credits and Red Seal hours.", "requirements": [{"id": "MPRR", "label": "Verified MPRR & Course Training Plan (CTP) Package"}, {"id": "ASSESS", "label": "Provincial Regulator / College PLAR Review"}]}, {"uid": "CRED-FRC-011", "code": "TCCC-CAF", "title": "TCCC-CAF — Tactical Combat Casualty Care (TCCC)", "provider": "Canadian Forces Health Services", "category": "Field Medical", "tag": "Field Medical", "summary": "Trauma hemorrhage control, airway management, and casualty evacuation under austere conditions.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete TCCC Practical & Written Assessment"}]}], "ACADEMIC": [{"title": "Ontario Colleges & Open University Pathways", "provider": "Ontario Colleges / MIT OCW", "tag": "Academic", "summary": "Diplomas, certificates, and open coursework tracks across engineering, computing, and sciences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-ACD-001", "code": "OC-TECH-MECH", "title": "OC-TECH-MECH — Mechanical Engineering Technician — Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma aligned with C.Tech. pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-MECH"}]}, {"uid": "CRED-ACD-003", "code": "OC-TECH-ELEC", "title": "OC-TECH-ELEC — Electrical Engineering Technician — Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year electrical technician diploma aligned with C.Tech.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-ELEC"}]}, {"uid": "CRED-ACD-017", "code": "MIT-6.0001", "title": "MIT-6.0001 — Introduction to Computer Science and Programming in Python", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Computational thinking and Python programming coursework.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-6.0001"}]}, {"uid": "CRED-ACD-027", "code": "HU-CS50", "title": "HU-CS50 — CS50's Introduction to Computer Science", "provider": "Harvard University", "category": "Open Courses", "tag": "Open Courses", "summary": "C, Python, SQL, algorithms, data structures, and web basics.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete HU-CS50"}]}, {"uid": "CRED-ACD-002", "code": "OC-TECH-CIV", "title": "OC-TECH-CIV — Civil Engineering Technician — Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma covering surveying, CAD, materials testing, and municipal infrastructure.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CIV"}]}, {"uid": "CRED-ACD-004", "code": "OC-TECH-CHEM", "title": "OC-TECH-CHEM — Chemical Engineering Technology — Advanced Diploma", "provider": "Ontario Colleges / OACETT", "category": "Advanced Diplomas", "tag": "Advanced Diplomas", "summary": "3-year advanced diploma aligned with Certified Engineering Technologist (C.E.T.) pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CHEM"}]}, {"uid": "CRED-ACD-005", "code": "OACETT-CET", "title": "OACETT-CET — Certified Engineering Technologist (C.E.T.) Designation", "provider": "OACETT Ontario", "category": "Professional Designations", "tag": "Professional Designations", "summary": "Ontario engineering technology certification requiring academic credentials, PPE exam, and experience.", "requirements": [{"id": "PPE", "label": "OACETT Professional Practice Exam (PPE)"}, {"id": "EXP", "label": "2 Years Verified Engineering Technology Experience"}]}, {"uid": "CRED-ACD-006", "code": "OC-ACCT-DIP", "title": "OC-ACCT-DIP — Business — Accounting Ontario College Diploma", "provider": "Ontario Colleges", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "Financial accounting, managerial cost accounting, taxation, payroll, and ERP reporting.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Business — Accounting Diploma"}]}, {"uid": "CRED-ACD-018", "code": "MIT-18.01", "title": "MIT-18.01 — Single Variable Calculus", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Differentiation, integration, series, and engineering math foundations.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-18.01"}]}, {"uid": "CRED-ACD-028", "code": "OSSD-PLAR", "title": "OSSD-PLAR — Ontario Secondary School Diploma — Mature Student PLAR", "provider": "Ontario District School Boards", "category": "Secondary & Bridging", "tag": "Secondary & Bridging", "summary": "Prior Learning Assessment and Recognition credits toward OSSD completion for adult learners.", "requirements": [{"id": "ASSESS", "label": "Mature Student PLAR Assessment & Senior Credits"}]}], "PROFESSIONAL": [{"title": "IT, Cloud, Operations & Licensing Guides", "provider": "CompTIA / PMI / Transport Canada", "tag": "Professional", "summary": "Certification roadmaps, project leadership credentials, and commercial operating licences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-IND-001", "code": "A+", "title": "A+ — A+ Certificate", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Hardware, networking, operating systems, mobile, and troubleshooting.", "requirements": [{"id": "220-1201", "label": "Core 1 Exam (220-1201)"}, {"id": "220-1202", "label": "Core 2 Exam (220-1202)"}]}, {"uid": "CRED-IND-002", "code": "NET+", "title": "NET+ — Network+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Network architecture, routing/switching, wireless, and diagnostics.", "requirements": [{"id": "EXAM-N10", "label": "CompTIA Network+ Exam"}]}, {"uid": "CRED-IND-003", "code": "SEC+", "title": "SEC+ — Security+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Threats, vulnerabilities, IAM, cryptography, and security operations.", "requirements": [{"id": "EXAM-SY0", "label": "CompTIA Security+ Exam"}]}, {"uid": "CRED-IND-014", "code": "PMP", "title": "PMP — Project Management Professional (PMP)", "provider": "PMI", "category": "Operations", "tag": "Operations", "summary": "People, process, and business environment leadership across methodologies.", "requirements": [{"id": "EDU-35H", "label": "35 Hours Project Management Education"}, {"id": "PMP-EXAM", "label": "PMI PMP Certification Exam"}]}, {"uid": "CRED-IND-004", "code": "AWS-SAA", "title": "AWS-SAA — AWS Certified Solutions Architect — Associate", "provider": "Amazon Web Services (AWS)", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Designing resilient, secure, high-performing, and cost-optimized cloud architectures.", "requirements": [{"id": "EXAM-SAA", "label": "AWS SAA-C03 Certification Exam"}]}, {"uid": "CRED-IND-005", "code": "AZ-104", "title": "AZ-104 — Microsoft Certified: Azure Administrator Associate", "provider": "Microsoft", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Managing Azure identities, governance, storage, compute, and virtual networks.", "requirements": [{"id": "EXAM-AZ104", "label": "Microsoft Exam AZ-104"}]}, {"uid": "CRED-IND-006", "code": "CCNA", "title": "CCNA — Cisco Certified Network Associate (200-301)", "provider": "Cisco", "category": "Information Technology", "tag": "Information Technology", "summary": "Network fundamentals, IP connectivity, IP services, security, and automation.", "requirements": [{"id": "EXAM-200-301", "label": "Cisco CCNA 200-301 Exam"}]}, {"uid": "CRED-IND-015", "code": "ON-AZ", "title": "ON-AZ — Ontario Class AZ Commercial Tractor-Trailer Licence", "provider": "Ministry of Transportation Ontario (MTO)", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "Mandatory Entry-Level Training (MELT), Class A road test, and Z air brake endorsement.", "requirements": [{"id": "MELT", "label": "MTO Approved MELT Training"}, {"id": "Z-ENDORSE", "label": "Air Brake (Z) Endorsement"}, {"id": "ROAD-A", "label": "Class A Commercial Road Test"}]}, {"uid": "CRED-IND-016", "code": "TC-RPAS-ADV", "title": "TC-RPAS-ADV — Transport Canada Drone Pilot Certificate — Advanced Operations", "provider": "Transport Canada", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "RPAS operations in controlled airspace and near bystanders with flight review.", "requirements": [{"id": "EXAM-ADV", "label": "Transport Canada Small Advanced Online Exam"}, {"id": "FLIGHT-REV", "label": "In-Person RPAS Flight Review"}]}, {"uid": "CRED-IND-017", "code": "CCA-GSC", "title": "CCA-GSC — Gold Seal Certified (GSC) — Construction Project Management", "provider": "Canadian Construction Association (CCA)", "category": "Construction Management", "tag": "Construction Management", "summary": "National certification for construction estimators, project managers, and superintendents.", "requirements": [{"id": "CREDITS", "label": "100 Gold Seal Training & Experience Credits"}, {"id": "EXAM-GSC", "label": "CCA Gold Seal National Exam"}]}], "LITERACY": [{"title": "Safety, Financial & Applied Literacy Guides", "provider": "MLITSD / FCAC / OALCF", "tag": "Literacy", "summary": "Workplace safety compliance, budgeting and credit basics, digital fluency, and trades math.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-PUB-001", "code": "MOL-4S", "title": "MOL-4S — Worker Health and Safety Awareness (4-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "OHSA mandatory baseline awareness for workers.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-4S"}]}, {"uid": "CRED-PUB-003", "code": "WHMIS-2015", "title": "WHMIS-2015 — WHMIS (GHS) Hazardous Materials Training", "provider": "Health Canada / MLITSD", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Labels, SDS, hazard classes, and safe handling of hazardous products.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete WHMIS-2015"}]}, {"uid": "CRED-PUB-004", "code": "WAH", "title": "WAH — Working at Heights (CPO Approved)", "provider": "MLITSD / CPO", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Fall protection equipment, anchor points, and rescue planning.", "requirements": [{"id": "MOD-1", "label": "Module 1: Working at Heights Basic Theory"}, {"id": "MOD-2", "label": "Module 2: Practical Equipment and Rescue"}]}, {"uid": "CRED-LIT-001", "code": "OHSA-R", "title": "OHSA-R — Ontario Workplace Rights & Hazard Literacy", "provider": "MLITSD Ontario", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Reading hazard notices, refusal rights, reporting procedures, and safety signage.", "requirements": [{"id": "RIGHTS", "label": "Three Basic Rights (Know, Participate, Refuse)"}, {"id": "REPORT", "label": "Hazard & Incident Reporting Literacy"}]}, {"uid": "CRED-LIT-002", "code": "FIN-LIT-101", "title": "FIN-LIT-101 — Personal Budgeting, Credit & Tax Fundamentals", "provider": "Financial Consumer Agency of Canada", "category": "Financial & Credit Literacy", "tag": "Financial & Credit Literacy", "summary": "Cash flow planning, credit scores, interest/debt literacy, and filing basics.", "requirements": [{"id": "BUDGET", "label": "Monthly Cash Flow & Emergency Reserve"}, {"id": "CREDIT", "label": "Credit Reports, Utilization & Borrowing Costs"}]}, {"uid": "CRED-PUB-002", "code": "MOL-SUP", "title": "MOL-SUP — Supervisor Health and Safety Awareness (5-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Mandatory OHSA duties and hazard-control responsibilities for workplace supervisors.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-SUP"}]}, {"uid": "CRED-PUB-005", "code": "JHSC-P1", "title": "JHSC-P1 — Joint Health and Safety Committee Certification — Part 1", "provider": "MLITSD / CPO Approved Providers", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Core occupational health and safety law, hazard recognition, and workplace inspections.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete JHSC Part 1"}]}, {"uid": "CRED-PUB-006", "code": "SFA-CPR-C", "title": "SFA-CPR-C — Standard First Aid & CPR/AED Level C (WSIB Approved)", "provider": "Canadian Red Cross / St. John Ambulance", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Two-day WSIB-recognized workplace emergency first aid, CPR, and AED response.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Standard First Aid & CPR-C"}]}, {"uid": "CRED-PUB-007", "code": "IHSA-TRAF", "title": "IHSA-TRAF — Traffic Control Person & OTM Book 7 Temporary Conditions", "provider": "IHSA / Ontario Traffic Council", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Work-zone flagging, temporary traffic control layouts, and roadside safety standards.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Traffic Control & OTM Book 7 Assessment"}]}, {"uid": "CRED-LIT-003", "code": "DIG-LIT-101", "title": "DIG-LIT-101 — Digital Fluency, Privacy & Scam Defense", "provider": "MediaSmarts / Digital Standards", "category": "Digital & Data Literacy", "tag": "Digital & Data Literacy", "summary": "Multi-factor authentication, phishing awareness, cloud file hygiene, and source verification.", "requirements": [{"id": "AUTH-SEC", "label": "Password Manager & Multi-Factor Authentication"}, {"id": "VERIFY", "label": "Source Verification & Phishing Recognition"}]}, {"uid": "CRED-LIT-004", "code": "NUM-TRD-101", "title": "NUM-TRD-101 — Applied Trades Numeracy, Fractions & Blueprint Reading", "provider": "Skilled Trades / OALCF Alignment", "category": "Trades Math & Blueprint Literacy", "tag": "Trades Math & Blueprint Literacy", "summary": "Metric/imperial conversions, ratios, tolerances, and reading technical drawings.", "requirements": [{"id": "CONV", "label": "Fractions, Decimals & Unit Conversions"}, {"id": "DWG", "label": "Reading Plans, Scales & Bill of Materials"}]}]};
 
     const I18N = {
       en: {
@@ -553,8 +523,10 @@
         backToCategories: 'Back to Categories',
         coachHeading: 'Advisor',
         targetVocationLabel: 'End Goal', generatePlanBtn: 'Generate',
+        lblGoalVocation: 'Vocation', lblGoalTrade: 'Trade', lblGoalDesignation: 'Designation',
+        lblChooseOne: 'Choose One', lblAddAgent: 'Add Agent',
+        aiDisclaimer: 'AI Powered Content - Please Use Responsibly',
         coachInputPlaceholder: 'Ask a follow-up question about your pathway, exams, hours, or equivalencies...',
-        coachWelcome: 'Select an End Goal (Vocation, Trade, or Designation) and pick an option to view your catalog pathway and download a PDF immediately, or click Generate for an optional AI-generated explanation.',
         profileHeading: 'Profile', lblCompletedCreds: 'Completed', lblSavedCreds: 'Saved', savedCredsHeading: 'Saved Entries',
         settingsHeading: 'Settings', appearanceSectionTitle: 'Appearance & Accessibility',
         lblTheme: 'Theme', descTheme: 'Switch between dark, light, or system color mode.',
@@ -573,7 +545,7 @@
           RED_SEAL: { label: 'RED SEAL', desc: 'Skilled trade certifications, trade school blocks, and apprenticeship hours.' },
           FORCES: { label: 'FORCES', desc: 'Military service qualifications, trade training, and equivalency records.' },
           ACADEMIC: { label: 'ACADEMIC', desc: 'Certificates, diplomas, and open university coursework tracks.' },
-          PROFESSIONAL: { label: 'PROFESSIONAL — INCLUDES DESIGNATIONS', desc: 'Industry certifications, commercial licences, designations, and operational credentials.' },
+          PROFESSIONAL: { label: 'PROFESSIONAL', desc: 'Industry certifications, commercial licences, and operational credentials.' },
           LITERACY: { label: 'LITERACY', desc: 'Safety compliance, workplace rights, numeracy, and digital readiness.' }
         }
       },
@@ -586,8 +558,10 @@
         backToCategories: 'Retour aux catégories',
         coachHeading: 'Conseiller',
         targetVocationLabel: 'Objectif', generatePlanBtn: 'Générer',
+        lblGoalVocation: 'Vocation', lblGoalTrade: 'Métier', lblGoalDesignation: 'Désignation',
+        lblChooseOne: 'Choisir une option', lblAddAgent: 'Ajouter un agent',
+        aiDisclaimer: 'Contenu généré par IA - Veuillez utiliser de façon responsable',
         coachInputPlaceholder: 'Posez une question sur le parcours, les examens, les heures ou les équivalences...',
-        coachWelcome: 'Choisissez un objectif (Vocation, Métier ou Désignation) et sélectionnez une option pour afficher le parcours du catalogue et télécharger le PDF immédiatement, ou cliquez sur Générer pour une explication IA facultative.',
         profileHeading: 'Profil', lblCompletedCreds: 'Terminées', lblSavedCreds: 'Enregistrées', savedCredsHeading: 'Fiches enregistrées',
         settingsHeading: 'Paramètres', appearanceSectionTitle: 'Apparence et accessibilité',
         lblTheme: 'Thème', descTheme: 'Choisir un mode sombre, clair ou système.',
@@ -606,7 +580,7 @@
           RED_SEAL: { label: 'SCEAU ROUGE', desc: 'Certifications des métiers, blocs de formation et heures d’apprentissage.' },
           FORCES: { label: 'FORCES', desc: 'Qualifications militaires, formation métier et dossiers d’équivalence.' },
           ACADEMIC: { label: 'ACADÉMIQUE', desc: 'Certificats, diplômes et parcours de cours universitaires ouverts.' },
-          PROFESSIONAL: { label: 'PROFESSIONNEL — INCLUT LES DÉSIGNATIONS', desc: 'Certifications industrielles, permis commerciaux, désignations et titres opérationnels.' },
+          PROFESSIONAL: { label: 'PROFESSIONNEL', desc: 'Certifications industrielles, permis commerciaux et titres opérationnels.' },
           LITERACY: { label: 'LITTÉRATIE', desc: 'Conformité sécurité, droits au travail, numératie et préparation numérique.' }
         }
       }
@@ -636,30 +610,6 @@
     let currentLang = 'en';
     let prefs = { theme: 'dark', textScale: 'md', reduceMotion: false, highContrast: false };
 
-    const AI_AGENTS = [
-      {
-        id: 'gemini',
-        name: 'Gemini',
-        inline: true,
-        badgeHtml: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>'
-      },
-      {
-        id: 'chatgpt',
-        name: 'ChatGPT',
-        inline: false,
-        buildUrl: (prompt) => 'https://chatgpt.com/?q=' + encodeURIComponent(prompt),
-        badgeHtml: '<svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9" fill="none" stroke="#10a37f" stroke-width="2.4"/></svg>'
-      },
-      {
-        id: 'copilot',
-        name: 'Copilot',
-        inline: false,
-        buildUrl: (prompt) => 'https://copilot.microsoft.com/?q=' + encodeURIComponent(prompt),
-        badgeHtml: '<svg viewBox="0 0 24 24" width="16" height="16"><rect x="4" y="4" width="7" height="7" rx="1.5" fill="#38bdf8"/><rect x="13" y="4" width="7" height="7" rx="1.5" fill="#22c55e"/><rect x="4" y="13" width="7" height="7" rx="1.5" fill="#facc15"/><rect x="13" y="13" width="7" height="7" rx="1.5" fill="#f97316"/></svg>'
-      }
-    ];
-    let selectedAgentIdx = 0;
-
     const t = () => I18N[currentLang] || I18N.en;
     const getTypeMeta = (key) => {
       const tr = t().types[key] || I18N.en.types[key];
@@ -667,91 +617,95 @@
     };
     const isListingActive = () => Boolean(selectedType) || Boolean((document.getElementById('searchInput').value || '').trim());
 
-    const catalogByGuid = new Map();
-    const normalizeKey = key => String(key).toLowerCase().replace(/[^a-z0-9]/g,'');
-    const textValue = value => value == null ? '' : String(value);
-    const safeUrl = value => {try {const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}};
-    const escapeHtml = value => textValue(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    function adaptCatalogRow(raw) {
-      const f=Object.fromEntries(Object.entries(raw).map(([k,v])=>[normalizeKey(k),v]));
-      const guid=textValue(f.guid).trim();
-      const prefix=guid.split('-')[0].toUpperCase();
-      const sector=({TRD:'RED_SEAL',FRC:'FORCES',ACD:'ACADEMIC',DSG:'PROFESSIONAL',LIC:'PROFESSIONAL',SFW:'PROFESSIONAL',TLS:'PROFESSIONAL',REQ:'LITERACY',LNG:'LITERACY',PRV:'PROFESSIONAL',NOC:'PROFESSIONAL'})[prefix]||'PROFESSIONAL';
-      const relationships={};
-      Object.entries(f).forEach(([k,v])=>{if(k!=='guid'&&k.endsWith('guid')&&v!=null&&v!=='')relationships[k]=v;});
-      const durations={};
-      ['hours','days','weeks','months','years','semesters','terms'].forEach(k=>{if(f[k]!=null&&f[k]!=='')durations[k]=textValue(f[k]);});
-      return {entryId:guid,guid,uid:guid,code:guid,title:textValue(f.title),provider:textValue(f.provider),sector,
-        category:({TRD:'Trades',FRC:'Forces',ACD:'Academic',DSG:'Designations',LIC:'Licenses',SFW:'Software',TLS:'Tools',REQ:'Requirements',LNG:'Language',PRV:'Providers',NOC:'NOC'})[prefix]||prefix,
-        tag:textValue(f.province),summary:textValue(f.format),sourceUrl:safeUrl(f.link),cost:textValue(f.cost),durations,relationships,requirements:[]};
-    }
-    function linkedEntries(entry) {
-      const refs=new Set();
-      Object.values(entry.relationships).flatMap(v=>Array.isArray(v)?v:[v]).forEach(v=>(textValue(v).match(/(?:TRD|FRC|DSG|ACD|LIC|SFW|TLS|REQ|LNG|PRV|NOC)-[A-Z0-9]+(?:-[A-Z0-9]+)*/gi)||[]).forEach(id=>refs.add(id.toUpperCase())));
-      return [...refs].map(id=>catalogByGuid.get(id)).filter(Boolean);
-    }
-    function advisorRecord(e) {return {guid:e.guid,title:e.title,provider:e.provider,province:e.tag,format:e.summary,cost:e.cost,durations:e.durations,sourceUrl:e.sourceUrl,relationships:e.relationships};}
-    async function loadCredentialsFromSupabase() {
-      const status=document.getElementById('catalogStatus');
-      try {
-        if(!sbClient)throw new Error('Supabase client did not load.');
-        const rows=[];
-        for(let offset=0;;offset+=500){
-          const {data,error}=await sbClient.from('credentials').select('*').order('GUID',{ascending:true}).range(offset,offset+499);
-          if(error)throw error;
-          rows.push(...(data||[]));
-          if(!data||data.length<500)break;
-        }
-        const entries=rows.map(adaptCatalogRow).filter(e=>e.guid&&e.title);
-        if(rows.length&&!entries.length)throw new Error('Catalog columns GUID and Title were not recognized.');
-        allLibraryEntries.splice(0,allLibraryEntries.length,...entries);
-        catalogByGuid.clear();entries.forEach(e=>catalogByGuid.set(e.guid.toUpperCase(),e));
-        status.textContent=entries.length?'':'No catalog records were returned. Check public read access or catalog contents.';
-      }catch(error){console.error('Catalog load:',error);status.textContent='Catalog could not load: '+(error.message||'Please refresh.');}
-      refreshGoalOptions();
+    function inferSectorFromRow(row) {
+      const guid = String(row.GUID || row.id || '').toUpperCase();
+      if (row.sector && TYPE_KEYS.includes(String(row.sector).toUpperCase())) {
+        return String(row.sector).toUpperCase();
+      }
+      if (guid.startsWith('TRD-') || guid.startsWith('CRED-TRD') || row['Trades GUID']) return 'RED_SEAL';
+      if (guid.startsWith('FRC-') || guid.startsWith('CRED-FRC') || row['Forces GUID']) return 'FORCES';
+      if (guid.startsWith('ACD-') || guid.startsWith('CRED-ACD') || row['Academic GUID']) return 'ACADEMIC';
+      if (guid.startsWith('REQ-') || guid.startsWith('CRED-PUB') || guid.startsWith('CRED-LIT') || row['Requirements GUID'] || row['Language GUID']) return 'LITERACY';
+      return 'PROFESSIONAL';
     }
 
-    async function loadIndividualFromSupabase() {
+    async function loadCredentialsFromSupabase() {
+      if (!sbClient) return;
+      try {
+        const { data, error } = await sbClient
+          .from('credentials')
+          .select('*');
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          const existingIds = new Set(allLibraryEntries.map((e) => e.entryId));
+          data.forEach((row) => {
+            const entryId = row.GUID || row.id;
+            if (!entryId || existingIds.has(entryId)) return;
+            const sector = inferSectorFromRow(row);
+            const durationParts = [
+              row.Hours ? `${row.Hours}h` : '',
+              row.Days ? `${row.Days}d` : '',
+              row.Weeks ? `${row.Weeks}w` : '',
+              row.Months ? `${row.Months}m` : '',
+              row.Years ? `${row.Years}y` : '',
+              row.Semesters ? `${row.Semesters} sem` : '',
+              row.Terms ? `${row.Terms} terms` : ''
+            ].filter(Boolean);
+
+            const builtSummary = row.summary || [
+              row.Province,
+              row.Format,
+              durationParts.join(' · '),
+              row.Cost ? `Cost: ${row.Cost}` : ''
+            ].filter(Boolean).join(' · ');
+
+            allLibraryEntries.push({
+              entryId,
+              uid: entryId,
+              code: row.code || row['NOC GUID'] || row.Province || '',
+              sector,
+              title: row.Title || row.title || entryId,
+              provider: row.Provider || row.provider || 'Reference Catalog',
+              category: row.category || row.Format || row.Province || 'General',
+              tag: row.tag || row.Format || '',
+              summary: builtSummary,
+              link: row.Link || row.link || '',
+              requirements: Array.isArray(row.requirements) ? row.requirements : []
+            });
+            existingIds.add(entryId);
+          });
+          populateCategoryFilter();
+          renderTypeTabs();
+          if (isListingActive()) renderLibrary();
+          renderProfile();
+        }
+      } catch (_err) {
+        // Fallback seamlessly to embedded TYPE_LIBRARIES if offline or table empty
+      }
+    }
+
+    async function loadCloudProgress() {
       if (!sbClient || !currentUser) return;
       try {
         const { data, error } = await sbClient
-          .from('individuals')
-          .select('saved_entries, preferred_lang')
-          .eq('user_id', currentUser.id)
-          .maybeSingle();
+          .from('user_credentials')
+          .select('cred_uid, status')
+          .eq('user_id', currentUser.id);
 
-        if (!error && data) {
-          if (data.saved_entries && typeof data.saved_entries === 'object') {
-            userProgressMap = { ...userProgressMap, ...data.saved_entries };
-            localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
-          }
-          if (data.preferred_lang === 'en' || data.preferred_lang === 'fr') {
-            applyLanguage(data.preferred_lang, false);
-          }
+        if (!error && Array.isArray(data)) {
+          data.forEach((row) => {
+            const existing = userProgressMap[row.cred_uid] || {};
+            userProgressMap[row.cred_uid] = {
+              status: row.status || existing.status || 'Not Started',
+              completed_reqs: Array.isArray(existing.completed_reqs) ? existing.completed_reqs : []
+            };
+          });
+          localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
+          updateProfileStats();
+          if (isListingActive()) renderLibrary();
+          renderProfile();
         }
-        await syncIndividualProgress();
-      } catch (_e) {
-        // Keep local progress if offline
-      }
-    }
-
-    async function syncIndividualProgress() {
-      if (!sbClient || !currentUser) return;
-      try {
-        await sbClient.from('individuals').upsert(
-          {
-            user_id: currentUser.id,
-            email: currentUser.email || null,
-            display_name: currentUser.user_metadata?.full_name || null,
-            preferred_lang: currentLang,
-            saved_entries: userProgressMap,
-            updated_at: new Date().toISOString()
-          },
-          { onConflict: 'user_id' }
-        );
-      } catch (_e) {
-        // Local storage already saved
-      }
+      } catch (_err) {}
     }
 
     function applyPrefs() {
@@ -763,6 +717,18 @@
       document.documentElement.classList.add(`text-scale-${prefs.textScale}`);
       document.documentElement.classList.toggle('reduce-motion', Boolean(prefs.reduceMotion));
       document.documentElement.classList.toggle('high-contrast', Boolean(prefs.highContrast));
+
+      document.querySelectorAll('[data-theme-opt]').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.themeOpt === prefs.theme);
+      });
+      document.querySelectorAll('[data-scale-opt]').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.scaleOpt === prefs.textScale);
+      });
+      const rmChk = document.getElementById('reduceMotionChk');
+      const hcChk = document.getElementById('highContrastChk');
+      if (rmChk) rmChk.checked = Boolean(prefs.reduceMotion);
+      if (hcChk) hcChk.checked = Boolean(prefs.highContrast);
+
       localStorage.setItem('pocketcredit_prefs', JSON.stringify(prefs));
     }
 
@@ -773,169 +739,24 @@
     }
 
     const COACH_LOGO_SVG = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>`;
-    const CATALOG_LOGO_SVG = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>`;
     let coachMessages = [];
-    let currentCatalogPathway = null;
-    let geminiUsedForSession = false;
-
-    function buildCatalogPathway(targetGuid, goalType) {
-      const target = catalogByGuid.get(String(targetGuid || '').toUpperCase());
-      if (!target) return null;
-
-      const directLinked = linkedEntries(target);
-      const secondHop = directLinked.flatMap((e) => linkedEntries(e));
-      const allRecordsMap = new Map();
-      [target, ...directLinked, ...secondHop].forEach((entry) => {
-        if (entry && entry.guid) allRecordsMap.set(entry.guid.toUpperCase(), entry);
-      });
-
-      const steps = [...allRecordsMap.values()].map((entry) => {
-        const saved = userProgressMap[entry.entryId];
-        const prog = getEntryProgress(entry);
-        const isSaved = Boolean(saved);
-        const durationParts = Object.entries(entry.durations || {}).map(([k, v]) => `${k}: ${v}`);
-        return {
-          guid: entry.guid,
-          title: entry.title,
-          category: entry.category || (entry.guid === target.guid ? 'Target Goal' : 'Related Requirement'),
-          provider: entry.provider || '',
-          province: entry.tag || '',
-          format: entry.summary || '',
-          cost: entry.cost || '',
-          durations: durationParts.join(' · '),
-          sourceUrl: entry.sourceUrl || '',
-          isTarget: entry.guid.toUpperCase() === target.guid.toUpperCase(),
-          isSaved,
-          status: isSaved ? prog.status : 'Not Started',
-          completedReqs: prog.completed_reqs || []
-        };
-      });
-
-      const savedEntries = getSavedEntries().map((entry) => {
-        const prog = getEntryProgress(entry);
-        return {
-          guid: entry.guid,
-          title: entry.title,
-          category: entry.category || '',
-          provider: entry.provider || '',
-          status: prog.status
-        };
-      });
-
-      return {
-        goalType: goalType || '',
-        targetGuid: target.guid,
-        targetTitle: target.title,
-        targetProvider: target.provider || '',
-        targetProvince: target.tag || '',
-        targetCategory: target.category || '',
-        targetSourceUrl: target.sourceUrl || '',
-        steps,
-        savedEntries
-      };
-    }
-
-    function renderCatalogPathway(pathway) {
-      const box = document.getElementById('coachChatbox');
-      if (!box || !pathway) return;
-
-      const existing = box.querySelector('#catalogPathwayCard');
-      if (existing) existing.remove();
-
-      const div = document.createElement('div');
-      div.id = 'catalogPathwayCard';
-      div.className = 'coach-msg catalog-source';
-
-      const groups = {};
-      pathway.steps.forEach((step) => {
-        const key = step.isTarget ? 'Selected End Goal' : (step.category || 'Catalog Pathway Steps');
-        (groups[key] = groups[key] || []).push(step);
-      });
-
-      let html = `
-        <div class="coach-msg-head">
-          ${CATALOG_LOGO_SVG}
-          <span>Pocket Credit Catalog Pathway</span>
-          <span class="catalog-badge-tag">Source of Truth</span>
-        </div>
-        <div><strong>${escapeHtml(pathway.targetTitle)}</strong> <span class="uid">(${escapeHtml(pathway.targetGuid)})</span></div>
-        ${pathway.targetProvider ? `<div class="card-notes">Provider / Authority: ${escapeHtml(pathway.targetProvider)}${pathway.targetProvince ? ' · ' + escapeHtml(pathway.targetProvince) : ''}</div>` : ''}
-      `;
-
-      Object.entries(groups).forEach(([groupName, items]) => {
-        html += `<div class="plan-group">${escapeHtml(groupName)}</div>`;
-        items.forEach((item) => {
-          const statusCls = item.status === 'Completed'
-            ? 'completed'
-            : (item.status === 'In Progress' ? 'inprogress' : (item.status === 'Renewal Due' ? 'renewal' : ''));
-          const metaBits = [
-            item.guid,
-            item.provider,
-            item.province,
-            item.format,
-            item.durations,
-            item.cost ? `Cost: ${item.cost}` : ''
-          ].filter(Boolean).join(' · ');
-
-          html += `
-            <div class="plan-item">
-              <span class="plan-status ${statusCls}">${escapeHtml(item.status)}</span>
-              <span><strong>${escapeHtml(item.title)}</strong>${metaBits ? ` — ${escapeHtml(metaBits)}` : ''}</span>
-            </div>
-          `;
-          if (item.sourceUrl) {
-            html += `<div class="plan-item"><span></span><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">Official source ↗</a></div>`;
-          }
-        });
-      });
-
-      if (pathway.savedEntries.length) {
-        html += `<div class="plan-group">Your Saved / Completed Catalog Progress (${pathway.savedEntries.length})</div>`;
-        pathway.savedEntries.forEach((s) => {
-          const statusCls = s.status === 'Completed'
-            ? 'completed'
-            : (s.status === 'In Progress' ? 'inprogress' : (s.status === 'Renewal Due' ? 'renewal' : ''));
-          html += `
-            <div class="plan-item">
-              <span class="plan-status ${statusCls}">${escapeHtml(s.status)}</span>
-              <span>${escapeHtml(s.title)} <span class="uid">(${escapeHtml(s.guid)})</span></span>
-            </div>
-          `;
-        });
-      }
-
-      html += `
-        <div class="plan-warning">Informational only. Verify all requirements with the official provider, regulator, or institution.</div>
-        <button id="downloadPlanPdfBtn" class="btn btn-small btn-primary pdf-btn" type="button">Download PDF</button>
-      `;
-
-      div.innerHTML = html;
-      box.prepend(div);
-      div.querySelector('#downloadPlanPdfBtn')?.addEventListener('click', () => downloadPlanPdf(pathway));
-    }
 
     function renderCoachChatbox() {
       const box = document.getElementById('coachChatbox');
       if (!box) return;
       box.innerHTML = '';
-
-      if (currentCatalogPathway) {
-        renderCatalogPathway(currentCatalogPathway);
-      }
-
-      if (!coachMessages.length && !currentCatalogPathway) {
-        const welcomeDiv = document.createElement('div');
-        welcomeDiv.className = 'coach-msg ai';
-        welcomeDiv.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span></div><div>${t().coachWelcome}</div>`;
-        box.appendChild(welcomeDiv);
+      if (!coachMessages.length) {
+        const welcome = document.createElement('div');
+        welcome.className = 'coach-msg ai';
+        welcome.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Career Coach</span></div><div>Select an End Goal (Vocation, Trade, or Designation) and tap Generate to build a verified Canadian career pathway.</div>`;
+        box.appendChild(welcome);
         return;
       }
-
       coachMessages.forEach((m) => {
         const div = document.createElement('div');
         div.className = `coach-msg ${m.role}`;
         if (m.role === 'ai') {
-          div.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span><span class="ai-badge-tag">AI-Generated Explanation</span></div><div>${escapeHtml(m.text)}</div>`;
+          div.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Career Coach</span></div><div>${m.text.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</div>`;
         } else {
           div.textContent = m.text;
         }
@@ -946,10 +767,6 @@
 
     function renderCareerCoach() {
       updateProfileStats();
-      if (goalSelect && goalSelect.value) {
-        const checked = document.querySelector('input[name="goalType"]:checked');
-        currentCatalogPathway = buildCatalogPathway(goalSelect.value, checked ? checked.value : '');
-      }
       renderCoachChatbox();
     }
 
@@ -1006,7 +823,6 @@
           populateCategoryFilter();
           renderTypeTabs();
           syncListingState();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         row.addEventListener('click', pick);
         row.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
@@ -1031,14 +847,14 @@
       userProgressMap[entryId] = { status, completed_reqs: completedReqs || [] };
       localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
       updateProfileStats();
-      if (goalSelect && goalSelect.value) {
-        const checked = document.querySelector('input[name="goalType"]:checked');
-        currentCatalogPathway = buildCatalogPathway(goalSelect.value, checked ? checked.value : '');
-        if (activeView === 'coach') renderCoachChatbox();
-      }
       msgEl.style.color = 'var(--accent-2)';
       msgEl.textContent = tr.savedLocalMsg;
-      await syncIndividualProgress();
+      if (sbClient && currentUser) {
+        await sbClient.from('user_credentials').upsert(
+          { user_id: currentUser.id, cred_uid: entryId, status, updated_at: new Date().toISOString() },
+          { onConflict: 'user_id,cred_uid' }
+        );
+      }
     }
 
     function createLibraryCard(entry, isProfileView = false) {
@@ -1052,19 +868,17 @@
       card.innerHTML = `
         <div>
           <div class="card-top">
-            <span class="uid">${escapeHtml(entry.provider)}${entry.uid ? ' · ' + escapeHtml(entry.uid) : ''}</span>
+            <span class="uid">${entry.provider}${entry.uid ? ' · ' + entry.uid : ''}</span>
             <span class="badge">${getTypeMeta(entry.sector).label}</span>
           </div>
-          <h3 class="card-title">${escapeHtml(entry.title)}</h3>
-          ${entry.tag ? `<span class="lib-pill">${escapeHtml(entry.tag)}</span>` : ''}
-          <p class="card-notes" style="margin-top:8px;">${escapeHtml(entry.summary || '')}</p>
-          ${entry.sourceUrl ? `<p><a class="card-source" href="${escapeHtml(entry.sourceUrl)}" target="_blank" rel="noopener noreferrer">Official source ↗</a></p>` : ''}
-          ${entry.cost ? `<p class="card-notes">Cost: ${escapeHtml(entry.cost)}</p>` : ''}
-          ${Object.keys(entry.durations || {}).length ? `<p class="card-notes">${Object.entries(entry.durations).map(([k,v])=>`${escapeHtml(k)}: ${escapeHtml(v)}`).join(' · ')}</p>` : ''}
+          <h3 class="card-title">${entry.title}</h3>
+          ${entry.tag ? `<span class="lib-pill">${entry.tag}</span>` : ''}
+          <p class="card-notes" style="margin-top:8px;">${entry.summary || ''}</p>
+          ${entry.link ? `<a class="card-link" href="${entry.link}" target="_blank" rel="noopener noreferrer">Official Reference &rarr;</a>` : ''}
           ${reqs.length ? `
           <div class="req-list">
             <div class="req-header"><span>${tr.requiredLabel}</span><span class="req-progress">${doneCount}/${reqs.length}</span></div>
-            ${reqs.map((r) => `<label class="req-item ${checkedSet.has(r.id) ? 'checked' : ''}"><input type="checkbox" class="req-chk" data-req-id="${escapeHtml(r.id)}" ${checkedSet.has(r.id) ? 'checked' : ''} /><span>${escapeHtml(r.label)}</span></label>`).join('')}
+            ${reqs.map((r) => `<label class="req-item ${checkedSet.has(r.id) ? 'checked' : ''}"><input type="checkbox" class="req-chk" data-req-id="${r.id}" ${checkedSet.has(r.id) ? 'checked' : ''} /><span>${r.label}</span></label>`).join('')}
           </div>` : ''}
         </div>
         <div class="card-inputs">
@@ -1108,7 +922,9 @@
         removeBtn.addEventListener('click', async () => {
           delete userProgressMap[entry.entryId];
           localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
-          await syncIndividualProgress();
+          if (sbClient && currentUser) {
+            await sbClient.from('user_credentials').delete().eq('user_id', currentUser.id).eq('cred_uid', entry.entryId);
+          }
           renderProfile();
           renderCareerCoach();
           if (isListingActive()) renderLibrary();
@@ -1152,13 +968,30 @@
 
     function syncListingState() {
       const active = isListingActive();
-      document.getElementById('typeTabs').classList.toggle('hidden-drill', active);
       document.getElementById('listingTools').classList.toggle('visible', active);
       document.getElementById('librarySection').classList.toggle('visible', active);
       if (active) renderLibrary();
     }
 
-    function applyLanguage(lang, shouldSync = true) {
+    function updateAuthUI() {
+      const tr = t();
+      const authNavBtn = document.getElementById('authNavBtn');
+      if (currentUser) {
+        const displayIdent = currentUser.email || currentUser.id;
+        document.getElementById('signedOutPanel').style.display = 'none';
+        document.getElementById('signedInPanel').style.display = 'flex';
+        document.getElementById('authStatus').textContent = `${tr.welcome}, ${displayIdent}`;
+        document.getElementById('settingsAccountInfo').textContent = tr.signedInAccountInfo(displayIdent);
+        if (authNavBtn) authNavBtn.textContent = tr.signOut;
+      } else {
+        document.getElementById('signedOutPanel').style.display = 'flex';
+        document.getElementById('signedInPanel').style.display = 'none';
+        document.getElementById('settingsAccountInfo').textContent = tr.signedOutAccountInfo;
+        if (authNavBtn) authNavBtn.textContent = tr.signIn;
+      }
+    }
+
+    function applyLanguage(lang) {
       currentLang = lang === 'fr' ? 'fr' : 'en';
       document.documentElement.lang = currentLang;
       localStorage.setItem('pocketcredit_lang', currentLang);
@@ -1174,6 +1007,12 @@
       document.getElementById('backToLandingBtn').textContent = tr.backToCategories;
       document.getElementById('coachHeading').textContent = tr.coachHeading;
       document.getElementById('targetVocationLabel').textContent = tr.targetVocationLabel;
+      document.getElementById('lblGoalVocation').textContent = tr.lblGoalVocation;
+      document.getElementById('lblGoalTrade').textContent = tr.lblGoalTrade;
+      document.getElementById('lblGoalDesignation').textContent = tr.lblGoalDesignation;
+      document.getElementById('lblChooseOne').textContent = tr.lblChooseOne;
+      document.getElementById('lblAddAgent').textContent = tr.lblAddAgent;
+      document.getElementById('aiDisclaimer').textContent = tr.aiDisclaimer;
       document.getElementById('generatePlanBtn').textContent = tr.generatePlanBtn;
       document.getElementById('coachQuestionInput').placeholder = tr.coachInputPlaceholder;
       document.getElementById('profileHeading').textContent = tr.profileHeading;
@@ -1194,18 +1033,14 @@
       document.getElementById('lblHighContrast').textContent = tr.lblHighContrast;
       document.getElementById('descHighContrast').textContent = tr.descHighContrast;
       document.getElementById('accountSectionTitle').textContent = tr.accountSectionTitle;
-      document.getElementById('settingsAccountInfo').textContent = currentUser
-        ? tr.signedInAccountInfo(currentUser.email || currentUser.id)
-        : tr.signedOutAccountInfo;
       document.getElementById('localDataSectionTitle').textContent = tr.localDataSectionTitle;
       document.getElementById('localDataDesc').textContent = tr.localDataDesc;
       document.getElementById('clearLocalProgressBtn').textContent = tr.clearLocalBtn;
+      updateAuthUI();
       populateCategoryFilter();
       renderTypeTabs();
       syncListingState();
       renderProfile();
-      renderCoachChatbox();
-      if (shouldSync) syncIndividualProgress();
     }
 
     document.getElementById('profileIconBtn').addEventListener('click', () => setActiveView('profile'));
@@ -1238,285 +1073,118 @@
       syncListingState();
     }
 
-    function getGoalOptions(type) {
-      if (type === 'designation') {
-        return allLibraryEntries
-          .filter((e) => e.sector === 'PROFESSIONAL')
-          .sort((a, b) => a.title.localeCompare(b.title));
-      }
-      const prefix = { vocation: 'NOC-', trade: 'TRD-' }[type];
-      return allLibraryEntries
-        .filter((e) => prefix && e.guid.toUpperCase().startsWith(prefix))
-        .sort((a, b) => a.title.localeCompare(b.title));
-    }
-
-    function refreshGoalOptions() {
-      const type = document.querySelector('input[name="goalType"]:checked')?.value;
-      const old = goalSelect.value;
-      goalSelect.replaceChildren(new Option(currentLang === 'fr' ? 'Choisir un objectif' : 'Choose a goal', ''));
-      const entries = getGoalOptions(type);
-      entries.forEach((e) => goalSelect.add(new Option(e.title, e.guid)));
-      goalSelect.disabled = !entries.length;
-      if (entries.some((e) => e.guid === old)) goalSelect.value = old;
-
-      if (goalSelect.value) {
-        currentCatalogPathway = buildCatalogPathway(goalSelect.value, type || '');
-      } else {
-        currentCatalogPathway = null;
-      }
-      geminiUsedForSession = false;
-      coachMessages = [];
-      renderCoachChatbox();
-    }
+    const GOAL_OPTIONS = {
+      vocation: [
+        ['Engineer', 'Engineer'],
+        ['Engineering Technologist', 'Engineering Technologist'],
+        ['Skilled Tradesperson', 'Skilled Tradesperson'],
+        ['Cloud & IT Infrastructure Specialist', 'Cloud & IT Infrastructure Specialist'],
+        ['Commercial & Heavy Operations Specialist', 'Commercial & Heavy Operations Specialist']
+      ],
+      trade: [
+        ['Electrician', 'Electrician'],
+        ['Welder', 'Welder'],
+        ['Heavy Equipment Technician', 'Heavy Equipment Technician'],
+        ['Industrial Mechanic Millwright', 'Industrial Mechanic Millwright'],
+        ['Plumber', 'Plumber'],
+        ['Carpenter', 'Carpenter']
+      ],
+      designation: [
+        ['P.Eng', 'P.Eng — Professional Engineer'],
+        ['C.E.T.', 'C.E.T. — Certified Engineering Technologist'],
+        ['C.Tech.', 'C.Tech. — Certified Technician'],
+        ['Red Seal', 'Red Seal Endorsement'],
+        ['C of Q', 'C of Q — Certificate of Qualification']
+      ]
+    };
 
     const goalTypeRadios = document.querySelectorAll('input[name="goalType"]');
     const goalSelect = document.getElementById('goalSelect');
-    const addAgentBtn = document.getElementById('addAgentBtn');
 
-    function updateActiveAgentUI() {
-      const agent = AI_AGENTS[selectedAgentIdx];
-      document.getElementById('activeAgentBadge').innerHTML = agent.badgeHtml;
-      document.getElementById('activeAgentLabel').textContent = `Agent: ${agent.name}`;
-    }
-
-    addAgentBtn.addEventListener('click', () => {
-      selectedAgentIdx = (selectedAgentIdx + 1) % AI_AGENTS.length;
-      updateActiveAgentUI();
+    goalTypeRadios.forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        const type = radio.value;
+        goalSelect.innerHTML = '';
+        if (!type) {
+          goalSelect.disabled = true;
+          goalSelect.innerHTML = '<option value="">Select a goal type first</option>';
+          return;
+        }
+        goalSelect.disabled = false;
+        goalSelect.innerHTML = '<option value="">Choose One</option>';
+        GOAL_OPTIONS[type].forEach(function (item) {
+          const opt = document.createElement('option');
+          opt.value = item[0];
+          opt.textContent = item[1];
+          goalSelect.appendChild(opt);
+        });
+      });
     });
 
-    goalTypeRadios.forEach((radio) => radio.addEventListener('change', refreshGoalOptions));
-
-    goalSelect.addEventListener('change', () => {
+    function runGeminiPlan() {
       const checked = document.querySelector('input[name="goalType"]:checked');
       const goalType = checked ? checked.value : '';
-      currentCatalogPathway = goalSelect.value ? buildCatalogPathway(goalSelect.value, goalType) : null;
-      geminiUsedForSession = false;
-      coachMessages = [];
+      const goal = goalSelect.value;
+      const followUp = (document.getElementById('coachQuestionInput').value || '').trim();
       const status = document.getElementById('coachStatusMsg');
-      if (currentCatalogPathway) {
-        status.style.color = 'var(--accent-2)';
-        status.textContent = 'Catalog pathway loaded. Download PDF or click Generate for an AI explanation.';
-      } else {
-        status.textContent = '';
-      }
-      renderCoachChatbox();
-    });
-
-    const ADVISOR_INSTRUCTIONS = "You are Pocket Credit's catalog-based pathway assistant. Use ONLY supplied catalog records, user statements and source content explicitly returned by an enabled approved retrieval tool. Do not add requirements, equivalencies, fees, durations or credit-transfer claims from general knowledge. The goal and linked records supply the pathway; provide a concise explanation of them without inventing milestones or GUIDs. Preserve categories, qualifications and conditional wording. Saved achievements are self-reported, not verified. Not recorded does not mean not achieved. Ask focused questions if necessary. Do not claim a URL was read unless retrieval succeeded. Cite supplied official links and identify unresolved details for confirmation with the supplied authority. Keep duration fields independent without conversion. Do not guarantee admission or recognition. Return the required JSON object only.";
-    let advisorBusy = false;
-
-    function downloadPlanPdf(pathway) {
-      if (!pathway) return;
-      const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
-      const width = doc.internal.pageSize.getWidth();
-      const margin = 48;
-      let y = 58;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(20);
-      doc.text('POCKET CREDIT', margin, y);
-      y += 20;
-
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.text('Catalog-Based Credential Pathway Report', margin, y);
-      y += 22;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(13);
-      const goalHeading = `Selected Goal: ${pathway.targetTitle || 'Career Pathway'} (${pathway.targetGuid || ''})`;
-      const goalLines = doc.splitTextToSize(goalHeading, width - margin * 2);
-      doc.text(goalLines, margin, y);
-      y += goalLines.length * 16 + 6;
-
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'normal');
-      const goalTypeLabel = pathway.goalType ? pathway.goalType.toUpperCase() : 'CATALOG';
-      doc.text(`Date Generated: ${new Date().toLocaleString()} | Goal Type: ${goalTypeLabel}`, margin, y);
-      y += 18;
-
-      const groups = {};
-      (pathway.steps || []).forEach((step) => {
-        const groupName = step.isTarget ? 'Selected End Goal' : (step.category || 'Catalog Pathway Steps');
-        (groups[groupName] = groups[groupName] || []).push(step);
-      });
-
-      Object.entries(groups).forEach(([group, items]) => {
-        if (y > 690) { doc.addPage(); y = 58; }
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.text(group, margin, y);
-        y += 16;
-
-        items.forEach((item) => {
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          const metaParts = [
-            item.guid,
-            item.provider,
-            item.province,
-            item.format,
-            item.durations,
-            item.cost ? `Cost: ${item.cost}` : ''
-          ].filter(Boolean).join(' | ');
-          const stepText = `[Status: ${item.status}] ${item.title}${metaParts ? ' — ' + metaParts : ''}`;
-          const lines = doc.splitTextToSize(stepText, width - margin * 2 - 14);
-          if (y + lines.length * 12 > 710) { doc.addPage(); y = 58; }
-          doc.text(lines, margin + 14, y);
-          y += lines.length * 12 + 3;
-
-          if (item.sourceUrl) {
-            const linkLines = doc.splitTextToSize(item.sourceUrl, width - margin * 2 - 14);
-            if (y + linkLines.length * 10 > 710) { doc.addPage(); y = 58; }
-            doc.setTextColor(2, 132, 199);
-            doc.textWithLink(linkLines, margin + 14, y, { url: item.sourceUrl });
-            doc.setTextColor(0, 0, 0);
-            y += linkLines.length * 10 + 4;
-          }
-        });
-        y += 8;
-      });
-
-      if (pathway.savedEntries && pathway.savedEntries.length) {
-        if (y > 680) { doc.addPage(); y = 58; }
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.text('User Saved / Completed Progress (Self-Reported)', margin, y);
-        y += 16;
-
-        pathway.savedEntries.forEach((s) => {
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          const line = `[Status: ${s.status}] ${s.title} (${s.guid})${s.provider ? ' — ' + s.provider : ''}`;
-          const lines = doc.splitTextToSize(line, width - margin * 2 - 14);
-          if (y + lines.length * 12 > 710) { doc.addPage(); y = 58; }
-          doc.text(lines, margin + 14, y);
-          y += lines.length * 12 + 3;
-        });
-        y += 8;
-      }
-
-      if (y > 660) { doc.addPage(); y = 58; }
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(60, 60, 60);
-      const requiredWarning = 'Informational only. Verify all requirements with the official provider, regulator, or institution.';
-      const warnLines = doc.splitTextToSize(requiredWarning, width - margin * 2);
-      doc.text(warnLines, margin, y);
-      y += warnLines.length * 11 + 4;
-
-      if (geminiUsedForSession) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7.5);
-        doc.setTextColor(90, 90, 90);
-        const aiNote = 'AI-Use Disclaimer: Gemini AI was used separately in the Advisor chat to provide an optional explanation of the catalog records. All credentials, requirements, durations, sources, and pathway steps in this document come exclusively from the Pocket Credit catalog and your self-reported progress.';
-        const aiLines = doc.splitTextToSize(aiNote, width - margin * 2);
-        doc.text(aiLines, margin, y);
-      }
-
-      doc.save('pocket-credit-pathway.pdf');
-    }
-
-    async function runAdvisorPlan() {
-      if (advisorBusy) return;
-      const checked = document.querySelector('input[name="goalType"]:checked');
-      const goalType = checked ? checked.value : '';
-      const target = catalogByGuid.get(goalSelect.value.toUpperCase());
-      const goal = target?.title || '';
-      const followUpNote = (document.getElementById('coachQuestionInput').value || '').trim();
-      const status = document.getElementById('coachStatusMsg');
-      const agent = AI_AGENTS[selectedAgentIdx];
-
-      if (!target && !followUpNote) {
-        status.style.color = 'var(--danger)';
-        status.textContent = 'Select an end goal or enter a question first.';
+      if (!goalType || !goal) {
+        status.textContent = 'Choose an end goal before generating.';
         return;
       }
-      if (!agent.inline) {
-        status.style.color = 'var(--danger)';
-        status.textContent = 'Choose the Gemini agent for the catalog-based Advisor.';
-        return;
-      }
+      const prompt = 'Act as a Canadian career-pathway advisor.
 
-      if (target) {
-        currentCatalogPathway = buildCatalogPathway(target.guid, goalType);
-      }
+' +
+        'My selected goal is: ' + goalType + ': ' + goal + '
+' +
+        (followUp ? 'Additional question / context: ' + followUp + '
+' : '') + '
+' +
+        'Create a practical, step-by-step pathway anywhere in Canada.
 
-      const selectedContext = target ? [target, ...linkedEntries(target)] : [];
-      const providers = selectedContext.flatMap((e) => linkedEntries(e)).filter((e) => e.guid.toUpperCase().startsWith('PRV-'));
-      const catalogContext = [...new Map([...selectedContext, ...providers].map((e) => [e.guid, e])).values()].map(advisorRecord);
-      const profileContext = getSavedEntries().map((e) => ({ ...advisorRecord(e), ...getEntryProgress(e), selfReported: true }));
+' +
+        'Use only authoritative Canadian public and non-profit sources. Prioritize and verify using these types of sources:
+' +
+        '1. Government of Canada websites, including Job Bank, the National Occupational Classification (NOC), and Employment and Social Development Canada.
+' +
+        '2. Provincial and territorial government websites and occupational regulators.
+' +
+        '3. Canadian non-profit member associations and professional certifying bodies, such as Engineers Canada, provincial engineering regulators, and relevant trade associations.
+' +
+        '4. Canadian employment-assistance organizations and non-profits, including YMCA employment services and similar public or non-profit providers.
+' +
+        '5. Canadian public colleges and universities only.
+' +
+        '6. Coursera and edX when relevant.
 
-      coachMessages.push({ role: 'user', text: `Goal: ${goalType} — ${goal}${followUpNote ? '
-Question: ' + followUpNote : ''}` });
-      coachMessages.push({ role: 'ai', text: 'Generating AI explanation from catalog records...' });
-      const thinkingIdx = coachMessages.length - 1;
+' +
+        'Do not recommend private career colleges or private universities.
+
+' +
+        'For every important requirement, provide:
+' +
+        '- The requirement or next step
+' +
+        '- The official source name
+' +
+        '- A direct link
+' +
+        '- Whether it is federal, provincial/territorial, regulatory, association, union, employment assistance, or academic
+' +
+        '- Any fees, timelines, prerequisites, or documents mentioned
+
+' +
+        'Do not invent requirements. If information varies by province or territory, say so and identify the official source to verify.
+
+' +
+        'End with a concise checklist of the next 5 actions.';
+      coachMessages.push({ role: 'user', text: `${goalType}: ${goal}${followUp ? ' — ' + followUp : ''}` });
+      coachMessages.push({ role: 'ai', text: 'Opened Gemini with your Canadian pathway prompt.' });
       renderCoachChatbox();
-
-      status.style.color = 'var(--muted)';
-      status.textContent = 'Contacting advisor-chat...';
-      advisorBusy = true;
-      document.getElementById('generatePlanBtn').disabled = true;
-
-      try {
-        const res = await fetch(ADVISOR_FUNCTION_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-          },
-          body: JSON.stringify({
-            goalType,
-            goal,
-            targetGuid: target?.guid || null,
-            question: followUpNote,
-            completed: [],
-            inProgress: [],
-            history: coachMessages.slice(0, thinkingIdx).slice(-6),
-            model: GEMINI_MODEL_NAME,
-            catalogContext,
-            profile: profileContext,
-            instructions: ADVISOR_INSTRUCTIONS
-          })
-        });
-        const rawText = await res.text();
-        let payload = {};
-        try {
-          payload = rawText ? JSON.parse(rawText) : {};
-        } catch {
-          throw new Error(rawText || `HTTP ${res.status} from advisor-chat`);
-        }
-        if (!res.ok || (!payload.plan && !payload.reply)) {
-          throw new Error(payload.error || payload.message || `HTTP ${res.status}: Could not get a response from advisor-chat.`);
-        }
-
-        geminiUsedForSession = true;
-        const explanationText = payload.reply || payload.plan?.overview || 'Explanation generated from the selected catalog pathway.';
-        coachMessages[thinkingIdx] = { role: 'ai', text: explanationText };
-        document.getElementById('coachQuestionInput').value = '';
-        status.style.color = 'var(--accent-2)';
-        status.textContent = 'AI explanation added below. Catalog pathway remains the source of truth.';
-        renderCoachChatbox();
-      } catch (err) {
-        coachMessages[thinkingIdx] = { role: 'ai', text: `Advisor error: ${err.message}` };
-        status.style.color = 'var(--danger)';
-        status.textContent = 'Advisor request failed.';
-        renderCoachChatbox();
-      } finally {
-        advisorBusy = false;
-        document.getElementById('generatePlanBtn').disabled = false;
-      }
+      window.open('https://gemini.google.com/app?q=' + encodeURIComponent(prompt), '_blank', 'noopener');
+      status.textContent = 'Gemini opened with your career pathway prompt.';
     }
 
-    document.getElementById('generatePlanBtn').addEventListener('click', runAdvisorPlan);
-
-    document.getElementById('coachQuestionInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        runAdvisorPlan();
-      }
-    });
+    document.getElementById('generatePlanBtn').addEventListener('click', runGeminiPlan);
 
     document.addEventListener('click', function (event) {
       const target = event.target.closest('#homeNavBtn, #profileNavBtn, #advisorNavBtn, #settingsNavBtn, #authNavBtn');
@@ -1535,6 +1203,13 @@ Question: ' + followUpNote : ''}` });
         } else if (sbClient) {
           sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: SITE_URL } });
         }
+      }
+    });
+
+    document.getElementById('coachQuestionInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        runGeminiPlan();
       }
     });
 
@@ -1557,23 +1232,19 @@ Question: ' + followUpNote : ''}` });
 
     document.querySelectorAll('[data-theme-opt]').forEach((btn) => btn.addEventListener('click', () => {
       prefs.theme = btn.dataset.themeOpt;
-      document.querySelectorAll('[data-theme-opt]').forEach((b) => b.classList.toggle('active', b === btn));
       applyPrefs();
     }));
     document.querySelectorAll('[data-scale-opt]').forEach((btn) => btn.addEventListener('click', () => {
       prefs.textScale = btn.dataset.scaleOpt;
-      document.querySelectorAll('[data-scale-opt]').forEach((b) => b.classList.toggle('active', b === btn));
       applyPrefs();
     }));
     document.getElementById('reduceMotionChk').addEventListener('change', (e) => { prefs.reduceMotion = e.target.checked; applyPrefs(); });
     document.getElementById('highContrastChk').addEventListener('change', (e) => { prefs.highContrast = e.target.checked; applyPrefs(); });
-    document.getElementById('clearLocalProgressBtn').addEventListener('click', async () => {
+    document.getElementById('clearLocalProgressBtn').addEventListener('click', () => {
       userProgressMap = {};
       localStorage.removeItem('pocketcredit_local_progress');
-      await syncIndividualProgress();
       updateProfileStats();
       renderProfile();
-      if (activeView === 'coach') renderCareerCoach();
       if (isListingActive()) renderLibrary();
       document.getElementById('settingsMsg').textContent = t().localClearedMsg;
     });
@@ -1585,55 +1256,27 @@ Question: ' + followUpNote : ''}` });
       if (sbClient) await sbClient.auth.signOut();
     });
 
-    function updateAuthUI(user) {
-      currentUser = user ?? null;
-      const tr = t();
-      const authNavBtn = document.getElementById('authNavBtn');
-      if (currentUser) {
-        document.getElementById('signedOutPanel').style.display = 'none';
-        document.getElementById('signedInPanel').style.display = 'flex';
-        document.getElementById('authStatus').textContent = `${tr.welcome}, ${currentUser.email || currentUser.id}`;
-        document.getElementById('settingsAccountInfo').textContent = tr.signedInAccountInfo(currentUser.email || currentUser.id);
-        if (authNavBtn) authNavBtn.textContent = tr.signOut;
-      } else {
-        document.getElementById('signedOutPanel').style.display = 'flex';
-        document.getElementById('signedInPanel').style.display = 'none';
-        document.getElementById('settingsAccountInfo').textContent = tr.signedOutAccountInfo;
-        if (authNavBtn) authNavBtn.textContent = 'Log In';
-      }
-    }
-
     (async () => {
       try { userProgressMap = JSON.parse(localStorage.getItem('pocketcredit_local_progress') || '{}') || {}; } catch (_e) {}
       try { prefs = { ...prefs, ...(JSON.parse(localStorage.getItem('pocketcredit_prefs') || '{}') || {}) }; } catch (_e) {}
-
-      document.querySelectorAll('[data-theme-opt]').forEach((b) => b.classList.toggle('active', b.dataset.themeOpt === prefs.theme));
-      document.querySelectorAll('[data-scale-opt]').forEach((b) => b.classList.toggle('active', b.dataset.scaleOpt === prefs.textScale));
-      document.getElementById('reduceMotionChk').checked = Boolean(prefs.reduceMotion);
-      document.getElementById('highContrastChk').checked = Boolean(prefs.highContrast);
-
       applyPrefs();
-      updateActiveAgentUI();
       updateNavIconStates();
-
+      applyLanguage(localStorage.getItem('pocketcredit_lang') === 'fr' ? 'fr' : 'en');
       await loadCredentialsFromSupabase();
-      applyLanguage(localStorage.getItem('pocketcredit_lang') === 'fr' ? 'fr' : 'en', false);
-
       if (sbClient) {
         const { data: { session } } = await sbClient.auth.getSession();
-        updateAuthUI(session?.user ?? null);
-        if (currentUser) {
-          await loadIndividualFromSupabase();
-          updateProfileStats();
-          renderProfile();
-        }
-        sbClient.auth.onAuthStateChange(async (_event, newSession) => {
-          updateAuthUI(newSession?.user ?? null);
-          if (newSession?.user) {
-            await loadIndividualFromSupabase();
-            updateProfileStats();
-            renderProfile();
+        currentUser = session?.user ?? null;
+        updateAuthUI();
+        if (currentUser) await loadCloudProgress();
+
+        sbClient.auth.onAuthStateChange(async (_event, nextSession) => {
+          currentUser = nextSession?.user ?? null;
+          updateAuthUI();
+          if (currentUser) {
+            await loadCloudProgress();
+          } else {
             if (isListingActive()) renderLibrary();
+            renderProfile();
           }
         });
       }
@@ -1648,8 +1291,6 @@ Question: ' + followUpNote : ''}` });
       <button id="advisorNavBtn" type="button">Advisor</button>
       <button id="settingsNavBtn" type="button">Settings</button>
       <button id="authNavBtn" type="button">Log In</button>
-      <a href="/terms.html">Terms</a>
-      <a href="/privacy.html">Privacy</a>
     </nav>
     <div>© 2026 Sean Maclean</div>
   </footer>
