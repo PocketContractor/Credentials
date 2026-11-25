@@ -4,10 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pocket Credit — Manage Credentials Online</title>
+  <meta name="description" content="Organize self-reported credentials and explore Canadian career pathways with Pocket Credit.">
+  <link rel="canonical" href="https://pocketcredit.online/">
+  <meta property="og:title" content="Pocket Credit — Manage Credentials Online">
+  <meta property="og:description" content="Explore credentials, providers and Canadian career pathways.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pocketcredit.online/">
+  <meta name="twitter:card" content="summary">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg: #0b1020;
@@ -277,6 +285,19 @@
     .seg-btn { border: 0; background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
     .seg-btn.active { background: var(--accent); color: #061224; }
     .toggle-chk { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+    .grid { grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr)); }
+    .auth-bar { flex-wrap:wrap; }
+    .card-source { color:var(--accent); font-size:.8rem; }
+    .plan-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin:10px 0; }
+    .plan-group { margin:10px 0 4px; font-weight:700; color:var(--accent); font-size:.85rem; }
+    .plan-item { display:flex; gap:8px; align-items:flex-start; font-size:.82rem; margin:5px 0; }
+    .plan-item a { color:var(--accent); word-break:break-word; }
+    .plan-status { font-size:.7rem; padding:2px 6px; border-radius:999px; border:1px solid var(--border); background:var(--surface-2); white-space:nowrap; }
+    .plan-status.completed { color:var(--accent-2); }
+    .plan-status.inprogress { color:var(--accent); }
+    .plan-warning { font-size:.75rem; color:var(--muted); margin-top:8px; }
+    .pdf-btn { margin-top:8px; }
   </style>
 </head>
 <body>
@@ -371,13 +392,16 @@
       <button id="clearSearchBtn" class="icon-action-btn" type="button" title="Home" aria-label="Home">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3L2 11h3v9h6v-6h2v6h6v-9h3L12 3z"/></svg>
       </button>
-      <input id="searchInput" class="home-search-input" type="search" placeholder="Search credentials..." />
+      <input id="searchInput" aria-label="Search credentials" class="home-search-input" type="search" placeholder="Search credentials..." />
       <button id="searchSubmitBtn" class="icon-action-btn primary-icon" type="button" title="Search" aria-label="Search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.32l5.39 5.39 1.42-1.42-5.39-5.39A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
       </button>
     </div>
 
     <section id="homeView" class="view-section active">
+      <div class="sr-only"><h2>Explore credentials and Canadian career pathways</h2><p>Browse trades, military qualifications, academic programs, professional credentials and workplace learning. Save self-reported progress and explore pathways with the Advisor.</p></div>
+      <div id="catalogStatus" class="status-banner" role="status" aria-live="polite">Loading catalog…</div>
+      <noscript><p>Enable JavaScript to use the catalog and Advisor.</p></noscript>
       <div id="typeTabs" class="cat-matrix-wrap" role="tablist" aria-label="Library Categories"></div>
 
       <div id="listingTools" class="listing-tools">
@@ -513,7 +537,7 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_uCgDNlN3CQsNVJ9WDFbucQ_kCH1dMmZ';
     const SITE_URL = 'https://pocketcredit.online';
     const ADVISOR_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/advisor-chat`;
-    const GEMINI_MODEL_NAME = 'gemini-2.5-flash';
+    const GEMINI_MODEL_NAME = 'gemini-3.8-flash';
     const sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
     const TYPE_LIBRARIES = {"RED_SEAL": [], "FORCES": [], "ACADEMIC": [], "PROFESSIONAL": [], "LITERACY": []};
@@ -642,27 +666,48 @@
     };
     const isListingActive = () => Boolean(selectedType) || Boolean((document.getElementById('searchInput').value || '').trim());
 
+    const catalogByGuid = new Map();
+    const normalizeKey = key => String(key).toLowerCase().replace(/[^a-z0-9]/g,'');
+    const textValue = value => value == null ? '' : String(value);
+    const safeUrl = value => {try {const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}};
+    const escapeHtml = value => textValue(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function adaptCatalogRow(raw) {
+      const f=Object.fromEntries(Object.entries(raw).map(([k,v])=>[normalizeKey(k),v]));
+      const guid=textValue(f.guid).trim();
+      const prefix=guid.split('-')[0].toUpperCase();
+      const sector=({TRD:'RED_SEAL',FRC:'FORCES',ACD:'ACADEMIC',DSG:'PROFESSIONAL',LIC:'PROFESSIONAL',SFW:'PROFESSIONAL',TLS:'PROFESSIONAL',REQ:'LITERACY',LNG:'LITERACY',PRV:'PROFESSIONAL',NOC:'PROFESSIONAL'})[prefix]||'PROFESSIONAL';
+      const relationships={};
+      Object.entries(f).forEach(([k,v])=>{if(k!=='guid'&&k.endsWith('guid')&&v!=null&&v!=='')relationships[k]=v;});
+      const durations={};
+      ['hours','days','weeks','months','years','semesters','terms'].forEach(k=>{if(f[k]!=null&&f[k]!=='')durations[k]=textValue(f[k]);});
+      return {entryId:guid,guid,uid:guid,code:guid,title:textValue(f.title),provider:textValue(f.provider),sector,
+        category:({TRD:'Trades',FRC:'Forces',ACD:'Academic',DSG:'Designations',LIC:'Licenses',SFW:'Software',TLS:'Tools',REQ:'Requirements',LNG:'Language',PRV:'Providers',NOC:'NOC'})[prefix]||prefix,
+        tag:textValue(f.province),summary:textValue(f.format),sourceUrl:safeUrl(f.link),cost:textValue(f.cost),durations,relationships,requirements:[]};
+    }
+    function linkedEntries(entry) {
+      const refs=new Set();
+      Object.values(entry.relationships).flatMap(v=>Array.isArray(v)?v:[v]).forEach(v=>(textValue(v).match(/(?:TRD|FRC|DSG|ACD|LIC|SFW|TLS|REQ|LNG|PRV|NOC)-[A-Z0-9]+(?:-[A-Z0-9]+)*/gi)||[]).forEach(id=>refs.add(id.toUpperCase())));
+      return [...refs].map(id=>catalogByGuid.get(id)).filter(Boolean);
+    }
+    function advisorRecord(e) {return {guid:e.guid,title:e.title,provider:e.provider,province:e.tag,format:e.summary,cost:e.cost,durations:e.durations,sourceUrl:e.sourceUrl,relationships:e.relationships};}
     async function loadCredentialsFromSupabase() {
-      allLibraryEntries.length = 0;
-      if (!sbClient) return;
+      const status=document.getElementById('catalogStatus');
       try {
-        const { data, error } = await sbClient
-          .from('credentials')
-          .select('id, sector, code, uid, title, provider, category, tag, summary, requirements')
-          .order('id', { ascending: true });
-
-        if (!error && Array.isArray(data) && data.length > 0) {
-          data.forEach((row) => {
-            allLibraryEntries.push({
-              ...row,
-              entryId: row.id,
-              requirements: Array.isArray(row.requirements) ? row.requirements : []
-            });
-          });
+        if(!sbClient)throw new Error('Supabase client did not load.');
+        const rows=[];
+        for(let offset=0;;offset+=500){
+          const {data,error}=await sbClient.from('credentials').select('*').order('GUID',{ascending:true}).range(offset,offset+499);
+          if(error)throw error;
+          rows.push(...(data||[]));
+          if(!data||data.length<500)break;
         }
-      } catch (_e) {
-        // Keep catalog empty until Supabase data is available
-      }
+        const entries=rows.map(adaptCatalogRow).filter(e=>e.guid&&e.title);
+        if(rows.length&&!entries.length)throw new Error('Catalog columns GUID and Title were not recognized.');
+        allLibraryEntries.splice(0,allLibraryEntries.length,...entries);
+        catalogByGuid.clear();entries.forEach(e=>catalogByGuid.set(e.guid.toUpperCase(),e));
+        status.textContent=entries.length?'':'No catalog records were returned. Check public read access or catalog contents.';
+      }catch(error){console.error('Catalog load:',error);status.textContent='Catalog could not load: '+(error.message||'Please refresh.');}
+      refreshGoalOptions();
     }
 
     async function loadIndividualFromSupabase() {
@@ -852,16 +897,19 @@
       card.innerHTML = `
         <div>
           <div class="card-top">
-            <span class="uid">${entry.provider}${entry.uid ? ' · ' + entry.uid : ''}</span>
+            <span class="uid">${escapeHtml(entry.provider)}${entry.uid ? ' · ' + escapeHtml(entry.uid) : ''}</span>
             <span class="badge">${getTypeMeta(entry.sector).label}</span>
           </div>
-          <h3 class="card-title">${entry.title}</h3>
-          ${entry.tag ? `<span class="lib-pill">${entry.tag}</span>` : ''}
-          <p class="card-notes" style="margin-top:8px;">${entry.summary || ''}</p>
+          <h3 class="card-title">${escapeHtml(entry.title)}</h3>
+          ${entry.tag ? `<span class="lib-pill">${escapeHtml(entry.tag)}</span>` : ''}
+          <p class="card-notes" style="margin-top:8px;">${escapeHtml(entry.summary || '')}</p>
+          ${entry.sourceUrl ? `<p><a class="card-source" href="${escapeHtml(entry.sourceUrl)}" target="_blank" rel="noopener noreferrer">Official source ↗</a></p>` : ''}
+          ${entry.cost ? `<p class="card-notes">Cost: ${escapeHtml(entry.cost)}</p>` : ''}
+          ${Object.keys(entry.durations || {}).length ? `<p class="card-notes">${Object.entries(entry.durations).map(([k,v])=>`${escapeHtml(k)}: ${escapeHtml(v)}`).join(' · ')}</p>` : ''}
           ${reqs.length ? `
           <div class="req-list">
             <div class="req-header"><span>${tr.requiredLabel}</span><span class="req-progress">${doneCount}/${reqs.length}</span></div>
-            ${reqs.map((r) => `<label class="req-item ${checkedSet.has(r.id) ? 'checked' : ''}"><input type="checkbox" class="req-chk" data-req-id="${r.id}" ${checkedSet.has(r.id) ? 'checked' : ''} /><span>${r.label}</span></label>`).join('')}
+            ${reqs.map((r) => `<label class="req-item ${checkedSet.has(r.id) ? 'checked' : ''}"><input type="checkbox" class="req-chk" data-req-id="${escapeHtml(r.id)}" ${checkedSet.has(r.id) ? 'checked' : ''} /><span>${escapeHtml(r.label)}</span></label>`).join('')}
           </div>` : ''}
         </div>
         <div class="card-inputs">
@@ -1035,30 +1083,19 @@
       syncListingState();
     }
 
-    const GOAL_OPTIONS = {
-      vocation: [
-        ['Engineer', 'Engineer'],
-        ['Engineering Technologist', 'Engineering Technologist'],
-        ['Skilled Tradesperson', 'Skilled Tradesperson'],
-        ['Cloud & IT Infrastructure Specialist', 'Cloud & IT Infrastructure Specialist'],
-        ['Commercial & Heavy Operations Specialist', 'Commercial & Heavy Operations Specialist']
-      ],
-      trade: [
-        ['Electrician', 'Electrician'],
-        ['Welder', 'Welder'],
-        ['Heavy Equipment Technician', 'Heavy Equipment Technician'],
-        ['Industrial Mechanic Millwright', 'Industrial Mechanic Millwright'],
-        ['Plumber', 'Plumber'],
-        ['Carpenter', 'Carpenter']
-      ],
-      designation: [
-        ['P.Eng', 'P.Eng — Professional Engineer'],
-        ['C.E.T.', 'C.E.T. — Certified Engineering Technologist'],
-        ['C.Tech.', 'C.Tech. — Certified Technician'],
-        ['Red Seal', 'Red Seal Endorsement'],
-        ['C of Q', 'C of Q — Certificate of Qualification']
-      ]
-    };
+    function getGoalOptions(type) {
+      const prefix={vocation:'NOC-',trade:'TRD-',designation:'DSG-'}[type];
+      return allLibraryEntries.filter(e=>prefix&&e.guid.toUpperCase().startsWith(prefix)).sort((a,b)=>a.title.localeCompare(b.title));
+    }
+    function refreshGoalOptions() {
+      const type=document.querySelector('input[name="goalType"]:checked')?.value;
+      const old=goalSelect.value;
+      goalSelect.replaceChildren(new Option(currentLang==='fr'?'Choisir un objectif':'Choose a goal',''));
+      const entries=getGoalOptions(type);
+      entries.forEach(e=>goalSelect.add(new Option(e.title,e.guid)));
+      goalSelect.disabled=!entries.length;
+      if(entries.some(e=>e.guid===old))goalSelect.value=old;
+    }
 
     const goalTypeRadios = document.querySelectorAll('input[name="goalType"]');
     const goalSelect = document.getElementById('goalSelect');
@@ -1075,135 +1112,108 @@
       updateActiveAgentUI();
     });
 
-    goalTypeRadios.forEach(function (radio) {
-      radio.addEventListener('change', function () {
-        const type = radio.value;
-        goalSelect.innerHTML = '';
-        if (!type) {
-          goalSelect.disabled = true;
-          goalSelect.innerHTML = '<option value="">Select a goal type first</option>';
-          return;
-        }
-        goalSelect.disabled = false;
-        goalSelect.innerHTML = '<option value="">Choose One</option>';
-        GOAL_OPTIONS[type].forEach(function (item) {
-          const opt = document.createElement('option');
-          opt.value = item[0];
-          opt.textContent = item[1];
-          goalSelect.appendChild(opt);
+    goalTypeRadios.forEach(radio=>radio.addEventListener('change',refreshGoalOptions));
+
+    const ADVISOR_INSTRUCTIONS = "You are Pocket Credit's catalog-based pathway assistant. Use ONLY supplied catalog records, user statements and source content explicitly returned by an enabled approved retrieval tool. Do not add requirements, equivalencies, fees, durations or credit-transfer claims from general knowledge. The goal and linked records supply the pathway; explain and organize them without inventing milestones or GUIDs. Preserve categories, qualifications and conditional wording. Saved achievements are self-reported, not verified. Not recorded does not mean not achieved. Ask focused questions if necessary. Do not claim a URL was read unless retrieval succeeded. Cite supplied official links and identify unresolved details for confirmation with the supplied authority. Keep duration fields independent without conversion. Do not guarantee admission or recognition. Return the required JSON object only.";
+    let advisorBusy=false;
+    let lastPlan=null;
+
+    function renderPlan(plan) {
+      const box=document.getElementById('coachChatbox');
+      const div=document.createElement('div');
+      div.className='coach-msg ai';
+      const groups={};
+      (plan.checklist||[]).forEach(item=>{(groups[item.subcategory||'Pathway']=groups[item.subcategory||'Pathway']||[]).push(item);});
+      let html=`<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span></div>`;
+      if(plan.overview)html+=`<div>${escapeHtml(plan.overview)}</div>`;
+      Object.entries(groups).forEach(([group,items])=>{
+        html+=`<div class="plan-group">${escapeHtml(group)}</div>`;
+        items.forEach(item=>{
+          const status=escapeHtml(item.selfReportedStatus||'Not recorded');
+          const cls=({'Completed':'completed','In Progress':'inprogress'})[item.selfReportedStatus]||'';
+          html+=`<div class="plan-item"><span class="plan-status ${cls}">${status}</span><span>${escapeHtml(item.milestone||'')}</span></div>`;
+          if(item.explanation)html+=`<div class="plan-item"><span></span><span>${escapeHtml(item.explanation)}</span></div>`;
+          if(item.sourceUrl)html+=`<div class="plan-item"><span></span><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">Official source ↗</a></div>`;
+          if(item.confirmationNote)html+=`<div class="plan-item"><span></span><span class="plan-warning">${escapeHtml(item.confirmationNote)}</span></div>`;
         });
       });
-    });
+      (plan.questions||[]).forEach(q=>{html+=`<div class="plan-warning">Question: ${escapeHtml(q)}</div>`;});
+      (plan.warnings||[]).forEach(w=>{html+=`<div class="plan-warning">${escapeHtml(w)}</div>`;});
+      html+=`<button id="downloadPlanPdfBtn" class="btn btn-small btn-primary pdf-btn" type="button">Download PDF</button>`;
+      div.innerHTML=html;
+      box.appendChild(div);
+      box.scrollTop=box.scrollHeight;
+      div.querySelector('#downloadPlanPdfBtn')?.addEventListener('click',()=>downloadPlanPdf(plan));
+    }
+
+    function downloadPlanPdf(plan) {
+      const doc=new window.jspdf.jsPDF({unit:'pt',format:'letter'});
+      const width=doc.internal.pageSize.getWidth();
+      const margin=48;
+      let y=58;
+      doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text('POCKET CREDIT',margin,y);y+=22;
+      doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Credential pathway checklist',margin,y);y+=24;
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text(doc.splitTextToSize(plan.targetTitle||'Career pathway',width-margin*2),margin,y);y+=24;
+      doc.setFontSize(8);doc.setFont('helvetica','normal');
+      doc.text(`Generated: ${new Date().toLocaleString()} | Self-reported progress; not an assessment or guarantee.`,margin,y);y+=20;
+      if(plan.overview){doc.setFontSize(10);const lines=doc.splitTextToSize(plan.overview,width-margin*2);doc.text(lines,margin,y);y+=lines.length*13+10;}
+      const groups={};
+      (plan.checklist||[]).forEach(item=>{(groups[item.subcategory||'Pathway']=groups[item.subcategory||'Pathway']||[]).push(item);});
+      Object.entries(groups).forEach(([group,items])=>{
+        if(y>700){doc.addPage();y=58;}
+        doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(group,margin,y);y+=16;
+        items.forEach(item=>{
+          doc.setFont('helvetica','normal');doc.setFontSize(9);
+          const status=item.selfReportedStatus||'Not recorded';
+          const lines=doc.splitTextToSize(`[${status}] ${item.milestone||''}${item.explanation?' — '+item.explanation:''}`,width-margin*2-14);
+          if(y+lines.length*12>720){doc.addPage();y=58;}
+          doc.text(lines,margin+14,y);y+=lines.length*12+3;
+          if(item.sourceUrl){const link=doc.splitTextToSize(item.sourceUrl,width-margin*2-14);if(y+link.length*10>720){doc.addPage();y=58;}doc.setTextColor(2,132,199);doc.textWithLink(link,margin+14,y,{url:item.sourceUrl});doc.setTextColor(0,0,0);y+=link.length*10+3;}
+          if(item.confirmationNote){const note=doc.splitTextToSize(`Confirm: ${item.confirmationNote}`,width-margin*2-14);if(y+note.length*10>720){doc.addPage();y=58;}doc.setTextColor(90,90,90);doc.text(note,margin+14,y);doc.setTextColor(0,0,0);y+=note.length*10+3;}
+        });
+        y+=8;
+      });
+      if(y>690){doc.addPage();y=58;}
+      doc.setFontSize(7);doc.setTextColor(90,90,90);
+      const warning=(plan.warnings||[]).concat(['Planning aid based on catalog information and self-reported progress. Not an assessment, credential, admission decision, or guarantee of recognition. Confirm current requirements and recognition of prior learning with the linked provider or authority.']).join(' ');
+      doc.text(doc.splitTextToSize(warning,width-margin*2),margin,y);
+      doc.save('pocket-credit-pathway.pdf');
+    }
 
     async function runAdvisorPlan() {
-      const checked = document.querySelector('input[name="goalType"]:checked');
-      const goalType = checked ? checked.value : '';
-      const goal = goalSelect.value;
-      const followUpNote = (document.getElementById('coachQuestionInput').value || '').trim();
-      const status = document.getElementById('coachStatusMsg');
-      const agent = AI_AGENTS[selectedAgentIdx];
-
-      if (!goal && !followUpNote) {
-        status.style.color = 'var(--danger)';
-        status.textContent = 'Select an end goal or enter a question first.';
-        return;
-      }
-
-      const saved = getSavedEntries();
-      const completedList = saved
-        .filter((e) => getEntryProgress(e).status === 'Completed')
-        .map((e) => `${e.code || e.entryId} (${e.title})`);
-      const inProgressList = saved
-        .filter((e) => getEntryProgress(e).status === 'In Progress')
-        .map((e) => `${e.code || e.entryId} (${e.title})`);
-
-      if (!agent.inline) {
-        if (!goalType || !goal) {
-          status.style.color = 'var(--danger)';
-          status.textContent = 'Choose an end goal before opening external AI.';
-          return;
-        }
-        const promptParts = [
-          'Act as a Canadian career-pathway advisor.',
-          `My selected goal is: ${goalType}: ${goal}`,
-          completedList.length ? `My completed credentials: ${completedList.join(', ')}` : '',
-          inProgressList.length ? `My in-progress credentials: ${inProgressList.join(', ')}` : '',
-          followUpNote ? `Additional question / context: ${followUpNote}` : '',
-          'Create a practical, step-by-step pathway anywhere in Canada using authoritative Canadian public and non-profit sources (Government of Canada / Job Bank / NOC, provincial/territorial regulators, non-profit associations, employment services like YMCA / SOY, public colleges/universities, Coursera, edX). Do not recommend private career colleges or private universities.'
-        ].filter(Boolean).join('\n\n');
-
-        coachMessages.push({
-          role: 'user',
-          text: `Goal: ${goalType} — ${goal}${followUpNote ? '\nNote: ' + followUpNote : ''}`
-        });
-        coachMessages.push({
-          role: 'ai',
-          text: `Opened ${agent.name} with your ${goal} pathway prompt.`
-        });
-        renderCoachChatbox();
-        window.open(agent.buildUrl(promptParts), '_blank', 'noopener');
-        status.style.color = 'var(--accent-2)';
-        status.textContent = `${agent.name} opened with your career pathway prompt.`;
-        return;
-      }
-
-      const userSummary = [
-        goal ? `Goal (${goalType || 'Selected'}): ${goal}` : '',
-        followUpNote ? followUpNote : ''
-      ].filter(Boolean).join('\n');
-
-      coachMessages.push({ role: 'user', text: userSummary });
-      coachMessages.push({ role: 'ai', text: 'Thinking...' });
-      const thinkingIdx = coachMessages.length - 1;
-      renderCoachChatbox();
-
-      status.style.color = 'var(--muted)';
-      status.textContent = 'Contacting Gemini via Supabase...';
-
-      try {
-        const res = await fetch(ADVISOR_FUNCTION_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-          },
-          body: JSON.stringify({
-            goalType,
-            goal,
-            question: followUpNote,
-            completed: completedList,
-            inProgress: inProgressList,
-            history: coachMessages.slice(0, thinkingIdx),
-            model: GEMINI_MODEL_NAME
-          })
-        });
-
-        const rawText = await res.text();
-        let payload = {};
-        try {
-          payload = rawText ? JSON.parse(rawText) : {};
-        } catch (_parseErr) {
-          throw new Error(rawText || `HTTP ${res.status} from advisor-chat`);
-        }
-        if (!res.ok || !payload.reply) {
-          throw new Error(payload.error || payload.message || `HTTP ${res.status}: Could not get a response from advisor-chat.`);
-        }
-
-        coachMessages[thinkingIdx] = { role: 'ai', text: payload.reply };
-        document.getElementById('coachQuestionInput').value = '';
-        status.style.color = 'var(--accent-2)';
-        status.textContent = 'Response added to chat.';
-      } catch (err) {
-        coachMessages[thinkingIdx] = {
-          role: 'ai',
-          text: `Advisor error: ${err.message}`
-        };
-        status.style.color = 'var(--danger)';
-        status.textContent = 'Could not reach Gemini Edge Function.';
-      }
-
-      renderCoachChatbox();
+      if(advisorBusy)return;
+      const checked=document.querySelector('input[name="goalType"]:checked');
+      const goalType=checked?checked.value:'';
+      const target=catalogByGuid.get(goalSelect.value.toUpperCase());
+      const goal=target?.title||'';
+      const followUpNote=(document.getElementById('coachQuestionInput').value||'').trim();
+      const status=document.getElementById('coachStatusMsg');
+      const agent=AI_AGENTS[selectedAgentIdx];
+      if(!target&&!followUpNote){status.style.color='var(--danger)';status.textContent='Select an end goal or enter a question first.';return;}
+      if(!agent.inline){status.style.color='var(--danger)';status.textContent='Choose the Gemini agent for the catalog-based Advisor.';return;}
+      const selectedContext=target?[target,...linkedEntries(target)]:[];
+      const providers=selectedContext.flatMap(e=>linkedEntries(e)).filter(e=>e.guid.toUpperCase().startsWith('PRV-'));
+      const catalogContext=[...new Map([...selectedContext,...providers].map(e=>[e.guid,e])).values()].map(advisorRecord);
+      const profileContext=getSavedEntries().map(e=>({...advisorRecord(e),...getEntryProgress(e),selfReported:true}));
+      coachMessages.push({role:'user',text:`Goal: ${goalType} — ${goal}${followUpNote?'\nNote: '+followUpNote:''}`});
+      coachMessages.push({role:'ai',text:'Assembling supplied catalog pathway...'});
+      const thinkingIdx=coachMessages.length-1;renderCoachChatbox();
+      status.style.color='var(--muted)';status.textContent='Contacting advisor-chat...';advisorBusy=true;
+      document.getElementById('generatePlanBtn').disabled=true;
+      try{
+        const res=await fetch(ADVISOR_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify({goalType,goal,targetGuid:target?.guid||null,question:followUpNote,completed:[],inProgress:[],history:coachMessages.slice(0,thinkingIdx).slice(-6),model:GEMINI_MODEL_NAME,catalogContext,profile:profileContext,instructions:ADVISOR_INSTRUCTIONS})});
+        const rawText=await res.text();let payload={};
+        try{payload=rawText?JSON.parse(rawText):{};}catch{throw new Error(rawText||`HTTP ${res.status} from advisor-chat`);}
+        if(!res.ok||!payload.plan)throw new Error(payload.error||payload.message||`HTTP ${res.status}: Could not get a structured response from advisor-chat.`);
+        lastPlan=payload.plan;
+        coachMessages[thinkingIdx]={role:'ai',text:payload.reply||payload.plan.overview||'Pathway prepared.'};
+        document.getElementById('coachQuestionInput').value='';
+        status.style.color='var(--accent-2)';status.textContent='Pathway prepared. PDF is available below.';
+        renderCoachChatbox();renderPlan(payload.plan);
+      }catch(err){
+        coachMessages[thinkingIdx]={role:'ai',text:`Advisor error: ${err.message}`};
+        status.style.color='var(--danger)';status.textContent='Advisor request failed.';
+      }finally{advisorBusy=false;document.getElementById('generatePlanBtn').disabled=false;renderCoachChatbox();}
     }
 
     document.getElementById('generatePlanBtn').addEventListener('click', runAdvisorPlan);
@@ -1344,6 +1354,8 @@
       <button id="advisorNavBtn" type="button">Advisor</button>
       <button id="settingsNavBtn" type="button">Settings</button>
       <button id="authNavBtn" type="button">Log In</button>
+      <a href="/terms.html">Terms</a>
+      <a href="/privacy.html">Privacy</a>
     </nav>
     <div>© 2026 Sean Maclean</div>
   </footer>
