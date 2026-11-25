@@ -116,6 +116,7 @@
     .icon-action-btn.primary-icon { background: var(--accent); border-color: var(--accent); color: #061224; }
     .home-search-input { flex: 1; min-width: 0; height: 42px; padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; }
     .cat-matrix-wrap { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+    .cat-matrix-wrap.hidden-drill { display: none; }
     .cat-group-row { display: flex; align-items: center; gap: 12px; cursor: pointer; }
     .cat-group-icon { flex: 0 0 40px; width: 40px; height: 40px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
     .cat-group-row.active .cat-group-icon { color: var(--accent); }
@@ -144,12 +145,14 @@
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: var(--grid-gap); }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-    .uid { font-size: 0.74rem; color: var(--muted); font-family: monospace; }
-    .badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
+    .uid { font-size: 0.74rem; color: var(--muted); font-family: monospace; min-width: 0; }
+    .badge {
+      font-size: 0.7rem; padding: 2px 9px; border-radius: 999px; font-weight: 700;
+      background: var(--surface-2); color: var(--accent); border: 1px solid var(--border);
+      white-space: nowrap; flex-shrink: 0; line-height: 1.35;
+    }
     .card-title { margin: 4px 0 0; font-size: 0.98rem; font-weight: 700; }
     .card-notes { font-size: 0.82rem; color: var(--muted); margin: 0; }
-    .card-link { display: inline-block; margin-top: 6px; font-size: 0.76rem; color: var(--accent); text-decoration: none; font-weight: 600; }
-    .card-link:hover { text-decoration: underline; }
     .req-list { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
     .req-header { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
     .req-item { display: flex; align-items: flex-start; gap: 7px; font-size: 0.79rem; cursor: pointer; }
@@ -166,10 +169,10 @@
     .library-section.visible { display: block; }
     .library-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px; }
     .library-header h2 { margin: 0; font-size: 1.02rem; }
-    .lib-pill { font-size: 0.7rem; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); display: inline-block; margin-top: 6px; margin-right: 4px; }
+    .lib-pill { font-size: 0.7rem; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--accent); border: 1px solid var(--border); display: inline-block; margin-top: 6px; }
     .empty-profile { background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 24px 16px; text-align: center; color: var(--muted); font-size: 0.88rem; }
 
-    /* Career Coach UI */
+    /* Career Coach / Advisor UI */
     .coach-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--card-pad); margin-bottom: 14px; }
     .coach-field { display: flex; flex-direction: column; gap: 5px; font-size: 0.76rem; color: var(--muted); }
     .advisor-params-box {
@@ -209,6 +212,7 @@
     .advisor-agent-row {
       grid-column: 1 / -1;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       gap: 10px;
@@ -230,7 +234,7 @@
       text-align: center;
       color: var(--muted);
       font-size: 0.78rem;
-      margin: 8px 0 0;
+      margin: 8px 0;
     }
     .site-footer {
       max-width: 1280px; margin: 28px auto 18px; padding: 0 16px;
@@ -253,15 +257,15 @@
     .site-nav button:hover { text-decoration: underline; }
     .coach-chatbox {
       background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-      padding: 12px; min-height: 220px; max-height: 400px; overflow-y: auto;
+      padding: 12px; min-height: 160px; max-height: 360px; overflow-y: auto;
       display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
     }
     .coach-msg { border-radius: 10px; padding: 10px 12px; font-size: 0.83rem; line-height: 1.5; white-space: pre-wrap; }
     .coach-msg.user { background: var(--surface-2); border: 1px solid rgba(56, 189, 248, 0.35); align-self: flex-end; max-width: 92%; }
     .coach-msg.ai { background: var(--surface); border: 1px solid var(--border); align-self: stretch; }
     .coach-msg-head { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; }
-    .coach-logo-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; flex: 0 0 auto; }
-    .coach-input-row { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .coach-logo-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; flex: 0 0 auto; }
+    .coach-input-row { display: flex; flex-direction: column; gap: 8px; }
     .coach-input-box { width: 100%; min-height: 76px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.84rem; line-height: 1.45; resize: vertical; }
     .coach-actions-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
 
@@ -332,7 +336,7 @@
           <span id="profileNavCount" class="icon-badge-count">0</span>
         </button>
 
-        <button id="processorIconBtn" class="header-icon-btn" type="button" title="Free AI Career Coach" aria-label="Free AI Career Coach">
+        <button id="processorIconBtn" class="header-icon-btn" type="button" title="Advisor" aria-label="Advisor">
           <svg class="icon-hollow" width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="6" y="6" width="12" height="12" rx="2" />
             <rect x="9.5" y="9.5" width="5" height="5" />
@@ -400,29 +404,29 @@
         <div class="advisor-params-box">
           <fieldset class="advisor-goal-types">
             <legend id="targetVocationLabel">End Goal</legend>
-            <label class="advisor-radio"><input type="radio" name="goalType" value="vocation"> <span id="lblGoalVocation">Vocation</span></label>
-            <label class="advisor-radio"><input type="radio" name="goalType" value="trade"> <span id="lblGoalTrade">Trade</span></label>
-            <label class="advisor-radio"><input type="radio" name="goalType" value="designation"> <span id="lblGoalDesignation">Designation</span></label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="vocation"> Vocation</label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="trade"> Trade</label>
+            <label class="advisor-radio"><input type="radio" name="goalType" value="designation"> Designation</label>
           </fieldset>
           <div class="coach-field">
-            <label for="goalSelect" id="lblChooseOne">Choose One</label>
+            <label for="goalSelect">Choose One</label>
             <select id="goalSelect" disabled>
               <option value="">Select a goal type first</option>
             </select>
           </div>
           <div class="advisor-agent-row">
-            <span class="coach-logo-badge" aria-hidden="true">
+            <span id="activeAgentBadge" class="coach-logo-badge" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>
             </span>
             <button id="generatePlanBtn" class="btn btn-primary advisor-generate-btn" type="button">Generate</button>
-            <button id="addAgentBtn" class="btn advisor-add-agent-btn" type="button">+</button>
-            <span id="lblAddAgent" class="advisor-add-agent-text">Add Agent</span>
+            <button id="addAgentBtn" class="btn advisor-add-agent-btn" type="button" title="Switch AI Agent" aria-label="Switch AI Agent">+</button>
+            <span id="activeAgentLabel" class="advisor-add-agent-text">Agent: Gemini</span>
           </div>
         </div>
 
         <div id="coachChatbox" class="coach-chatbox" role="log" aria-live="polite" aria-label="Career coach conversation"></div>
 
-        <div id="aiDisclaimer" class="ai-disclaimer">AI Powered Content - Please Use Responsibly</div>
+        <div class="ai-disclaimer">AI Powered Content - Please Use Responsibly</div>
 
         <div class="coach-input-row">
           <textarea id="coachQuestionInput" class="coach-input-box" placeholder="Ask a follow-up question about your pathway, exams, hours, or equivalencies..."></textarea>
@@ -509,9 +513,11 @@
     const SUPABASE_URL = 'https://ntyrejoqfwgyxrojglom.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_uCgDNlN3CQsNVJ9WDFbucQ_kCH1dMmZ';
     const SITE_URL = 'https://pocketcredit.online';
+    const ADVISOR_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/advisor-chat`;
+    const GEMINI_MODEL_NAME = 'gemini-2.5-flash';
     const sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    const TYPE_LIBRARIES = {"RED_SEAL": [{"title": "Red Seal Trades — Official Standards & Exam Guides", "provider": "Red Seal Program / Skilled Trades Ontario", "tag": "Standard", "summary": "National occupational standards, trade school blocks, and Certificate of Qualification pathways.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-TRD-001", "code": "309A", "title": "309A — Construction and Maintenance Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Red Seal trade with trade school blocks and on-the-job apprenticeship requirements.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-002", "code": "433A", "title": "433A — Millwright (Industrial Mechanic)", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Industrial maintenance and machinery installation trade.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-003", "code": "442A", "title": "442A — Industrial Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Plant electrical systems, controls, and automation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-004", "code": "306A", "title": "306A — Plumber", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Water distribution, drainage, venting, and fixture installation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-005", "code": "313A", "title": "313A — Refrigeration and Air Conditioning Systems Mechanic", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "HVAC-R systems, heat pumps, and commercial refrigeration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-006", "code": "403A", "title": "403A — General Carpenter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Framing, structural carpentry, finishing, and formwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-007", "code": "456A", "title": "456A — Sheet Metal Worker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Architectural and industrial sheet metal fabrication and ductwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-008", "code": "421A", "title": "421A — Steamfitter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "High/low pressure piping, process steam, and hydronics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-009", "code": "310T", "title": "310T — Automotive Service Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Light-duty automotive diagnostics, powertrain, and chassis systems.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-010", "code": "310S", "title": "310S — Truck and Coach Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Heavy commercial vehicles, air brakes, and diesel diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-011", "code": "429A", "title": "429A — Welder", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural and pressure welding across SMAW, GMAW, GTAW, and FCAW.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-017", "code": "G.3", "title": "G.3 — Gas Technician 3", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Entry fuel technician certification for natural gas and propane appliances.", "requirements": [{"id": "THEORY", "label": "TSSA G.3 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.3 Practical Assessment"}]}, {"uid": "CRED-TRD-018", "code": "G.2", "title": "G.2 — Gas Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, service, and maintenance up to 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G3", "label": "Prerequisite: Active Gas Technician 3 (G.3)"}, {"id": "THEORY", "label": "TSSA G.2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.2 Practical Assessment"}]}, {"uid": "CRED-TRD-019", "code": "G.1", "title": "G.1 — Gas Technician 1", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "High-capacity commercial/industrial fuel systems over 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G2", "label": "Prerequisite: Active Gas Technician 2 (G.2)"}, {"id": "THEORY", "label": "TSSA G.1 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.1 Practical Assessment"}]}, {"uid": "CRED-TRD-012", "code": "415A", "title": "415A — Heavy Duty Equipment Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Off-road heavy machinery, hydraulics, powertrains, and undercarriage diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-013", "code": "434A", "title": "434A — Tool and Die Maker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Precision tooling, CNC machining, dies, jigs, and fixture manufacturing.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-014", "code": "339A", "title": "339A — Hoisting Engineer — Mobile Crane Operator 1", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Mobile crane rigging, load charts, lift planning, and heavy hoisting operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-015", "code": "426A", "title": "426A — Brick and Stone Mason", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural masonry, stone veneer, refractory brick, and restoration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-016", "code": "307A", "title": "307A — Arborist", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Tree care, rigging, aerial lift safety, pruning, and urban forestry operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-020", "code": "OBT-2", "title": "OBT-2 — Oil Burner Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, servicing, and combustion testing of fuel-oil heating equipment.", "requirements": [{"id": "THEORY", "label": "TSSA OBT-2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA OBT-2 Practical Assessment"}]}, {"uid": "CRED-TRD-021", "code": "CWB-W47.1", "title": "CWB-W47.1 — Structural Steel Welding Qualification (FCAW / SMAW)", "provider": "Canadian Welding Bureau (CWB)", "category": "Welding Qualifications", "tag": "Welding Qualifications", "summary": "All-position structural steel welding qualification under CSA W47.1 standards.", "requirements": [{"id": "1G-2G", "label": "Flat & Horizontal Position Plates"}, {"id": "3G-4G", "label": "Vertical & Overhead Position Plates"}]}, {"uid": "CRED-TRD-022", "code": "433A-MRO", "title": "433A-MRO — Industrial Hydraulics, Pneumatics & Rigging Endorsement", "provider": "Skilled Trades / Industry Standards", "category": "Industrial Maintenance", "tag": "Industrial Maintenance", "summary": "Fluid power schematics, proportional valves, laser shaft alignment, and heavy rigging.", "requirements": [{"id": "HYD-PNEU", "label": "Fluid Power Troubleshooting Assessment"}, {"id": "RIG-ALIGN", "label": "Precision Alignment & Rigging Sign-Off"}]}], "FORCES": [{"title": "CAF Qualification & Trade Equivalency Guide", "provider": "Canadian Armed Forces / DND", "tag": "Military Pathway", "summary": "Mapping BMQ, SQ, DP1/QL3, DP2/QL5, and MOSID training toward civilian credentials.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-FRC-001", "code": "BMQ", "title": "BMQ — Basic Military Qualification (BMQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Foundational CAF recruit training, drill, weapons safety, and field skills.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ"}]}, {"uid": "CRED-FRC-002", "code": "BMQ-L / SQ", "title": "BMQ-L / SQ — Basic Military Qualification — Land / Soldier Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Army field craft, navigation, and tactical soldier fundamentals.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ-L / SQ"}]}, {"uid": "CRED-FRC-003", "code": "DP1 / QL3", "title": "DP1 / QL3 — Development Period 1 (DP1 / QL3) Trade Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Initial occupation/trade training for NCM or Officer MOSID.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP1 / QL3"}]}, {"uid": "CRED-FRC-004", "code": "DP2 / QL5", "title": "DP2 / QL5 — Development Period 2 (DP2 / QL5) Journeyman Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Advanced trade qualification and operational proficiency.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP2 / QL5"}]}, {"uid": "CRED-FRC-005", "code": "MOSID-TEA", "title": "MOSID-TEA — MOSID to Civilian Trade Equivalency Assessment (TEA)", "provider": "DND / Provincial Apprenticeship Boards", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Mapping military trade training toward Red Seal / C of Q.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOSID-TEA"}]}, {"uid": "CRED-FRC-006", "code": "BMOQ", "title": "BMOQ — Basic Military Officer Qualification (BMOQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Officer Leadership", "tag": "Officer Leadership", "summary": "Foundational officer leadership, mission command, ethics, and field operations.", "requirements": [{"id": "MOD-1", "label": "BMOQ Module 1 (Common Core)"}, {"id": "MOD-2", "label": "BMOQ Module 2 (Field Leadership)"}]}, {"uid": "CRED-FRC-007", "code": "PLQ", "title": "PLQ — Primary Leadership Qualification (PLQ)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Small-team command, instructional technique, and section-level leadership.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete PLQ"}]}, {"uid": "CRED-FRC-008", "code": "ILP", "title": "ILP — Intermediate Leadership Program (ILP)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Platoon/troop warrant officer leadership, administration, and operational planning.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete ILP"}]}, {"uid": "CRED-FRC-009", "code": "CAF-DND-404", "title": "CAF-DND-404 — DND 404 Military Driver Permit & Air Brake Endorsement", "provider": "Canadian Armed Forces (CAF)", "category": "Logistics & Transport", "tag": "Logistics & Transport", "summary": "Military vehicle qualification transferable toward provincial commercial licence classes.", "requirements": [{"id": "DDC", "label": "Defensive Driving Course"}, {"id": "ROAD", "label": "DND 404 Road & Air Brake Test"}]}, {"uid": "CRED-FRC-010", "code": "CAF-PLAR", "title": "CAF-PLAR — MPRR Service Record & Post-Secondary PLAR Portfolio", "provider": "Canadian Armed Forces / Ontario Colleges", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Translating Member's Personnel Record Resume (MPRR) into civilian college credits and Red Seal hours.", "requirements": [{"id": "MPRR", "label": "Verified MPRR & Course Training Plan (CTP) Package"}, {"id": "ASSESS", "label": "Provincial Regulator / College PLAR Review"}]}, {"uid": "CRED-FRC-011", "code": "TCCC-CAF", "title": "TCCC-CAF — Tactical Combat Casualty Care (TCCC)", "provider": "Canadian Forces Health Services", "category": "Field Medical", "tag": "Field Medical", "summary": "Trauma hemorrhage control, airway management, and casualty evacuation under austere conditions.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete TCCC Practical & Written Assessment"}]}], "ACADEMIC": [{"title": "Ontario Colleges & Open University Pathways", "provider": "Ontario Colleges / MIT OCW", "tag": "Academic", "summary": "Diplomas, certificates, and open coursework tracks across engineering, computing, and sciences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-ACD-001", "code": "OC-TECH-MECH", "title": "OC-TECH-MECH — Mechanical Engineering Technician — Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma aligned with C.Tech. pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-MECH"}]}, {"uid": "CRED-ACD-003", "code": "OC-TECH-ELEC", "title": "OC-TECH-ELEC — Electrical Engineering Technician — Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year electrical technician diploma aligned with C.Tech.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-ELEC"}]}, {"uid": "CRED-ACD-017", "code": "MIT-6.0001", "title": "MIT-6.0001 — Introduction to Computer Science and Programming in Python", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Computational thinking and Python programming coursework.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-6.0001"}]}, {"uid": "CRED-ACD-027", "code": "HU-CS50", "title": "HU-CS50 — CS50's Introduction to Computer Science", "provider": "Harvard University", "category": "Open Courses", "tag": "Open Courses", "summary": "C, Python, SQL, algorithms, data structures, and web basics.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete HU-CS50"}]}, {"uid": "CRED-ACD-002", "code": "OC-TECH-CIV", "title": "OC-TECH-CIV — Civil Engineering Technician — Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma covering surveying, CAD, materials testing, and municipal infrastructure.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CIV"}]}, {"uid": "CRED-ACD-004", "code": "OC-TECH-CHEM", "title": "OC-TECH-CHEM — Chemical Engineering Technology — Advanced Diploma", "provider": "Ontario Colleges / OACETT", "category": "Advanced Diplomas", "tag": "Advanced Diplomas", "summary": "3-year advanced diploma aligned with Certified Engineering Technologist (C.E.T.) pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CHEM"}]}, {"uid": "CRED-ACD-005", "code": "OACETT-CET", "title": "OACETT-CET — Certified Engineering Technologist (C.E.T.) Designation", "provider": "OACETT Ontario", "category": "Professional Designations", "tag": "Professional Designations", "summary": "Ontario engineering technology certification requiring academic credentials, PPE exam, and experience.", "requirements": [{"id": "PPE", "label": "OACETT Professional Practice Exam (PPE)"}, {"id": "EXP", "label": "2 Years Verified Engineering Technology Experience"}]}, {"uid": "CRED-ACD-006", "code": "OC-ACCT-DIP", "title": "OC-ACCT-DIP — Business — Accounting Ontario College Diploma", "provider": "Ontario Colleges", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "Financial accounting, managerial cost accounting, taxation, payroll, and ERP reporting.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Business — Accounting Diploma"}]}, {"uid": "CRED-ACD-018", "code": "MIT-18.01", "title": "MIT-18.01 — Single Variable Calculus", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Differentiation, integration, series, and engineering math foundations.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-18.01"}]}, {"uid": "CRED-ACD-028", "code": "OSSD-PLAR", "title": "OSSD-PLAR — Ontario Secondary School Diploma — Mature Student PLAR", "provider": "Ontario District School Boards", "category": "Secondary & Bridging", "tag": "Secondary & Bridging", "summary": "Prior Learning Assessment and Recognition credits toward OSSD completion for adult learners.", "requirements": [{"id": "ASSESS", "label": "Mature Student PLAR Assessment & Senior Credits"}]}], "PROFESSIONAL": [{"title": "IT, Cloud, Operations & Licensing Guides", "provider": "CompTIA / PMI / Transport Canada", "tag": "Professional", "summary": "Certification roadmaps, project leadership credentials, and commercial operating licences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-IND-001", "code": "A+", "title": "A+ — A+ Certificate", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Hardware, networking, operating systems, mobile, and troubleshooting.", "requirements": [{"id": "220-1201", "label": "Core 1 Exam (220-1201)"}, {"id": "220-1202", "label": "Core 2 Exam (220-1202)"}]}, {"uid": "CRED-IND-002", "code": "NET+", "title": "NET+ — Network+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Network architecture, routing/switching, wireless, and diagnostics.", "requirements": [{"id": "EXAM-N10", "label": "CompTIA Network+ Exam"}]}, {"uid": "CRED-IND-003", "code": "SEC+", "title": "SEC+ — Security+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Threats, vulnerabilities, IAM, cryptography, and security operations.", "requirements": [{"id": "EXAM-SY0", "label": "CompTIA Security+ Exam"}]}, {"uid": "CRED-IND-014", "code": "PMP", "title": "PMP — Project Management Professional (PMP)", "provider": "PMI", "category": "Operations", "tag": "Operations", "summary": "People, process, and business environment leadership across methodologies.", "requirements": [{"id": "EDU-35H", "label": "35 Hours Project Management Education"}, {"id": "PMP-EXAM", "label": "PMI PMP Certification Exam"}]}, {"uid": "CRED-IND-004", "code": "AWS-SAA", "title": "AWS-SAA — AWS Certified Solutions Architect — Associate", "provider": "Amazon Web Services (AWS)", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Designing resilient, secure, high-performing, and cost-optimized cloud architectures.", "requirements": [{"id": "EXAM-SAA", "label": "AWS SAA-C03 Certification Exam"}]}, {"uid": "CRED-IND-005", "code": "AZ-104", "title": "AZ-104 — Microsoft Certified: Azure Administrator Associate", "provider": "Microsoft", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Managing Azure identities, governance, storage, compute, and virtual networks.", "requirements": [{"id": "EXAM-AZ104", "label": "Microsoft Exam AZ-104"}]}, {"uid": "CRED-IND-006", "code": "CCNA", "title": "CCNA — Cisco Certified Network Associate (200-301)", "provider": "Cisco", "category": "Information Technology", "tag": "Information Technology", "summary": "Network fundamentals, IP connectivity, IP services, security, and automation.", "requirements": [{"id": "EXAM-200-301", "label": "Cisco CCNA 200-301 Exam"}]}, {"uid": "CRED-IND-015", "code": "ON-AZ", "title": "ON-AZ — Ontario Class AZ Commercial Tractor-Trailer Licence", "provider": "Ministry of Transportation Ontario (MTO)", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "Mandatory Entry-Level Training (MELT), Class A road test, and Z air brake endorsement.", "requirements": [{"id": "MELT", "label": "MTO Approved MELT Training"}, {"id": "Z-ENDORSE", "label": "Air Brake (Z) Endorsement"}, {"id": "ROAD-A", "label": "Class A Commercial Road Test"}]}, {"uid": "CRED-IND-016", "code": "TC-RPAS-ADV", "title": "TC-RPAS-ADV — Transport Canada Drone Pilot Certificate — Advanced Operations", "provider": "Transport Canada", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "RPAS operations in controlled airspace and near bystanders with flight review.", "requirements": [{"id": "EXAM-ADV", "label": "Transport Canada Small Advanced Online Exam"}, {"id": "FLIGHT-REV", "label": "In-Person RPAS Flight Review"}]}, {"uid": "CRED-IND-017", "code": "CCA-GSC", "title": "CCA-GSC — Gold Seal Certified (GSC) — Construction Project Management", "provider": "Canadian Construction Association (CCA)", "category": "Construction Management", "tag": "Construction Management", "summary": "National certification for construction estimators, project managers, and superintendents.", "requirements": [{"id": "CREDITS", "label": "100 Gold Seal Training & Experience Credits"}, {"id": "EXAM-GSC", "label": "CCA Gold Seal National Exam"}]}], "LITERACY": [{"title": "Safety, Financial & Applied Literacy Guides", "provider": "MLITSD / FCAC / OALCF", "tag": "Literacy", "summary": "Workplace safety compliance, budgeting and credit basics, digital fluency, and trades math.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-PUB-001", "code": "MOL-4S", "title": "MOL-4S — Worker Health and Safety Awareness (4-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "OHSA mandatory baseline awareness for workers.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-4S"}]}, {"uid": "CRED-PUB-003", "code": "WHMIS-2015", "title": "WHMIS-2015 — WHMIS (GHS) Hazardous Materials Training", "provider": "Health Canada / MLITSD", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Labels, SDS, hazard classes, and safe handling of hazardous products.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete WHMIS-2015"}]}, {"uid": "CRED-PUB-004", "code": "WAH", "title": "WAH — Working at Heights (CPO Approved)", "provider": "MLITSD / CPO", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Fall protection equipment, anchor points, and rescue planning.", "requirements": [{"id": "MOD-1", "label": "Module 1: Working at Heights Basic Theory"}, {"id": "MOD-2", "label": "Module 2: Practical Equipment and Rescue"}]}, {"uid": "CRED-LIT-001", "code": "OHSA-R", "title": "OHSA-R — Ontario Workplace Rights & Hazard Literacy", "provider": "MLITSD Ontario", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Reading hazard notices, refusal rights, reporting procedures, and safety signage.", "requirements": [{"id": "RIGHTS", "label": "Three Basic Rights (Know, Participate, Refuse)"}, {"id": "REPORT", "label": "Hazard & Incident Reporting Literacy"}]}, {"uid": "CRED-LIT-002", "code": "FIN-LIT-101", "title": "FIN-LIT-101 — Personal Budgeting, Credit & Tax Fundamentals", "provider": "Financial Consumer Agency of Canada", "category": "Financial & Credit Literacy", "tag": "Financial & Credit Literacy", "summary": "Cash flow planning, credit scores, interest/debt literacy, and filing basics.", "requirements": [{"id": "BUDGET", "label": "Monthly Cash Flow & Emergency Reserve"}, {"id": "CREDIT", "label": "Credit Reports, Utilization & Borrowing Costs"}]}, {"uid": "CRED-PUB-002", "code": "MOL-SUP", "title": "MOL-SUP — Supervisor Health and Safety Awareness (5-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Mandatory OHSA duties and hazard-control responsibilities for workplace supervisors.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-SUP"}]}, {"uid": "CRED-PUB-005", "code": "JHSC-P1", "title": "JHSC-P1 — Joint Health and Safety Committee Certification — Part 1", "provider": "MLITSD / CPO Approved Providers", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Core occupational health and safety law, hazard recognition, and workplace inspections.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete JHSC Part 1"}]}, {"uid": "CRED-PUB-006", "code": "SFA-CPR-C", "title": "SFA-CPR-C — Standard First Aid & CPR/AED Level C (WSIB Approved)", "provider": "Canadian Red Cross / St. John Ambulance", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Two-day WSIB-recognized workplace emergency first aid, CPR, and AED response.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Standard First Aid & CPR-C"}]}, {"uid": "CRED-PUB-007", "code": "IHSA-TRAF", "title": "IHSA-TRAF — Traffic Control Person & OTM Book 7 Temporary Conditions", "provider": "IHSA / Ontario Traffic Council", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Work-zone flagging, temporary traffic control layouts, and roadside safety standards.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Traffic Control & OTM Book 7 Assessment"}]}, {"uid": "CRED-LIT-003", "code": "DIG-LIT-101", "title": "DIG-LIT-101 — Digital Fluency, Privacy & Scam Defense", "provider": "MediaSmarts / Digital Standards", "category": "Digital & Data Literacy", "tag": "Digital & Data Literacy", "summary": "Multi-factor authentication, phishing awareness, cloud file hygiene, and source verification.", "requirements": [{"id": "AUTH-SEC", "label": "Password Manager & Multi-Factor Authentication"}, {"id": "VERIFY", "label": "Source Verification & Phishing Recognition"}]}, {"uid": "CRED-LIT-004", "code": "NUM-TRD-101", "title": "NUM-TRD-101 — Applied Trades Numeracy, Fractions & Blueprint Reading", "provider": "Skilled Trades / OALCF Alignment", "category": "Trades Math & Blueprint Literacy", "tag": "Trades Math & Blueprint Literacy", "summary": "Metric/imperial conversions, ratios, tolerances, and reading technical drawings.", "requirements": [{"id": "CONV", "label": "Fractions, Decimals & Unit Conversions"}, {"id": "DWG", "label": "Reading Plans, Scales & Bill of Materials"}]}]};
+    const TYPE_LIBRARIES = {"RED_SEAL": [{"title": "Red Seal Trades \u2014 Official Standards & Exam Guides", "provider": "Red Seal Program / Skilled Trades Ontario", "tag": "Standard", "summary": "National occupational standards, trade school blocks, and Certificate of Qualification pathways.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-TRD-001", "code": "309A", "title": "309A \u2014 Construction and Maintenance Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Red Seal trade with trade school blocks and on-the-job apprenticeship requirements.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-002", "code": "433A", "title": "433A \u2014 Millwright (Industrial Mechanic)", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Industrial maintenance and machinery installation trade.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-003", "code": "442A", "title": "442A \u2014 Industrial Electrician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Plant electrical systems, controls, and automation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-004", "code": "306A", "title": "306A \u2014 Plumber", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Water distribution, drainage, venting, and fixture installation.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-005", "code": "313A", "title": "313A \u2014 Refrigeration and Air Conditioning Systems Mechanic", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "HVAC-R systems, heat pumps, and commercial refrigeration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-006", "code": "403A", "title": "403A \u2014 General Carpenter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Framing, structural carpentry, finishing, and formwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-007", "code": "456A", "title": "456A \u2014 Sheet Metal Worker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Architectural and industrial sheet metal fabrication and ductwork.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-008", "code": "421A", "title": "421A \u2014 Steamfitter", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "High/low pressure piping, process steam, and hydronics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-009", "code": "310T", "title": "310T \u2014 Automotive Service Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Light-duty automotive diagnostics, powertrain, and chassis systems.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-010", "code": "310S", "title": "310S \u2014 Truck and Coach Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Heavy commercial vehicles, air brakes, and diesel diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-011", "code": "429A", "title": "429A \u2014 Welder", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural and pressure welding across SMAW, GMAW, GTAW, and FCAW.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-017", "code": "G.3", "title": "G.3 \u2014 Gas Technician 3", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Entry fuel technician certification for natural gas and propane appliances.", "requirements": [{"id": "THEORY", "label": "TSSA G.3 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.3 Practical Assessment"}]}, {"uid": "CRED-TRD-018", "code": "G.2", "title": "G.2 \u2014 Gas Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, service, and maintenance up to 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G3", "label": "Prerequisite: Active Gas Technician 3 (G.3)"}, {"id": "THEORY", "label": "TSSA G.2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.2 Practical Assessment"}]}, {"uid": "CRED-TRD-019", "code": "G.1", "title": "G.1 \u2014 Gas Technician 1", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "High-capacity commercial/industrial fuel systems over 400,000 BTU/hr.", "requirements": [{"id": "PREREQ-G2", "label": "Prerequisite: Active Gas Technician 2 (G.2)"}, {"id": "THEORY", "label": "TSSA G.1 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA G.1 Practical Assessment"}]}, {"uid": "CRED-TRD-012", "code": "415A", "title": "415A \u2014 Heavy Duty Equipment Technician", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Off-road heavy machinery, hydraulics, powertrains, and undercarriage diagnostics.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-013", "code": "434A", "title": "434A \u2014 Tool and Die Maker", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Precision tooling, CNC machining, dies, jigs, and fixture manufacturing.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-014", "code": "339A", "title": "339A \u2014 Hoisting Engineer \u2014 Mobile Crane Operator 1", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Mobile crane rigging, load charts, lift planning, and heavy hoisting operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-015", "code": "426A", "title": "426A \u2014 Brick and Stone Mason", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Structural masonry, stone veneer, refractory brick, and restoration.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "BLK-3", "label": "Block 3 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-016", "code": "307A", "title": "307A \u2014 Arborist", "provider": "Skilled Trades Ontario / Red Seal", "category": "Red Seal Trades", "tag": "Red Seal Trades", "summary": "Tree care, rigging, aerial lift safety, pruning, and urban forestry operations.", "requirements": [{"id": "BLK-1", "label": "Block 1 Trade School"}, {"id": "BLK-2", "label": "Block 2 Trade School"}, {"id": "RED-SEAL", "label": "Red Seal / C of Q Exam"}]}, {"uid": "CRED-TRD-020", "code": "OBT-2", "title": "OBT-2 \u2014 Oil Burner Technician 2", "provider": "TSSA", "category": "Heating Systems", "tag": "Heating Systems", "summary": "Installation, servicing, and combustion testing of fuel-oil heating equipment.", "requirements": [{"id": "THEORY", "label": "TSSA OBT-2 Theory Exam"}, {"id": "PRACTICAL", "label": "TSSA OBT-2 Practical Assessment"}]}, {"uid": "CRED-TRD-021", "code": "CWB-W47.1", "title": "CWB-W47.1 \u2014 Structural Steel Welding Qualification (FCAW / SMAW)", "provider": "Canadian Welding Bureau (CWB)", "category": "Welding Qualifications", "tag": "Welding Qualifications", "summary": "All-position structural steel welding qualification under CSA W47.1 standards.", "requirements": [{"id": "1G-2G", "label": "Flat & Horizontal Position Plates"}, {"id": "3G-4G", "label": "Vertical & Overhead Position Plates"}]}, {"uid": "CRED-TRD-022", "code": "433A-MRO", "title": "433A-MRO \u2014 Industrial Hydraulics, Pneumatics & Rigging Endorsement", "provider": "Skilled Trades / Industry Standards", "category": "Industrial Maintenance", "tag": "Industrial Maintenance", "summary": "Fluid power schematics, proportional valves, laser shaft alignment, and heavy rigging.", "requirements": [{"id": "HYD-PNEU", "label": "Fluid Power Troubleshooting Assessment"}, {"id": "RIG-ALIGN", "label": "Precision Alignment & Rigging Sign-Off"}]}], "FORCES": [{"title": "CAF Qualification & Trade Equivalency Guide", "provider": "Canadian Armed Forces / DND", "tag": "Military Pathway", "summary": "Mapping BMQ, SQ, DP1/QL3, DP2/QL5, and MOSID training toward civilian credentials.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-FRC-001", "code": "BMQ", "title": "BMQ \u2014 Basic Military Qualification (BMQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Foundational CAF recruit training, drill, weapons safety, and field skills.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ"}]}, {"uid": "CRED-FRC-002", "code": "BMQ-L / SQ", "title": "BMQ-L / SQ \u2014 Basic Military Qualification \u2014 Land / Soldier Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Army field craft, navigation, and tactical soldier fundamentals.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete BMQ-L / SQ"}]}, {"uid": "CRED-FRC-003", "code": "DP1 / QL3", "title": "DP1 / QL3 \u2014 Development Period 1 (DP1 / QL3) Trade Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Initial occupation/trade training for NCM or Officer MOSID.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP1 / QL3"}]}, {"uid": "CRED-FRC-004", "code": "DP2 / QL5", "title": "DP2 / QL5 \u2014 Development Period 2 (DP2 / QL5) Journeyman Qualification", "provider": "Canadian Armed Forces (CAF)", "category": "Military Qualifications", "tag": "Military Qualifications", "summary": "Advanced trade qualification and operational proficiency.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete DP2 / QL5"}]}, {"uid": "CRED-FRC-005", "code": "MOSID-TEA", "title": "MOSID-TEA \u2014 MOSID to Civilian Trade Equivalency Assessment (TEA)", "provider": "DND / Provincial Apprenticeship Boards", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Mapping military trade training toward Red Seal / C of Q.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOSID-TEA"}]}, {"uid": "CRED-FRC-006", "code": "BMOQ", "title": "BMOQ \u2014 Basic Military Officer Qualification (BMOQ)", "provider": "Canadian Armed Forces (CAF)", "category": "Officer Leadership", "tag": "Officer Leadership", "summary": "Foundational officer leadership, mission command, ethics, and field operations.", "requirements": [{"id": "MOD-1", "label": "BMOQ Module 1 (Common Core)"}, {"id": "MOD-2", "label": "BMOQ Module 2 (Field Leadership)"}]}, {"uid": "CRED-FRC-007", "code": "PLQ", "title": "PLQ \u2014 Primary Leadership Qualification (PLQ)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Small-team command, instructional technique, and section-level leadership.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete PLQ"}]}, {"uid": "CRED-FRC-008", "code": "ILP", "title": "ILP \u2014 Intermediate Leadership Program (ILP)", "provider": "Canadian Armed Forces (CAF)", "category": "NCM Leadership", "tag": "NCM Leadership", "summary": "Platoon/troop warrant officer leadership, administration, and operational planning.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete ILP"}]}, {"uid": "CRED-FRC-009", "code": "CAF-DND-404", "title": "CAF-DND-404 \u2014 DND 404 Military Driver Permit & Air Brake Endorsement", "provider": "Canadian Armed Forces (CAF)", "category": "Logistics & Transport", "tag": "Logistics & Transport", "summary": "Military vehicle qualification transferable toward provincial commercial licence classes.", "requirements": [{"id": "DDC", "label": "Defensive Driving Course"}, {"id": "ROAD", "label": "DND 404 Road & Air Brake Test"}]}, {"uid": "CRED-FRC-010", "code": "CAF-PLAR", "title": "CAF-PLAR \u2014 MPRR Service Record & Post-Secondary PLAR Portfolio", "provider": "Canadian Armed Forces / Ontario Colleges", "category": "Trade Equivalency", "tag": "Trade Equivalency", "summary": "Translating Member's Personnel Record Resume (MPRR) into civilian college credits and Red Seal hours.", "requirements": [{"id": "MPRR", "label": "Verified MPRR & Course Training Plan (CTP) Package"}, {"id": "ASSESS", "label": "Provincial Regulator / College PLAR Review"}]}, {"uid": "CRED-FRC-011", "code": "TCCC-CAF", "title": "TCCC-CAF \u2014 Tactical Combat Casualty Care (TCCC)", "provider": "Canadian Forces Health Services", "category": "Field Medical", "tag": "Field Medical", "summary": "Trauma hemorrhage control, airway management, and casualty evacuation under austere conditions.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete TCCC Practical & Written Assessment"}]}], "ACADEMIC": [{"title": "Ontario Colleges & Open University Pathways", "provider": "Ontario Colleges / MIT OCW", "tag": "Academic", "summary": "Diplomas, certificates, and open coursework tracks across engineering, computing, and sciences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-ACD-001", "code": "OC-TECH-MECH", "title": "OC-TECH-MECH \u2014 Mechanical Engineering Technician \u2014 Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma aligned with C.Tech. pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-MECH"}]}, {"uid": "CRED-ACD-003", "code": "OC-TECH-ELEC", "title": "OC-TECH-ELEC \u2014 Electrical Engineering Technician \u2014 Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year electrical technician diploma aligned with C.Tech.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-ELEC"}]}, {"uid": "CRED-ACD-017", "code": "MIT-6.0001", "title": "MIT-6.0001 \u2014 Introduction to Computer Science and Programming in Python", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Computational thinking and Python programming coursework.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-6.0001"}]}, {"uid": "CRED-ACD-027", "code": "HU-CS50", "title": "HU-CS50 \u2014 CS50's Introduction to Computer Science", "provider": "Harvard University", "category": "Open Courses", "tag": "Open Courses", "summary": "C, Python, SQL, algorithms, data structures, and web basics.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete HU-CS50"}]}, {"uid": "CRED-ACD-002", "code": "OC-TECH-CIV", "title": "OC-TECH-CIV \u2014 Civil Engineering Technician \u2014 Ontario College Diploma", "provider": "Ontario Colleges / OACETT", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "2-year diploma covering surveying, CAD, materials testing, and municipal infrastructure.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CIV"}]}, {"uid": "CRED-ACD-004", "code": "OC-TECH-CHEM", "title": "OC-TECH-CHEM \u2014 Chemical Engineering Technology \u2014 Advanced Diploma", "provider": "Ontario Colleges / OACETT", "category": "Advanced Diplomas", "tag": "Advanced Diplomas", "summary": "3-year advanced diploma aligned with Certified Engineering Technologist (C.E.T.) pathway.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete OC-TECH-CHEM"}]}, {"uid": "CRED-ACD-005", "code": "OACETT-CET", "title": "OACETT-CET \u2014 Certified Engineering Technologist (C.E.T.) Designation", "provider": "OACETT Ontario", "category": "Professional Designations", "tag": "Professional Designations", "summary": "Ontario engineering technology certification requiring academic credentials, PPE exam, and experience.", "requirements": [{"id": "PPE", "label": "OACETT Professional Practice Exam (PPE)"}, {"id": "EXP", "label": "2 Years Verified Engineering Technology Experience"}]}, {"uid": "CRED-ACD-006", "code": "OC-ACCT-DIP", "title": "OC-ACCT-DIP \u2014 Business \u2014 Accounting Ontario College Diploma", "provider": "Ontario Colleges", "category": "Diploma Programs", "tag": "Diploma Programs", "summary": "Financial accounting, managerial cost accounting, taxation, payroll, and ERP reporting.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Business \u2014 Accounting Diploma"}]}, {"uid": "CRED-ACD-018", "code": "MIT-18.01", "title": "MIT-18.01 \u2014 Single Variable Calculus", "provider": "MIT OpenCourseWare", "category": "Open Courses", "tag": "Open Courses", "summary": "Differentiation, integration, series, and engineering math foundations.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MIT-18.01"}]}, {"uid": "CRED-ACD-028", "code": "OSSD-PLAR", "title": "OSSD-PLAR \u2014 Ontario Secondary School Diploma \u2014 Mature Student PLAR", "provider": "Ontario District School Boards", "category": "Secondary & Bridging", "tag": "Secondary & Bridging", "summary": "Prior Learning Assessment and Recognition credits toward OSSD completion for adult learners.", "requirements": [{"id": "ASSESS", "label": "Mature Student PLAR Assessment & Senior Credits"}]}], "PROFESSIONAL": [{"title": "IT, Cloud, Operations & Licensing Guides", "provider": "CompTIA / PMI / Transport Canada", "tag": "Professional", "summary": "Certification roadmaps, project leadership credentials, and commercial operating licences.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-IND-001", "code": "A+", "title": "A+ \u2014 A+ Certificate", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Hardware, networking, operating systems, mobile, and troubleshooting.", "requirements": [{"id": "220-1201", "label": "Core 1 Exam (220-1201)"}, {"id": "220-1202", "label": "Core 2 Exam (220-1202)"}]}, {"uid": "CRED-IND-002", "code": "NET+", "title": "NET+ \u2014 Network+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Network architecture, routing/switching, wireless, and diagnostics.", "requirements": [{"id": "EXAM-N10", "label": "CompTIA Network+ Exam"}]}, {"uid": "CRED-IND-003", "code": "SEC+", "title": "SEC+ \u2014 Security+", "provider": "CompTIA", "category": "Information Technology", "tag": "Information Technology", "summary": "Threats, vulnerabilities, IAM, cryptography, and security operations.", "requirements": [{"id": "EXAM-SY0", "label": "CompTIA Security+ Exam"}]}, {"uid": "CRED-IND-014", "code": "PMP", "title": "PMP \u2014 Project Management Professional (PMP)", "provider": "PMI", "category": "Operations", "tag": "Operations", "summary": "People, process, and business environment leadership across methodologies.", "requirements": [{"id": "EDU-35H", "label": "35 Hours Project Management Education"}, {"id": "PMP-EXAM", "label": "PMI PMP Certification Exam"}]}, {"uid": "CRED-IND-004", "code": "AWS-SAA", "title": "AWS-SAA \u2014 AWS Certified Solutions Architect \u2014 Associate", "provider": "Amazon Web Services (AWS)", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Designing resilient, secure, high-performing, and cost-optimized cloud architectures.", "requirements": [{"id": "EXAM-SAA", "label": "AWS SAA-C03 Certification Exam"}]}, {"uid": "CRED-IND-005", "code": "AZ-104", "title": "AZ-104 \u2014 Microsoft Certified: Azure Administrator Associate", "provider": "Microsoft", "category": "Cloud & Infrastructure", "tag": "Cloud & Infrastructure", "summary": "Managing Azure identities, governance, storage, compute, and virtual networks.", "requirements": [{"id": "EXAM-AZ104", "label": "Microsoft Exam AZ-104"}]}, {"uid": "CRED-IND-006", "code": "CCNA", "title": "CCNA \u2014 Cisco Certified Network Associate (200-301)", "provider": "Cisco", "category": "Information Technology", "tag": "Information Technology", "summary": "Network fundamentals, IP connectivity, IP services, security, and automation.", "requirements": [{"id": "EXAM-200-301", "label": "Cisco CCNA 200-301 Exam"}]}, {"uid": "CRED-IND-015", "code": "ON-AZ", "title": "ON-AZ \u2014 Ontario Class AZ Commercial Tractor-Trailer Licence", "provider": "Ministry of Transportation Ontario (MTO)", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "Mandatory Entry-Level Training (MELT), Class A road test, and Z air brake endorsement.", "requirements": [{"id": "MELT", "label": "MTO Approved MELT Training"}, {"id": "Z-ENDORSE", "label": "Air Brake (Z) Endorsement"}, {"id": "ROAD-A", "label": "Class A Commercial Road Test"}]}, {"uid": "CRED-IND-016", "code": "TC-RPAS-ADV", "title": "TC-RPAS-ADV \u2014 Transport Canada Drone Pilot Certificate \u2014 Advanced Operations", "provider": "Transport Canada", "category": "Commercial Licensing", "tag": "Commercial Licensing", "summary": "RPAS operations in controlled airspace and near bystanders with flight review.", "requirements": [{"id": "EXAM-ADV", "label": "Transport Canada Small Advanced Online Exam"}, {"id": "FLIGHT-REV", "label": "In-Person RPAS Flight Review"}]}, {"uid": "CRED-IND-017", "code": "CCA-GSC", "title": "CCA-GSC \u2014 Gold Seal Certified (GSC) \u2014 Construction Project Management", "provider": "Canadian Construction Association (CCA)", "category": "Construction Management", "tag": "Construction Management", "summary": "National certification for construction estimators, project managers, and superintendents.", "requirements": [{"id": "CREDITS", "label": "100 Gold Seal Training & Experience Credits"}, {"id": "EXAM-GSC", "label": "CCA Gold Seal National Exam"}]}], "LITERACY": [{"title": "Safety, Financial & Applied Literacy Guides", "provider": "MLITSD / FCAC / OALCF", "tag": "Literacy", "summary": "Workplace safety compliance, budgeting and credit basics, digital fluency, and trades math.", "uid": "", "code": "", "category": "", "requirements": []}, {"uid": "CRED-PUB-001", "code": "MOL-4S", "title": "MOL-4S \u2014 Worker Health and Safety Awareness (4-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "OHSA mandatory baseline awareness for workers.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-4S"}]}, {"uid": "CRED-PUB-003", "code": "WHMIS-2015", "title": "WHMIS-2015 \u2014 WHMIS (GHS) Hazardous Materials Training", "provider": "Health Canada / MLITSD", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Labels, SDS, hazard classes, and safe handling of hazardous products.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete WHMIS-2015"}]}, {"uid": "CRED-PUB-004", "code": "WAH", "title": "WAH \u2014 Working at Heights (CPO Approved)", "provider": "MLITSD / CPO", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Fall protection equipment, anchor points, and rescue planning.", "requirements": [{"id": "MOD-1", "label": "Module 1: Working at Heights Basic Theory"}, {"id": "MOD-2", "label": "Module 2: Practical Equipment and Rescue"}]}, {"uid": "CRED-LIT-001", "code": "OHSA-R", "title": "OHSA-R \u2014 Ontario Workplace Rights & Hazard Literacy", "provider": "MLITSD Ontario", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Reading hazard notices, refusal rights, reporting procedures, and safety signage.", "requirements": [{"id": "RIGHTS", "label": "Three Basic Rights (Know, Participate, Refuse)"}, {"id": "REPORT", "label": "Hazard & Incident Reporting Literacy"}]}, {"uid": "CRED-LIT-002", "code": "FIN-LIT-101", "title": "FIN-LIT-101 \u2014 Personal Budgeting, Credit & Tax Fundamentals", "provider": "Financial Consumer Agency of Canada", "category": "Financial & Credit Literacy", "tag": "Financial & Credit Literacy", "summary": "Cash flow planning, credit scores, interest/debt literacy, and filing basics.", "requirements": [{"id": "BUDGET", "label": "Monthly Cash Flow & Emergency Reserve"}, {"id": "CREDIT", "label": "Credit Reports, Utilization & Borrowing Costs"}]}, {"uid": "CRED-PUB-002", "code": "MOL-SUP", "title": "MOL-SUP \u2014 Supervisor Health and Safety Awareness (5-Step)", "provider": "MLITSD Ontario", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Mandatory OHSA duties and hazard-control responsibilities for workplace supervisors.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete MOL-SUP"}]}, {"uid": "CRED-PUB-005", "code": "JHSC-P1", "title": "JHSC-P1 \u2014 Joint Health and Safety Committee Certification \u2014 Part 1", "provider": "MLITSD / CPO Approved Providers", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Core occupational health and safety law, hazard recognition, and workplace inspections.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete JHSC Part 1"}]}, {"uid": "CRED-PUB-006", "code": "SFA-CPR-C", "title": "SFA-CPR-C \u2014 Standard First Aid & CPR/AED Level C (WSIB Approved)", "provider": "Canadian Red Cross / St. John Ambulance", "category": "Workplace & Safety Literacy", "tag": "Workplace & Safety Literacy", "summary": "Two-day WSIB-recognized workplace emergency first aid, CPR, and AED response.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Standard First Aid & CPR-C"}]}, {"uid": "CRED-PUB-007", "code": "IHSA-TRAF", "title": "IHSA-TRAF \u2014 Traffic Control Person & OTM Book 7 Temporary Conditions", "provider": "IHSA / Ontario Traffic Council", "category": "Statutory Compliance", "tag": "Statutory Compliance", "summary": "Work-zone flagging, temporary traffic control layouts, and roadside safety standards.", "requirements": [{"id": "COMPLETE", "label": "Pass / Complete Traffic Control & OTM Book 7 Assessment"}]}, {"uid": "CRED-LIT-003", "code": "DIG-LIT-101", "title": "DIG-LIT-101 \u2014 Digital Fluency, Privacy & Scam Defense", "provider": "MediaSmarts / Digital Standards", "category": "Digital & Data Literacy", "tag": "Digital & Data Literacy", "summary": "Multi-factor authentication, phishing awareness, cloud file hygiene, and source verification.", "requirements": [{"id": "AUTH-SEC", "label": "Password Manager & Multi-Factor Authentication"}, {"id": "VERIFY", "label": "Source Verification & Phishing Recognition"}]}, {"uid": "CRED-LIT-004", "code": "NUM-TRD-101", "title": "NUM-TRD-101 \u2014 Applied Trades Numeracy, Fractions & Blueprint Reading", "provider": "Skilled Trades / OALCF Alignment", "category": "Trades Math & Blueprint Literacy", "tag": "Trades Math & Blueprint Literacy", "summary": "Metric/imperial conversions, ratios, tolerances, and reading technical drawings.", "requirements": [{"id": "CONV", "label": "Fractions, Decimals & Unit Conversions"}, {"id": "DWG", "label": "Reading Plans, Scales & Bill of Materials"}]}]};
 
     const I18N = {
       en: {
@@ -523,10 +529,8 @@
         backToCategories: 'Back to Categories',
         coachHeading: 'Advisor',
         targetVocationLabel: 'End Goal', generatePlanBtn: 'Generate',
-        lblGoalVocation: 'Vocation', lblGoalTrade: 'Trade', lblGoalDesignation: 'Designation',
-        lblChooseOne: 'Choose One', lblAddAgent: 'Add Agent',
-        aiDisclaimer: 'AI Powered Content - Please Use Responsibly',
         coachInputPlaceholder: 'Ask a follow-up question about your pathway, exams, hours, or equivalencies...',
+        coachWelcome: 'Select an End Goal (Vocation, Trade, or Designation), pick an option, and click Generate to build your Canadian credential pathway.',
         profileHeading: 'Profile', lblCompletedCreds: 'Completed', lblSavedCreds: 'Saved', savedCredsHeading: 'Saved Entries',
         settingsHeading: 'Settings', appearanceSectionTitle: 'Appearance & Accessibility',
         lblTheme: 'Theme', descTheme: 'Switch between dark, light, or system color mode.',
@@ -558,10 +562,8 @@
         backToCategories: 'Retour aux catégories',
         coachHeading: 'Conseiller',
         targetVocationLabel: 'Objectif', generatePlanBtn: 'Générer',
-        lblGoalVocation: 'Vocation', lblGoalTrade: 'Métier', lblGoalDesignation: 'Désignation',
-        lblChooseOne: 'Choisir une option', lblAddAgent: 'Ajouter un agent',
-        aiDisclaimer: 'Contenu généré par IA - Veuillez utiliser de façon responsable',
         coachInputPlaceholder: 'Posez une question sur le parcours, les examens, les heures ou les équivalences...',
+        coachWelcome: 'Choisissez un objectif (Vocation, Métier ou Désignation), sélectionnez une option et cliquez sur Générer pour obtenir votre parcours canadien.',
         profileHeading: 'Profil', lblCompletedCreds: 'Terminées', lblSavedCreds: 'Enregistrées', savedCredsHeading: 'Fiches enregistrées',
         settingsHeading: 'Paramètres', appearanceSectionTitle: 'Apparence et accessibilité',
         lblTheme: 'Thème', descTheme: 'Choisir un mode sombre, clair ou système.',
@@ -610,6 +612,30 @@
     let currentLang = 'en';
     let prefs = { theme: 'dark', textScale: 'md', reduceMotion: false, highContrast: false };
 
+    const AI_AGENTS = [
+      {
+        id: 'gemini',
+        name: 'Gemini',
+        inline: true,
+        badgeHtml: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>'
+      },
+      {
+        id: 'chatgpt',
+        name: 'ChatGPT',
+        inline: false,
+        buildUrl: (prompt) => 'https://chatgpt.com/?q=' + encodeURIComponent(prompt),
+        badgeHtml: '<svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9" fill="none" stroke="#10a37f" stroke-width="2.4"/></svg>'
+      },
+      {
+        id: 'copilot',
+        name: 'Copilot',
+        inline: false,
+        buildUrl: (prompt) => 'https://copilot.microsoft.com/?q=' + encodeURIComponent(prompt),
+        badgeHtml: '<svg viewBox="0 0 24 24" width="16" height="16"><rect x="4" y="4" width="7" height="7" rx="1.5" fill="#38bdf8"/><rect x="13" y="4" width="7" height="7" rx="1.5" fill="#22c55e"/><rect x="4" y="13" width="7" height="7" rx="1.5" fill="#facc15"/><rect x="13" y="13" width="7" height="7" rx="1.5" fill="#f97316"/></svg>'
+      }
+    ];
+    let selectedAgentIdx = 0;
+
     const t = () => I18N[currentLang] || I18N.en;
     const getTypeMeta = (key) => {
       const tr = t().types[key] || I18N.en.types[key];
@@ -617,95 +643,70 @@
     };
     const isListingActive = () => Boolean(selectedType) || Boolean((document.getElementById('searchInput').value || '').trim());
 
-    function inferSectorFromRow(row) {
-      const guid = String(row.GUID || row.id || '').toUpperCase();
-      if (row.sector && TYPE_KEYS.includes(String(row.sector).toUpperCase())) {
-        return String(row.sector).toUpperCase();
-      }
-      if (guid.startsWith('TRD-') || guid.startsWith('CRED-TRD') || row['Trades GUID']) return 'RED_SEAL';
-      if (guid.startsWith('FRC-') || guid.startsWith('CRED-FRC') || row['Forces GUID']) return 'FORCES';
-      if (guid.startsWith('ACD-') || guid.startsWith('CRED-ACD') || row['Academic GUID']) return 'ACADEMIC';
-      if (guid.startsWith('REQ-') || guid.startsWith('CRED-PUB') || guid.startsWith('CRED-LIT') || row['Requirements GUID'] || row['Language GUID']) return 'LITERACY';
-      return 'PROFESSIONAL';
-    }
-
     async function loadCredentialsFromSupabase() {
       if (!sbClient) return;
       try {
         const { data, error } = await sbClient
           .from('credentials')
-          .select('*');
+          .select('id, sector, code, uid, title, provider, category, tag, summary, requirements')
+          .order('id', { ascending: true });
 
         if (!error && Array.isArray(data) && data.length > 0) {
-          const existingIds = new Set(allLibraryEntries.map((e) => e.entryId));
+          allLibraryEntries.length = 0;
           data.forEach((row) => {
-            const entryId = row.GUID || row.id;
-            if (!entryId || existingIds.has(entryId)) return;
-            const sector = inferSectorFromRow(row);
-            const durationParts = [
-              row.Hours ? `${row.Hours}h` : '',
-              row.Days ? `${row.Days}d` : '',
-              row.Weeks ? `${row.Weeks}w` : '',
-              row.Months ? `${row.Months}m` : '',
-              row.Years ? `${row.Years}y` : '',
-              row.Semesters ? `${row.Semesters} sem` : '',
-              row.Terms ? `${row.Terms} terms` : ''
-            ].filter(Boolean);
-
-            const builtSummary = row.summary || [
-              row.Province,
-              row.Format,
-              durationParts.join(' · '),
-              row.Cost ? `Cost: ${row.Cost}` : ''
-            ].filter(Boolean).join(' · ');
-
             allLibraryEntries.push({
-              entryId,
-              uid: entryId,
-              code: row.code || row['NOC GUID'] || row.Province || '',
-              sector,
-              title: row.Title || row.title || entryId,
-              provider: row.Provider || row.provider || 'Reference Catalog',
-              category: row.category || row.Format || row.Province || 'General',
-              tag: row.tag || row.Format || '',
-              summary: builtSummary,
-              link: row.Link || row.link || '',
+              ...row,
+              entryId: row.id,
               requirements: Array.isArray(row.requirements) ? row.requirements : []
             });
-            existingIds.add(entryId);
           });
-          populateCategoryFilter();
-          renderTypeTabs();
-          if (isListingActive()) renderLibrary();
-          renderProfile();
         }
-      } catch (_err) {
-        // Fallback seamlessly to embedded TYPE_LIBRARIES if offline or table empty
+      } catch (_e) {
+        // Fallback silently to embedded TYPE_LIBRARIES
       }
     }
 
-    async function loadCloudProgress() {
+    async function loadIndividualFromSupabase() {
       if (!sbClient || !currentUser) return;
       try {
         const { data, error } = await sbClient
-          .from('user_credentials')
-          .select('cred_uid, status')
-          .eq('user_id', currentUser.id);
+          .from('individuals')
+          .select('saved_entries, preferred_lang')
+          .eq('user_id', currentUser.id)
+          .maybeSingle();
 
-        if (!error && Array.isArray(data)) {
-          data.forEach((row) => {
-            const existing = userProgressMap[row.cred_uid] || {};
-            userProgressMap[row.cred_uid] = {
-              status: row.status || existing.status || 'Not Started',
-              completed_reqs: Array.isArray(existing.completed_reqs) ? existing.completed_reqs : []
-            };
-          });
-          localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
-          updateProfileStats();
-          if (isListingActive()) renderLibrary();
-          renderProfile();
+        if (!error && data) {
+          if (data.saved_entries && typeof data.saved_entries === 'object') {
+            userProgressMap = { ...userProgressMap, ...data.saved_entries };
+            localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
+          }
+          if (data.preferred_lang === 'en' || data.preferred_lang === 'fr') {
+            applyLanguage(data.preferred_lang, false);
+          }
         }
-      } catch (_err) {}
+        await syncIndividualProgress();
+      } catch (_e) {
+        // Keep local progress if offline
+      }
+    }
+
+    async function syncIndividualProgress() {
+      if (!sbClient || !currentUser) return;
+      try {
+        await sbClient.from('individuals').upsert(
+          {
+            user_id: currentUser.id,
+            email: currentUser.email || null,
+            display_name: currentUser.user_metadata?.full_name || null,
+            preferred_lang: currentLang,
+            saved_entries: userProgressMap,
+            updated_at: new Date().toISOString()
+          },
+          { onConflict: 'user_id' }
+        );
+      } catch (_e) {
+        // Local storage already saved
+      }
     }
 
     function applyPrefs() {
@@ -717,18 +718,6 @@
       document.documentElement.classList.add(`text-scale-${prefs.textScale}`);
       document.documentElement.classList.toggle('reduce-motion', Boolean(prefs.reduceMotion));
       document.documentElement.classList.toggle('high-contrast', Boolean(prefs.highContrast));
-
-      document.querySelectorAll('[data-theme-opt]').forEach((btn) => {
-        btn.classList.toggle('active', btn.dataset.themeOpt === prefs.theme);
-      });
-      document.querySelectorAll('[data-scale-opt]').forEach((btn) => {
-        btn.classList.toggle('active', btn.dataset.scaleOpt === prefs.textScale);
-      });
-      const rmChk = document.getElementById('reduceMotionChk');
-      const hcChk = document.getElementById('highContrastChk');
-      if (rmChk) rmChk.checked = Boolean(prefs.reduceMotion);
-      if (hcChk) hcChk.checked = Boolean(prefs.highContrast);
-
       localStorage.setItem('pocketcredit_prefs', JSON.stringify(prefs));
     }
 
@@ -746,17 +735,17 @@
       if (!box) return;
       box.innerHTML = '';
       if (!coachMessages.length) {
-        const welcome = document.createElement('div');
-        welcome.className = 'coach-msg ai';
-        welcome.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Career Coach</span></div><div>Select an End Goal (Vocation, Trade, or Designation) and tap Generate to build a verified Canadian career pathway.</div>`;
-        box.appendChild(welcome);
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'coach-msg ai';
+        welcomeDiv.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span></div><div>${t().coachWelcome}</div>`;
+        box.appendChild(welcomeDiv);
         return;
       }
       coachMessages.forEach((m) => {
         const div = document.createElement('div');
         div.className = `coach-msg ${m.role}`;
         if (m.role === 'ai') {
-          div.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Career Coach</span></div><div>${m.text.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</div>`;
+          div.innerHTML = `<div class="coach-msg-head">${COACH_LOGO_SVG}<span>Advisor</span></div><div>${m.text.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</div>`;
         } else {
           div.textContent = m.text;
         }
@@ -823,6 +812,7 @@
           populateCategoryFilter();
           renderTypeTabs();
           syncListingState();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         row.addEventListener('click', pick);
         row.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
@@ -849,12 +839,7 @@
       updateProfileStats();
       msgEl.style.color = 'var(--accent-2)';
       msgEl.textContent = tr.savedLocalMsg;
-      if (sbClient && currentUser) {
-        await sbClient.from('user_credentials').upsert(
-          { user_id: currentUser.id, cred_uid: entryId, status, updated_at: new Date().toISOString() },
-          { onConflict: 'user_id,cred_uid' }
-        );
-      }
+      await syncIndividualProgress();
     }
 
     function createLibraryCard(entry, isProfileView = false) {
@@ -874,7 +859,6 @@
           <h3 class="card-title">${entry.title}</h3>
           ${entry.tag ? `<span class="lib-pill">${entry.tag}</span>` : ''}
           <p class="card-notes" style="margin-top:8px;">${entry.summary || ''}</p>
-          ${entry.link ? `<a class="card-link" href="${entry.link}" target="_blank" rel="noopener noreferrer">Official Reference &rarr;</a>` : ''}
           ${reqs.length ? `
           <div class="req-list">
             <div class="req-header"><span>${tr.requiredLabel}</span><span class="req-progress">${doneCount}/${reqs.length}</span></div>
@@ -922,9 +906,7 @@
         removeBtn.addEventListener('click', async () => {
           delete userProgressMap[entry.entryId];
           localStorage.setItem('pocketcredit_local_progress', JSON.stringify(userProgressMap));
-          if (sbClient && currentUser) {
-            await sbClient.from('user_credentials').delete().eq('user_id', currentUser.id).eq('cred_uid', entry.entryId);
-          }
+          await syncIndividualProgress();
           renderProfile();
           renderCareerCoach();
           if (isListingActive()) renderLibrary();
@@ -968,30 +950,13 @@
 
     function syncListingState() {
       const active = isListingActive();
+      document.getElementById('typeTabs').classList.toggle('hidden-drill', active);
       document.getElementById('listingTools').classList.toggle('visible', active);
       document.getElementById('librarySection').classList.toggle('visible', active);
       if (active) renderLibrary();
     }
 
-    function updateAuthUI() {
-      const tr = t();
-      const authNavBtn = document.getElementById('authNavBtn');
-      if (currentUser) {
-        const displayIdent = currentUser.email || currentUser.id;
-        document.getElementById('signedOutPanel').style.display = 'none';
-        document.getElementById('signedInPanel').style.display = 'flex';
-        document.getElementById('authStatus').textContent = `${tr.welcome}, ${displayIdent}`;
-        document.getElementById('settingsAccountInfo').textContent = tr.signedInAccountInfo(displayIdent);
-        if (authNavBtn) authNavBtn.textContent = tr.signOut;
-      } else {
-        document.getElementById('signedOutPanel').style.display = 'flex';
-        document.getElementById('signedInPanel').style.display = 'none';
-        document.getElementById('settingsAccountInfo').textContent = tr.signedOutAccountInfo;
-        if (authNavBtn) authNavBtn.textContent = tr.signIn;
-      }
-    }
-
-    function applyLanguage(lang) {
+    function applyLanguage(lang, shouldSync = true) {
       currentLang = lang === 'fr' ? 'fr' : 'en';
       document.documentElement.lang = currentLang;
       localStorage.setItem('pocketcredit_lang', currentLang);
@@ -1004,15 +969,9 @@
       document.getElementById('signInBtnText').textContent = tr.signIn;
       document.getElementById('signOutBtn').textContent = tr.signOut;
       document.getElementById('searchInput').placeholder = tr.searchPlaceholder;
-      document.getElementById('backToLandingBtn').textContent = tr.backToCategories;
+      document.getElementById('backToCategoriesBtn').textContent = tr.backToCategories;
       document.getElementById('coachHeading').textContent = tr.coachHeading;
       document.getElementById('targetVocationLabel').textContent = tr.targetVocationLabel;
-      document.getElementById('lblGoalVocation').textContent = tr.lblGoalVocation;
-      document.getElementById('lblGoalTrade').textContent = tr.lblGoalTrade;
-      document.getElementById('lblGoalDesignation').textContent = tr.lblGoalDesignation;
-      document.getElementById('lblChooseOne').textContent = tr.lblChooseOne;
-      document.getElementById('lblAddAgent').textContent = tr.lblAddAgent;
-      document.getElementById('aiDisclaimer').textContent = tr.aiDisclaimer;
       document.getElementById('generatePlanBtn').textContent = tr.generatePlanBtn;
       document.getElementById('coachQuestionInput').placeholder = tr.coachInputPlaceholder;
       document.getElementById('profileHeading').textContent = tr.profileHeading;
@@ -1033,14 +992,18 @@
       document.getElementById('lblHighContrast').textContent = tr.lblHighContrast;
       document.getElementById('descHighContrast').textContent = tr.descHighContrast;
       document.getElementById('accountSectionTitle').textContent = tr.accountSectionTitle;
+      document.getElementById('settingsAccountInfo').textContent = currentUser
+        ? tr.signedInAccountInfo(currentUser.email || currentUser.id)
+        : tr.signedOutAccountInfo;
       document.getElementById('localDataSectionTitle').textContent = tr.localDataSectionTitle;
       document.getElementById('localDataDesc').textContent = tr.localDataDesc;
       document.getElementById('clearLocalProgressBtn').textContent = tr.clearLocalBtn;
-      updateAuthUI();
       populateCategoryFilter();
       renderTypeTabs();
       syncListingState();
       renderProfile();
+      renderCoachChatbox();
+      if (shouldSync) syncIndividualProgress();
     }
 
     document.getElementById('profileIconBtn').addEventListener('click', () => setActiveView('profile'));
@@ -1100,6 +1063,18 @@
 
     const goalTypeRadios = document.querySelectorAll('input[name="goalType"]');
     const goalSelect = document.getElementById('goalSelect');
+    const addAgentBtn = document.getElementById('addAgentBtn');
+
+    function updateActiveAgentUI() {
+      const agent = AI_AGENTS[selectedAgentIdx];
+      document.getElementById('activeAgentBadge').innerHTML = agent.badgeHtml;
+      document.getElementById('activeAgentLabel').textContent = `Agent: ${agent.name}`;
+    }
+
+    addAgentBtn.addEventListener('click', () => {
+      selectedAgentIdx = (selectedAgentIdx + 1) % AI_AGENTS.length;
+      updateActiveAgentUI();
+    });
 
     goalTypeRadios.forEach(function (radio) {
       radio.addEventListener('change', function () {
@@ -1121,70 +1096,119 @@
       });
     });
 
-    function runGeminiPlan() {
+    async function runAdvisorPlan() {
       const checked = document.querySelector('input[name="goalType"]:checked');
       const goalType = checked ? checked.value : '';
       const goal = goalSelect.value;
-      const followUp = (document.getElementById('coachQuestionInput').value || '').trim();
+      const followUpNote = (document.getElementById('coachQuestionInput').value || '').trim();
       const status = document.getElementById('coachStatusMsg');
-      if (!goalType || !goal) {
-        status.textContent = 'Choose an end goal before generating.';
+      const agent = AI_AGENTS[selectedAgentIdx];
+
+      if (!goal && !followUpNote) {
+        status.style.color = 'var(--danger)';
+        status.textContent = 'Select an end goal or enter a question first.';
         return;
       }
-      const prompt = 'Act as a Canadian career-pathway advisor.
 
-' +
-        'My selected goal is: ' + goalType + ': ' + goal + '
-' +
-        (followUp ? 'Additional question / context: ' + followUp + '
-' : '') + '
-' +
-        'Create a practical, step-by-step pathway anywhere in Canada.
+      const saved = getSavedEntries();
+      const completedList = saved
+        .filter((e) => getEntryProgress(e).status === 'Completed')
+        .map((e) => `${e.code || e.entryId} (${e.title})`);
+      const inProgressList = saved
+        .filter((e) => getEntryProgress(e).status === 'In Progress')
+        .map((e) => `${e.code || e.entryId} (${e.title})`);
 
-' +
-        'Use only authoritative Canadian public and non-profit sources. Prioritize and verify using these types of sources:
-' +
-        '1. Government of Canada websites, including Job Bank, the National Occupational Classification (NOC), and Employment and Social Development Canada.
-' +
-        '2. Provincial and territorial government websites and occupational regulators.
-' +
-        '3. Canadian non-profit member associations and professional certifying bodies, such as Engineers Canada, provincial engineering regulators, and relevant trade associations.
-' +
-        '4. Canadian employment-assistance organizations and non-profits, including YMCA employment services and similar public or non-profit providers.
-' +
-        '5. Canadian public colleges and universities only.
-' +
-        '6. Coursera and edX when relevant.
+      if (!agent.inline) {
+        if (!goalType || !goal) {
+          status.style.color = 'var(--danger)';
+          status.textContent = 'Choose an end goal before opening external AI.';
+          return;
+        }
+        const promptParts = [
+          'Act as a Canadian career-pathway advisor.',
+          `My selected goal is: ${goalType}: ${goal}`,
+          completedList.length ? `My completed credentials: ${completedList.join(', ')}` : '',
+          inProgressList.length ? `My in-progress credentials: ${inProgressList.join(', ')}` : '',
+          followUpNote ? `Additional question / context: ${followUpNote}` : '',
+          'Create a practical, step-by-step pathway anywhere in Canada using authoritative Canadian public and non-profit sources (Government of Canada / Job Bank / NOC, provincial/territorial regulators, non-profit associations, employment services like YMCA / SOY, public colleges/universities, Coursera, edX). Do not recommend private career colleges or private universities.'
+        ].filter(Boolean).join('\n\n');
 
-' +
-        'Do not recommend private career colleges or private universities.
+        coachMessages.push({
+          role: 'user',
+          text: `Goal: ${goalType} — ${goal}${followUpNote ? '\nNote: ' + followUpNote : ''}`
+        });
+        coachMessages.push({
+          role: 'ai',
+          text: `Opened ${agent.name} with your ${goal} pathway prompt.`
+        });
+        renderCoachChatbox();
+        window.open(agent.buildUrl(promptParts), '_blank', 'noopener');
+        status.style.color = 'var(--accent-2)';
+        status.textContent = `${agent.name} opened with your career pathway prompt.`;
+        return;
+      }
 
-' +
-        'For every important requirement, provide:
-' +
-        '- The requirement or next step
-' +
-        '- The official source name
-' +
-        '- A direct link
-' +
-        '- Whether it is federal, provincial/territorial, regulatory, association, union, employment assistance, or academic
-' +
-        '- Any fees, timelines, prerequisites, or documents mentioned
+      const userSummary = [
+        goal ? `Goal (${goalType || 'Selected'}): ${goal}` : '',
+        followUpNote ? followUpNote : ''
+      ].filter(Boolean).join('\n');
 
-' +
-        'Do not invent requirements. If information varies by province or territory, say so and identify the official source to verify.
-
-' +
-        'End with a concise checklist of the next 5 actions.';
-      coachMessages.push({ role: 'user', text: `${goalType}: ${goal}${followUp ? ' — ' + followUp : ''}` });
-      coachMessages.push({ role: 'ai', text: 'Opened Gemini with your Canadian pathway prompt.' });
+      coachMessages.push({ role: 'user', text: userSummary });
+      coachMessages.push({ role: 'ai', text: 'Thinking...' });
+      const thinkingIdx = coachMessages.length - 1;
       renderCoachChatbox();
-      window.open('https://gemini.google.com/app?q=' + encodeURIComponent(prompt), '_blank', 'noopener');
-      status.textContent = 'Gemini opened with your career pathway prompt.';
+
+      status.style.color = 'var(--muted)';
+      status.textContent = 'Contacting Gemini via Supabase...';
+
+      try {
+        const res = await fetch(ADVISOR_FUNCTION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          },
+          body: JSON.stringify({
+            goalType,
+            goal,
+            question: followUpNote,
+            completed: completedList,
+            inProgress: inProgressList,
+            history: coachMessages.slice(0, thinkingIdx),
+            model: GEMINI_MODEL_NAME
+          })
+        });
+
+        const payload = await res.json();
+        if (!res.ok || !payload.reply) {
+          throw new Error(payload.error || 'Could not get a response from advisor-chat.');
+        }
+
+        coachMessages[thinkingIdx] = { role: 'ai', text: payload.reply };
+        document.getElementById('coachQuestionInput').value = '';
+        status.style.color = 'var(--accent-2)';
+        status.textContent = 'Response added to chat.';
+      } catch (err) {
+        coachMessages[thinkingIdx] = {
+          role: 'ai',
+          text: `Advisor error: ${err.message}`
+        };
+        status.style.color = 'var(--danger)';
+        status.textContent = 'Could not reach Gemini Edge Function.';
+      }
+
+      renderCoachChatbox();
     }
 
-    document.getElementById('generatePlanBtn').addEventListener('click', runGeminiPlan);
+    document.getElementById('generatePlanBtn').addEventListener('click', runAdvisorPlan);
+
+    document.getElementById('coachQuestionInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        runAdvisorPlan();
+      }
+    });
 
     document.addEventListener('click', function (event) {
       const target = event.target.closest('#homeNavBtn, #profileNavBtn, #advisorNavBtn, #settingsNavBtn, #authNavBtn');
@@ -1203,13 +1227,6 @@
         } else if (sbClient) {
           sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: SITE_URL } });
         }
-      }
-    });
-
-    document.getElementById('coachQuestionInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        runGeminiPlan();
       }
     });
 
@@ -1232,17 +1249,20 @@
 
     document.querySelectorAll('[data-theme-opt]').forEach((btn) => btn.addEventListener('click', () => {
       prefs.theme = btn.dataset.themeOpt;
+      document.querySelectorAll('[data-theme-opt]').forEach((b) => b.classList.toggle('active', b === btn));
       applyPrefs();
     }));
     document.querySelectorAll('[data-scale-opt]').forEach((btn) => btn.addEventListener('click', () => {
       prefs.textScale = btn.dataset.scaleOpt;
+      document.querySelectorAll('[data-scale-opt]').forEach((b) => b.classList.toggle('active', b === btn));
       applyPrefs();
     }));
     document.getElementById('reduceMotionChk').addEventListener('change', (e) => { prefs.reduceMotion = e.target.checked; applyPrefs(); });
     document.getElementById('highContrastChk').addEventListener('change', (e) => { prefs.highContrast = e.target.checked; applyPrefs(); });
-    document.getElementById('clearLocalProgressBtn').addEventListener('click', () => {
+    document.getElementById('clearLocalProgressBtn').addEventListener('click', async () => {
       userProgressMap = {};
       localStorage.removeItem('pocketcredit_local_progress');
+      await syncIndividualProgress();
       updateProfileStats();
       renderProfile();
       if (isListingActive()) renderLibrary();
@@ -1256,27 +1276,55 @@
       if (sbClient) await sbClient.auth.signOut();
     });
 
+    function updateAuthUI(user) {
+      currentUser = user ?? null;
+      const tr = t();
+      const authNavBtn = document.getElementById('authNavBtn');
+      if (currentUser) {
+        document.getElementById('signedOutPanel').style.display = 'none';
+        document.getElementById('signedInPanel').style.display = 'flex';
+        document.getElementById('authStatus').textContent = `${tr.welcome}, ${currentUser.email || currentUser.id}`;
+        document.getElementById('settingsAccountInfo').textContent = tr.signedInAccountInfo(currentUser.email || currentUser.id);
+        if (authNavBtn) authNavBtn.textContent = tr.signOut;
+      } else {
+        document.getElementById('signedOutPanel').style.display = 'flex';
+        document.getElementById('signedInPanel').style.display = 'none';
+        document.getElementById('settingsAccountInfo').textContent = tr.signedOutAccountInfo;
+        if (authNavBtn) authNavBtn.textContent = 'Log In';
+      }
+    }
+
     (async () => {
       try { userProgressMap = JSON.parse(localStorage.getItem('pocketcredit_local_progress') || '{}') || {}; } catch (_e) {}
       try { prefs = { ...prefs, ...(JSON.parse(localStorage.getItem('pocketcredit_prefs') || '{}') || {}) }; } catch (_e) {}
+
+      document.querySelectorAll('[data-theme-opt]').forEach((b) => b.classList.toggle('active', b.dataset.themeOpt === prefs.theme));
+      document.querySelectorAll('[data-scale-opt]').forEach((b) => b.classList.toggle('active', b.dataset.scaleOpt === prefs.textScale));
+      document.getElementById('reduceMotionChk').checked = Boolean(prefs.reduceMotion);
+      document.getElementById('highContrastChk').checked = Boolean(prefs.highContrast);
+
       applyPrefs();
+      updateActiveAgentUI();
       updateNavIconStates();
-      applyLanguage(localStorage.getItem('pocketcredit_lang') === 'fr' ? 'fr' : 'en');
+
       await loadCredentialsFromSupabase();
+      applyLanguage(localStorage.getItem('pocketcredit_lang') === 'fr' ? 'fr' : 'en', false);
+
       if (sbClient) {
         const { data: { session } } = await sbClient.auth.getSession();
-        currentUser = session?.user ?? null;
-        updateAuthUI();
-        if (currentUser) await loadCloudProgress();
-
-        sbClient.auth.onAuthStateChange(async (_event, nextSession) => {
-          currentUser = nextSession?.user ?? null;
-          updateAuthUI();
-          if (currentUser) {
-            await loadCloudProgress();
-          } else {
-            if (isListingActive()) renderLibrary();
+        updateAuthUI(session?.user ?? null);
+        if (currentUser) {
+          await loadIndividualFromSupabase();
+          updateProfileStats();
+          renderProfile();
+        }
+        sbClient.auth.onAuthStateChange(async (_event, newSession) => {
+          updateAuthUI(newSession?.user ?? null);
+          if (newSession?.user) {
+            await loadIndividualFromSupabase();
+            updateProfileStats();
             renderProfile();
+            if (isListingActive()) renderLibrary();
           }
         });
       }
